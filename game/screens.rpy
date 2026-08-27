@@ -209,7 +209,7 @@ screen choice(items):
 
     vbox:
         for i in items:
-            textbutton i.caption action i.action
+            textbutton i.caption action If(i.kwargs.get("disabled", False), NullAction(), i.action)
 
 
 style choice_vbox is vbox

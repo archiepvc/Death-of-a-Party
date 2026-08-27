@@ -1,4 +1,4 @@
-﻿# Text Noises
+# Text Noises
 
 init python:
     import random
@@ -90,6 +90,8 @@ define alex_expressions = ["alex", "alex3",]
 define config.layers = ['master', 'alexlayer', 'transient', 'screens']
 define flashbeat = Fade(0.4, 0.0, 0.05, color="#ffffff")
 
+$ config.menu_include_disabled = True
+
 # Variables
 default betrayal = 0
 default truth = 0
@@ -101,10 +103,13 @@ default cat_bond = 0
 default danny_bond = 0
 
 default charlie_love = 0
+default charlie_not_love = 0
 default cat_love = 0
 default danny_love = 0
 
 default presents_opened = 0
+
+default greyed_out = False
 
 default char_menu = set()
 
@@ -359,8 +364,8 @@ label leave_room:
 
     o "Shit. June 1st already? I'll be expecting them any minute now."
 
-    "The calendar hanging across the room tells you it's June 1st, 2006. Your eighteenth birthday.
-    You've been waiting for this day for weeks and absolutely nothing could ruin it."
+    "The calendar hanging across the room tells you it's June 1st, 2006. Your eighteenth birthday."
+    "You've been waiting for this day for weeks and absolutely nothing could ruin it."
 
     "{i}*BRRRRRRRRRING*{i}"
 
@@ -392,13 +397,18 @@ label ending_one:
 label answer_door:
 
     "You rest your hand on the doorknob."
-    "You force a smile you don't entirely feel and pull the door open.."
+    "You force a smile you don't entirely feel and pull the door open."
 
     ch "Ahh... he emerges! Happy birthday, pal."
 
-    "Charlie beams. He's always been so cheery."
+    "Charlie has always been easy to read. He's loud and excitable, somehow managing to make everything feel like a bigger deal than it actually is."
+
+    "He's the type to want to capture every little moment."
 
     c "Jeez, you look terrible. Did you seriously just wake up?"
+
+    "Cat's harder to figure out. She's blunt and observant, and has a habit of noticing things you'd rather she didn't."
+    "You've never been sure whether she actually likes you or just finds you interesting."
 
 menu:
     "What's it to you?":
@@ -429,14 +439,15 @@ label scene_lounge:
 
     d "Happy birthday, little man."
 
+    "Danny's different. You still remember when he used to make your life miserable. It makes it weird to think of him as one of your closest friends now."
+    "Music is probably the thing you have most in common; you don't know if there's much else anymore."
+
     "Charlie is already dropping his stuff off onto the dining table, making far more noise than necessary."
-
     "Somewhere in the kitchen, Cat is opening cupboards."
-
     "Danny plops himself down onto the couch."
 
 menu:
-    "Say nothing":
+    "...":
         jump say_nothing
 
     "Make yourselves at home":
@@ -498,7 +509,12 @@ menu:
     "Listen to music":
         jump listen_music
 
+    "Play a game":
+        jump play_game
+
 label take_photo:
+
+    $ charlie_bond +=1
 
     o "A picture first may be nice?"
 
@@ -627,6 +643,74 @@ label turn_the_music_off:
 
     jump present_intro
 
+label play_game:
+
+    $ cat_bond += 1
+
+    o "Let's play a game, I suppose."
+
+    "Cat leans back in her chair, looking between the three of you."
+
+    c "Otter, truth or dare?"
+
+menu: 
+    "Truth":
+        jump truth
+
+    "Dare":
+        jump dare
+
+label truth:
+
+    o "Truth, I guess."
+
+    c "What do you actually think of us?"
+
+    "The question catches you off guard. You know what they're asking, but when you try to put it into words, your mind comes up strangely blank."
+    "For some reason, that's a weirdly difficult question."
+
+    ch "That pause is brutal, dude!"
+
+    d "Yeah, man. You hate us that much?"
+
+    o "Uhh..."
+    o "You're cool."
+
+    c "Haha, reassuring..."
+
+    jump present_intro
+
+label dare:
+
+    o "Dare, I guess."
+
+    c "I dare you to tell us something you've never told anyone else."
+
+    ch "Uhh... that's a truth, silly Cat. Not a dare."
+
+    ch "I dare you to let me cut your hair!"
+
+    o "Don't even think about it."
+
+    ch "Just a little snip?"
+
+    o "No."
+
+    ch "A teeny tiny one? An inch?"
+
+    o "It's not happening."
+
+    d "A shame. I think you're long overdue."
+
+    c "Yeah, how long has it been, years?"
+
+    c "Probably for the best though, I don't think Charlie would do you much justice."
+
+    ch "Hey!!!"
+
+    jump present_intro
+
+
 label present_intro:
 
     ch "Okay, enough messing around. It's present time!"
@@ -673,7 +757,21 @@ label act_two:
     
     ch "Which is first, Otter?"
 
+    jump present_menu
+
+label present_menu_intro:
+
+    if presents_opened == 3:
+        jump post_presents
+
+    ch "Ahem...  anyway. Who's is next?"
+
+label present_menu:
+
 menu:
+
+    set char_menu
+
     "Charlie's present":
         jump charlie_present
 
@@ -684,22 +782,1415 @@ menu:
         jump danny_present
 
 
+label charlie_present:
+
+    $ charlie_bond += 2
+    $ presents_opened += 1
+
+    o "I suppose... Let's go with Charlie's."
+
+    if presents_opened == 1:
+        ch "Otter. You flatter me, you really do."
+
+        ch "I totally didn't persuade you to choose mine first or anything... did I?"
+
+        ch "Ah, besides the point. Open it, open it!!!"
+
+    if presents_opened > 1:
+        ch "Open it, open it!!!"
+
+    "You carefully peel away the wrapping paper, revealing a thick photo album."
+
+    "The first few pages are already filled with photographs from previous birthdays, school trips, and memories you'd long since forgotten."
+
+    o "You... kept all these?"
+
+    ch "Somebody had to! Besides, eighteen is a HUGE deal!"
+
+    ch "I figured, after this, you'll need something to really remember us by."
+
+    $ char_menu.add("Charlie's present")
+
+menu:
+    "Remember you by?!":
+        o "Remember you by?!"
+        $ betrayal += 1
+        $ violence += 1
+        jump present_menu_intro
+
+    "How so?":
+        o "How so?"
+        $ betrayal += 1
+        $ acceptance += 1
+        jump present_menu_intro
 
 
+if presents_opened < 3:
+    jump present_menu_intro
+
+label cat_present:
+
+    $ cat_bond += 2
+    $ presents_opened += 1
+
+    o "I suppose... Let's go with Cat's."
+
+    c "Cool, man. I hope you like it."
+
+    "Layers of newspaper slowly give way to a cassette player. A new tape already sits inside."
+
+    c "It's nothing really... just some new music I thought I could put you on while we're apart."
+
+    $ char_menu.add("Cat's present")
+
+menu:
+    "Are you leaving me?":
+        o "Are you leaving me?"
+        $ betrayal += 1
+        $ violence += 1
+        
+        c "Umm... well, yeah."
+        jump present_menu_intro
+
+    "While we're apart?":
+        o "While we're apart?"
+        $ acceptance += 1
+
+        c "Umm... well, yeah."
+        jump present_menu_intro   
+
+label danny_present:
+
+    $ danny_bond += 2
+    $ presents_opened += 1
+
+    o "I suppose... Let's go with Danny's."
+
+    d "Didn't wrap it. Sorry."
+
+    ch "We can see that..."
+
+    "Inside sits a vintage polaroid camera. A 600 series from what looks like the early 1980's. It's in excellent condition."
+
+    o "Where did you even find this?"
+
+    d "Garage sale."
+
+    d "Thought you could keep us updated while we're gone."
+
+    $ char_menu.add("Danny's present")
+
+menu:
+    "Update you on what?!":
+        o "Update you on what?!"
+        $ betrayal += 1
+        $ violence += 1
+
+        jump present_menu_intro
+
+    "Gone?":
+        o "Gone?"
+        $ acceptance += 1
+
+        d "Uhh... well, yeah."
+        jump present_menu_intro       
+
+label post_presents:
+
+    c "Uh... Otter, you're concerning us."
+
+    ch "Yeah... I mean, I know you don't want to think about us leaving but..."
+
+    ch "It's like you've never even heard of these plans before?"
+
+menu:
+    "Plans?":
+        jump post_presents_two
+
+    "Leaving?":
+        jump post_presents_two
+
+label post_presents_two:
+
+    o "Plans? Leaving? What are you talking about?!"
+
+    "The room falls silent. Charlie's voice wavers slightly as he speaks."
+
+    ch "Well... uhh... pretty much..."
+
+    c "We're moving away next week. We all got into Columbia."
+
+    ch "...But! It's nothing against you or anything!"
+    ch "We knew you didn't really care about college and we didn't want to make you feel..."
+
+    d "Like we were abandoning you."
+
+    ch "Stop interrupting me! I can speak for myself!"
+
+    "Charlie opens and closes his mouth like a gaping fish, desperately trying to find the right words to say. His shoulders slump."
+
+    ch "Yeah... We have been over this a few times now, though..."
+
+    "There's no way they've told you this before, you would definitely remember something this important."
+
+    "You look from Charlie to Cat... then Danny... waiting for someone to laugh, to say its a joke, that they'd all decided to mess with you on your birthday."
+
+    "No one laughs."
+    "The day that was supposed to be special suddenly just feels suffocating."
+
+    c "Otter?"
+
+    "The words seem to stretch out, becoming distant and muffled as the room begins to lose shape."
+    "Columbia. You hear it again, but no one is speaking."
+    "It's the same word from the dream, buried all the way underneath the screaming. You can see the table again. The cake. Your friends slumped over in their seats."
+    "You're staring at the people you love, watching them disappear one by one, and somewhere in the back of your mind you can hear yourself saying the same thing over and over..."
+    "...It wasn't my fault."
+
+    "The room snaps back into focus and you realise you still haven't spoken."
+
+    o "I... I don't know what to say."
+
+    o "You're all leaving."
+
+menu:
+
+    "{color=#956dc9}I'm happy for you{/color}" (disabled=violence >= 4) if violence >= 4:
+        jump happy_for_you
+
+    "{color=#956dc9}Why didn't you tell me?!{/color}" (disabled=violence >= 4) if violence >= 4:
+        jump why_didnt_you_tell_me
+
+    "Fuck all of you" (disabled=violence < 4) if violence >= 4:
+        jump fuck_all_of_you   
+
+    "I'm happy for you" (disabled=violence >= 4) if violence < 4:
+        jump happy_for_you
+
+    "Why didn't you tell me?!" (disabled=violence >= 4) if violence < 4:
+        jump why_didnt_you_tell_me
+
+    "{color=#956dc9}Fuck all of you{/color}" (disabled=violence < 4) if violence < 4:
+        jump fuck_all_of_you   
+        
+
+label happy_for_you:
+
+    $ acceptance += 2
+
+    "You force a smile."
+
+    o "I'm happy for you. You'll have a great time at Columbia."
+
+    "The others seem surprised, like they didn't expect that outcome."
+
+    jump post_presents_outro
+
+label why_didnt_you_tell_me:
+
+    $ betrayal += 2
+
+    o "So... You're all leaving me."
+    o "Why didn't you say anything? Why didn't you tell me?!"
+
+    d "Hey, man. It's not like that. We did-"
+
+    o "Cut with the shit! You've never told me anything!"
+
+    jump post_presents_outro
+
+label fuck_all_of_you:
+
+    $ betrayal += 2
+    $ violence += 1
+
+    o "You're just gonna drop this on me now and expect me to be okay with it?! Fuck you guys."
+
+    d "Hey, man. It's not like that. We did-"
+
+    o "Cut with the shit! You've never told me anything!"
+
+    c "Charlie said he thought..."
+
+    c "Something like this might happen..."
+
+menu:  
+    "What's that supposed to mean?":
+        jump fuck_all_of_you_two
+
+    "What the fuck?":
+        jump fuck_all_of_you_two
+
+    "{color=#956dc9}Like what?{/color}" (disabled=True):
+        pass
+
+label fuck_all_of_you_two:
+
+    $ violence += 1
+
+    o "What the fuck is that supposed to mean?"
+
+    ch "Cat, why did you say that?!"
+    ch "Hey, it's just... You kinda do have a tendency to..."
+    ch "Ah... never mind."
+
+    jump post_presents_outro_two
+
+label post_presents_outro:
+
+    ch "Hey, we'll still keep in touch! See each other on breaks and such?"
+
+    o "Yeah... I guess."
+
+    jump post_presents_outro_two
+
+label post_presents_outro_two:
+
+    "The conversation never recovers."
+
+    "Charlie quietly excuses himself, muttering something about needing some air before disappearing through the sliding door into the backyard."
+
+    "Danny pats his pockets and leaves through the front door, clearly hinting at having a smoke."
+
+    "Cat lingers for a moment before slipping down the hallway out of sight."
+
+    "You remain alone in the living room, surrounded by birthday decorations."
+
+menu:
+
+    "Follow Charlie":
+        jump follow_charlie
+
+    "Follow Cat":
+        jump follow_cat
+
+    "Follow Danny":
+        jump follow_danny
+
+    "Stay where you are":
+        jump stay_where_you_are
+
+label follow_charlie:
+
+    $ charlie_bond += 1
+
+    "You slide the back door open and the warm summer air immediately wraps around you. Charlie sits on the porch, looking at a picture in his wallet. He notices you almost immediately."
+
+    ch "Oh... hey!"
+
+    ch "Sorry about earlier, when we told you bef-"
+    ch "I mean, I really should've said something sooner. Sorry."
+
+menu:
+
+    "It's alright":
+        o "It's alright, Charlie."
+        $ acceptance += 1
+        jump charlie_path_two
+
+    "You really should have":
+        o "Yep. You really should have."
+        $ betrayal += 1
+        $ violence += 1
+        jump charlie_path_two
+
+label charlie_path_two:
+
+    "Charlie looks down, distractedly admiring the photograph of you two and the goldfish you were so attached to. You couldn't have been older than twelve."
+
+    ch "Hey, remember this little guy? Bubbles... or... was it Goldie?"
+
+    o "..."
+
+    ch "You just scooped him out of the bag and ate him whole. It was crazy!"
+
+    o "He was already dead..."
+
+    ch "Ahh... I don't think he was."
+
+    ch "...But I guess kids do weird stuff, right?"
+
+    o "..."
+
+    ch "You know, I always thought we'd end up like this."
+
+menu: 
+
+    "Like what?":
+        jump charlie_path_three
+
+    "{color=#956dc9}Together?{/color}" (disabled=True) if charlie_bond < 4:
+        pass
+
+    "Together?" if charlie_bond >= 4:
+        jump charlie_love
+
+label charlie_love:
+
+    $ charlie_love +=1
+
+    o "...Together?"
+
+    ch "Ahh.. well, still together after graduation, looking back. It felt like it came way too soon..."
+
+    jump charlie_menu
+
+label charlie_path_three:
+
+    ch "Still together after graduation, looking back. It felt like it came way too soon..."
+
+    $ charlie_not_love
+
+    jump charlie_menu
+
+label charlie_menu:
+
+menu:
+
+    "Now you're leaving me" if charlie_love < 1:
+        o "...Now you're leaving me."
+        $ betrayal += 1
+        jump charlie_path_five
+
+    "Promise we'll stay friends?":
+        o "Promise me we'll stay friends?"
+        $ acceptance += 2
+        jump charlie_path_four
+
+    "{color=#956dc9}Could it be anything more?{/color}" (disabled=True) if charlie_love < 1:
+        o "Could it be anything more?"
+        pass
+
+    "Could it be anything more?" if charlie_love > 0:
+        $ charlie_love +=1
+        o "Could it be anything more?"
+        jump charlie_path_five
 
 
+label charlie_path_four:
+
+    "His smile seems to fade as soon as it came. He lets out a quiet breath through his nose and closes his wallet with a soft thud."
+    "His eyes stay fixed on the garden."
+
+    ch "I promise."
 
 
+label charlie_path_five:
 
+    "His smile seems to fade as soon as it came, and he lets out a quiet breath through his nose and closes his wallet with a soft thud."
+    "His eyes stay fixed on the garden."
 
+    ch "Actually, there's something I wanted to tell you."
 
+    ch "..."
 
+    ch "It's stupid, but... well..."
 
+    ch "...I think I like Cat?"
 
+    "For just a second, everything else fades into the background. Even Charlie, who's suddenly far more interested in his own shoes than your reaction."
 
+    if charlie_love > 1:
+        $ betrayal += 1
+        "After what you'd just confessed, you feel a little humiliated."
 
+    ch "Trust me, I know how ridiculous that sounds."
 
+    ch "We've been friends forever, and I still can't tell whether she actually likes me or if she's just... Cat?"
+
+    ch "Half the time I can't even tell what she's thinking."
+
+menu:
+    "Thanks for telling me" if charlie_love < 2:
+        o "Wow... Thanks for confiding in me. I won't tell anyone."
+        jump thanks_otter
+
+    "That's not a good idea":
+        $ betrayal += 1
+        $ violence += 1
+        o "That's not a good idea. I know she doesn't like you."
+        jump charlie_heartbreak
+
+    "Good for you..." if charlie_love == 2:
+        o "Oh... er... good for you, man."
+        $ betrayal += 1
+        jump thanks_otter
+
+label thanks_otter:
+
+    ch "Thanks Otter. I knew I could count on you."
     
+    jump charlie_path_outro
+
+label charlie_heartbreak:
+
+    $ charlie_bond -= 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+
+    ch "Oh... uh... okay." 
+
+    ch " I see..."
+
+    jump charlie_path_outro
+
+label charlie_path_outro:
+
+    ch "Anyway, let's go back inside huh? I heard there's some cake just begging to be eaten!"
+
+    jump act_three
+
+label follow_cat:
+
+    $ cat_bond +=1
+
+    "You make your way down the hallway, noting that the door to your bedroom is already half open. Cat stands by the window, her back to you."
+    "She notices your reflection in the glass before she hears your footsteps."
+
+    c "Look, Otto... I'm really sorry we're leaving."
+
+menu:
+
+    "It's alright":
+        jump its_alright
+
+    "You can't leave":
+        jump you_cant_leave
+
+    "Some notice would've been nice":
+        jump some_notice
+
+label its_alright:
+
+    $ acceptance += 1
+
+    o "Ah... it's alright."
+
+    jump cat_route_two
+
+label you_cant_leave:
+
+    $ betrayal += 1
+    $ violence += 1
+
+    o "You can't leave. You can't..."
+
+    c "Otter, we really have to go."
+
+    jump cat_route_two
+
+
+label some_notice:
+
+    $ betrayal += 1
+    $ violence += 1
+
+    o "Yeah, some notice would've been nice."
+
+    c "Ah... yeah. Right."
+    
+    jump cat_route_two
+
+label cat_route_two:
+
+    c "I'm really gonna miss you. You're one of the most interesting people I know."
+
+    o "That's not true. You don't even know me."
+
+    c "Maybe I do, at least more than you think."
+
+    c "I remember when we first met. You were always doing something weird. You'd say something completely insane and then just stare at everyone like you couldn't understand why they were laughing."
+
+    c "I used to think that was just your humour... that was, until your dog died."
+
+    c "You invited us over for some kind of impromptu gaming session and told us that your crying family was just 'being dramatic'"
+
+    c "Did you even cry? Did you even care?"
+
+menu:
+
+    "Crying wouldn't change anything.":
+        o "It's not like crying would've changed anything."
+        jump cat_route_three
+
+    "That dog was annoying.":
+        o "So what? He was annoying."
+        jump cat_route_three
+
+label cat_route_three:
+
+    c "Uh..."
+
+    c "I just mean... most people are sad when they lose something they love."
+
+    o "I was sad."
+
+    c "Were you? You didn't act like it."
+
+    o "What was I supposed to do?"
+
+    c "I don't know... mourn him? Talk about it?"
+
+menu:
+
+    "I didn't know how":
+        jump didnt_know_how
+
+    "I don't feel things like you.":
+        jump dont_feel_things
+
+label didnt_know_how:
+
+    "The words feel heavy on your tongue and, for a moment, Cat doesn't say anything at all. The usual teasing expression on her face disappears, replaced by something closer to understanding. You hate looking weak."
+
+    c "What do you mean?"
+
+    o "Something has always been wrong with me."
+
+    c "Otter..."
+
+    c "You should've told someone sooner."
+
+    o "Who? Everyone calls me creepy. Even you."
+
+    c "Yeah well... You are a little creepy."
+
+    c "But you're my creepy friend."
+
+menu:
+
+    "Thanks, I guess":
+        o "Thanks, I guess."
+        jump cat_route_four
+
+    "{color=#956dc9}Just friends?{/color}" (disabled=True) if cat_bond < 4:
+        pass
+
+    "Just friends?" if cat_bond >= 4:
+        jump just_friends
+
+label just_friends:
+    $ cat_love += 1
+
+    o "Are we just friends?"
+
+    "The question comes out quieter than you intended. For once, Cat doesn't immediately make a joke."
+
+    c "Do you want us to be?"
+
+    o "I don't know."
+
+    c "That sounds a lot like you."
+
+    c "Maybe let's figure it out together."
+
+    jump cat_route_four
+
+label cat_route_four:
+
+    c "Hmm... I'm gonna miss you, Otter."
+
+    c "I just wish we had more time."
+
+menu:
+
+    "Then why are you leaving me?":
+        jump leaving_me
+
+    "Me too.":
+        jump me_too
+
+label leaving_me:
+
+    $ betrayal += 1
+
+    o "Then why are you leaving me?"
+
+    c "I couldn't pass up an opportunity like Columbia, you know that."
+
+    c "I'm just sorry we told you so late."
+
+    jump cat_path_outro
+
+label me_too:
+
+    $ acceptance += 1
+
+    o "Me too."
+
+    "Cat smiles warmly."
+
+    jump cat_path_outro
+
+label dont_feel_things:
+
+    o "Well, maybe I just don't feel things the way you do."
+
+    "Cat's smile fades. She's trying to figure out if you're joking, but your face says otherwise."
+
+    c "Do you mean you know what you’re supposed to feel, but you don’t actually feel it?"
+
+    c "Does that bother you?"
+
+    o "Should it?"
+
+    c "Sometimes I forget you're joking."
+
+    o "I'm not."
+
+    c "I see."
+
+    $ violence += 1
+    $ cat_bond -= 9999
+
+label cat_path_outro:
+
+    c "Anyway, we should probably head back before everyone starts wondering where we are."
+
+    jump act_three
+
+label follow_danny:
+
+    $ danny_bond += 2
+
+    "Danny leans against the front of the house, admiring the neighbourhood."
+    "You close the front door and turns to look at you."
+
+    d "You know, every time I turn around you're just there. Staring."
+
+    d "If I didn't know you I'd probably think you were a serial killer."
+
+    o "And because you know me?"
+
+    d "I'm only like fifty percent sure."
+
+    "He laughs, nudging your shoulder, but shortly notices that you aren't laughing at all. His smile fades too."
+
+    d "Want a smoke?"
+
+menu:
+
+    "Sure.":
+        jump have_smoke
+
+    "I'm okay":
+        jump dont_smoke
+
+label have_smoke:
+
+    o "Yeah, okay. Sure."
+
+    "You inhale, coughing almost the second it hits the back of your throat."
+
+    d "Hah. I'll have that back then."
+
+    jump danny_route_two
+
+label dont_smoke:
+
+    o "No. I'm okay."
+
+    d "Suit yourself."
+
+label danny_route_two:
+
+    d "..."
+    
+    d "Sorry. You know I don't actually think that. The serial killer thing."
+
+    d "I mean, I kinda did when we were kids."
+
+    d "I was a dick."
+
+    d "I still think about the day we left you  during hide-and-seek. We were just fucking around, but we took it way too far."
+
+    d "And now, I guess I'm still leaving you behind."
+
+menu:
+
+    "I don't want you to go":
+        jump dont_want_you_to_go
+
+    "Thanks for that":
+        jump danny_says_sorry
+
+label dont_want_you_to_go:
+
+    $ betrayal +=1
+
+    o "I don't want you to go."
+
+    d "Yeah. I know."
+
+    d "I actually thought you'd be the first one to leave us."
+
+    o "Why?"
+
+    d "I dunno. You just always seemed like you were somewhere else."
+
+    d "Like you didn't really need anyone."
+
+menu:
+
+    "I didn't know how to show I cared":
+        jump show_i_cared
+
+    "It's your fault":
+        jump your_fault
+
+    "You were the only one I cared about" if danny_bond >= 5:
+        jump danny_love
+
+    "{color=#956dc9}You were the only one I cared about{/color}" (disabled=True) if danny_bond < 5:
+        pass
+
+label show_i_cared:
+
+    o "I just didn't know how to show it. I thought it was obvious."
+
+    d "Otter. You literally never say anything."
+
+    o "I know."
+
+    d "Yeah. I suppose that is your whole thing."
+
+    d "But I know now. Thanks for telling me."
+
+    jump danny_path_outro
+
+label danny_love:
+
+    $ danny_love += 1
+
+    o "You were the only one I ever truly cared about."
+
+    "Your voice cracks. You've never been so raw and vulnerable before. For once, it seems like Danny has truly been caught off guard."
+
+    d "..."
+
+    d "...Seriously?"
+
+    d "Even after I was a jerk to you?"
+
+    o "Yeah."
+
+    d "Man... you really are weird."
+
+    jump danny_path_outro
+
+label danny_says_sorry:
+
+    $ betrayal += 1
+    $ violence += 1
+
+    o "Yep. Thanks for that one."
+
+    jump danny_says_sorry_two
+
+label your_fault:
+
+    $ betrayal += 1
+    $ violence += 1
+    $ danny_bond -= 999
+
+    o "You treated me like shit."
+
+    o "You made everyone look at me like some kind of freak."
+
+    jump danny_says_sorry_two
+
+label danny_says_sorry_two:
+
+    d "I know. I'm sorry."
+
+    d "..."
+
+    jump danny_path_outro
+
+label danny_path_outro:
+
+    "Danny stubs his cigarette out with his shoe."
+
+    d "We should probably head back before everyone starts wondering if you finally killed me."
+
+
+label stay_where_you_are:
+
+    "You're better off without them. You must be. How could they ruin your special day? How could they make it all about themselves?"
+
+    "Forget it. You just need your medication. Take it, calm down, and stop spiralling. The pills should be in the bathroom."
+
+    o "..."
+
+    "Huh. The bottle isn't in its usual spot. You glance toward the bin beside the sink and spot the empty capsule inside. Didn't you just get a new refill?"
+    
+menu:
+
+    "Look in the mirror":
+        jump look_in_mirror
+
+    "Leave the bathroom":
+        jump leave_bathroom
+
+label look_in_mirror:
+
+    "You lean closer to the mirror. The dark circles under your eyes look worse than usual. That's odd. You could've sworn you got a good night's sleep."
+
+    o "Pull yourself together. Freak."
+
+    o "There's nothing wrong with you."
+
+    jump leave_bathroom
+
+label leave_bathroom:
+
+    "You can still hear the others talking somewhere in the distance, their voices muffled by the walls. You could follow them, or you could find your pills. There might be more in the kitchen."
+
+menu:
+
+    "Go to the kitchen":
+        jump go_to_kitchen
+
+    "Find somebody else":
+        jump find_somebody_else
+
+label go_to_kitchen:
+
+    "Something pulls you toward the kitchen."
+
+    "Arriving, you notice the cake. You can't shake the feeling that you've seen it somewhere before."
+
+    "You step closer when suddenly- the kitchen is gone."
+
+    "They sit around the table, motionless, with the cake sitting in the center. You can hear your own breath, loud and frantic in your ears."
+
+    o "..."
+
+    o "IT WASN'T MY FAULT!"
+
+    "You come back to yourself, gripping the counter. Your heart is pounding, and your eyes are blown wide."
+
+    o "What the fuck was that?"
+
+    "Your eyes dart around the room frantically, searching for the pills you came for."
+
+    "Your pills. The cake. You reel forward, clutching your head as a sudden, throbbing pain surges behind your eyes."
+
+    "You remember noticing them pulling away. You remember how often they'd started talking about the future, about college, hushed and out of sight."
+    "You remember the sinking feeling that something was being kept from you, and the anger that came with it. You remember being afraid that they were going to leave."
+
+    "Columbia. They had mentioned it before. You can't believe you'd forgot."
+
+    $ truth += 1
+
+    "A loud voice echoes throughout the house, seperating you from your thoughts."
+
+    ch "Otter! Let's finally get into that cake, huh?"
+
+    jump act_three
+
+label act_three:
+
+    "..."
+
+    "The four of you sit around the dining table. You don't really remember getting here, it happened all so fast."
+
+    "The room is dimmer than it was earlier, with birthday decorations still hanging from the walls, and everyone now sporting these colourful, pointy, party hats. The cake sits in the center."
+
+    "All three of them are sitting together in front of you, and its clear that nobody wants to be the first one to talk."
+
+    "They look nervous."
+
+    "You can't help but think that this is exactly where they belong."
+
+    "Finally, Charlie clears his throat."
+
+    ch "Well... happy birthday, Otter"
+
+    d "That's it?"
+
+    ch "What do you want me to say? No one else was saying anything!"
+
+    c "Please don't make a him do a speech."
+
+    "The room falls silent again."
+
+    d "I guess you should make a wish then, Otter."
+
+    "Eighteen tiny flames flicker before you. Most eighteen-year-olds would probably wish for something grand or material—a nice car, endless wealth, that sort of thing. But all you really want is..."
+
+menu:
+
+    "For them to stay here forever" if acceptance <= 4 and violence <= 4:
+        o "{i}I wish they would stop talking about leaving. I wish nobody would go anywhere and everything could just stay like this. I don't want to lose anyone.{i}"
+
+        jump act_three_part_two
+
+    "{color=#956dc9}For them to stay here forever{/color}" (disabled=True) if acceptance > 4 or violence > 4:
+        pass
+
+    "For them to be happy" if acceptance > 4:
+        o "{i}Weirdly enough, I think I just wish... that they were happy.{i}"
+
+    "{color=#956dc9}For them to be happy{/color}" (disabled=True) if acceptance <= 4:
+        pass
+
+        jump act_three_part_two
+
+    "For them to die" if violence > 4:
+        o "{i} I wish that they would just die. {i}"
+        "The thought arrives so suddenly that it catches you off guard. You don't mean it, do you?"
+        "At least, you don't think you do."
+
+    "{color=#956dc9}For them to die{/color}" (disabled=True) if violence <= 4:
+        pass
+
+        jump act_three_part_two
+
+label act_three_part_two:
+
+    "Suddenly, the voices of your friends become distant and muffled as though somewhere far away. The table. Your friends, slumped over it. It's all you can see. The dream feels more real now than ever."
+    
+    "You can't take it anymore."
+
+    o "IT WASN'T MY FAULT!!!"
+    
+    "The others recoil, visibly startled."
+
+    if danny_bond > 4:
+        jump danny_ending
+
+    elif cat_bond > 4:
+        jump cat_ending
+
+    elif charlie_bond > 4:
+        jump charlie_ending
+
+    elif violence > 4:
+        jump violent_ending
+
+    else:
+        jump betrayal_and_acceptance_endings
+
+
+label danny_ending:
+
+    d "Hey man... you good?"
+
+    d "We could go on a drive if you want?"
+
+    d "Might help to ease uh... whatever the fuck is going on here."
+
+menu:
+
+    "Okay":
+        jump danny_real_ending
+
+    "I want to stay":
+        jump danny_fakeout_ending
+
+label danny_fakeout_ending:
+
+    o "No, no. I want to stay."
+
+    d "You're sure?"
+
+    "You nod."
+
+    d "Cool, suit yourself."
+
+    jump betrayal_and_acceptance_endings
+
+label danny_real_ending:
+
+o "Okay, let's go."
+
+d "Sweet. Let's bounce."
+
+"Danny turns the radio up as you drive, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
+
+"The smell should bother you more than it does, but all you can think is that it smells like Danny."
+
+d "Hey."
+
+d "We're gonna be alright, you know. Me and you."
+
+"He smiles to himself, keeping his eyes on the road."
+
+d "I can't wait to see everyone at Columbia."
+
+d "Try not to miss me too much, serial killer."
+
+return
+
+label cat_ending:
+
+    "Cat focuses in on you."
+
+    c "Hey... you okay?"
+
+    c "We could go on a little walk if you'd like?"
+
+    c "Get some fresh air?"
+
+menu:
+
+    "Okay":
+        jump cat_real_ending
+
+    "I want to stay":
+        jump cat_fakeout_ending
+
+
+label cat_fakeout_ending:
+
+    o "No, no. I want to stay."
+
+    c "You're sure?"
+
+    "You nod."
+
+    c "As you wish."
+
+label cat_real_ending:
+
+    o "Okay, let's go."
+
+    c "Cool, let's head out."
+
+    "The two of you walk for a while, neither of you really knowing where you're going. Eventually, Cat slows down, looking back toward the house in the distance."
+
+    c "You know what?"
+
+    c "Still creepy."
+
+    o "Thanks."
+
+    c "Anytime."
+
+    "She laughs, nudging your shoulder with hers. For a second, it almost seems as if she's blushing. If you blinked you'd have missed it."
+
+    c "You know, I'm actually excited."
+
+    c "For Columbia, that is."
+
+    "She looks ahead smiling to herself."
+
+    c "It's gonna be weird not having you around, but..."
+
+    c "I can't wait to be with those guys over there."
+
+    return
+
+label charlie_ending:
+
+    "Charlie focuses in on you."
+
+    ch "Hey Otter... you doing alright?"
+
+    ch "Wanna get out of here for a bit?"
+
+    ch "Might be good to de-stress a little?"
+
+menu:
+
+    "Okay":
+        jump charlie_real_ending
+
+    "I want to stay":
+        jump charlie_fakeout_ending
+
+label charlie_fakeout_ending:
+
+    o "No, no. I want to stay."
+
+    ch "You're sure?"
+
+    "You nod."
+
+    ch "Uh... alright! As you wish"
+
+    jump betrayal_and_acceptance_endings
+
+label charlie_real_ending:
+
+    o "Okay, let's go."
+
+    ch "Cool! Let's get outta here."
+
+    "You and Charlie slip out of the house and make your way toward the football field, climbing up into the empty bleachers. The town is quiet from up here, and the party feels impossibly far away, like it happened hours ago."
+
+    ch "I think that fish was called Goldie. I'm actually sure of it."
+
+    o "It was Bubbles."
+
+    ch "Yeah whatever you say, fish murderer."
+
+    "He looks out over the field, the empty rows of seats stretching out beneath you."
+
+    ch "You know, I'm gonna miss you little man, you're always gonna be my best pal."
+
+    ch "But, I'm looking forward to see what's next."
+
+    ch "I really can't wait for college with those guys..."
+
+    return
+
+label violent_ending:
+
+    c "Otter-"
+
+    o "SHUT THE FUCK UP!"
+
+    "For a moment, nobody says anything. Your head is pounding so hard that you can barely hear anything else."
+
+    o "You think I don't fucking know?"
+
+    ch "Hey-"
+
+    o "Don't. Just don't."
+
+    "Looking around, the anger suddenly drains out of you. You look at their faces and realise how scared they are."
+
+    menu:
+
+        "Inspect photo in pocket" if polaroid == 1:
+            "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+            jump violent_ending_closure
+
+label violent_ending_closure:
+
+    o "...I'm sorry"
+
+    o "I just dont want you to go..."
+
+    c "Otter, we're not leaving you!"
+
+    o "Then don't go..."
+
+    ch "We uh... we really do have to, though..."
+
+    "For a moment, you almost accept it. Then Charlie speaks up again."
+
+    ch "But we'll visit like all the time! You can visit us too!"
+
+    o "..."
+
+    o "It's not the same..."
+
+    o "IT'S NOT THE SAME!"
+
+    "The anger comes back all at once. You grab the knife beside the cake."
+
+    d "Put it down."
+
+    o "You said you weren't leaving me."
+
+    d "Put it down! Please! We can talk!"
+
+    return
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return
+
+label betrayal_and_acceptance_endings:
+
+    "For a moment, nobody says anything. Your heart is pounding so hard that you can barely hear anything else."
+
+    ch "Uhhh... Okay..."
+
+    d "That was fucking weird."
+
+    c "Yeah."
+
+    "You look down at your hands, trying to slow your breathing. The feeling is already beginning to fade, leaving behind nothing but the uncomfortable certainty that you've done something wrong, even if you can't remember what."
+    "Charlie clears his throat."
+
+    ch "Can we just... have the cake?"
+
+    d "Please. I'm starving."
+
+    "Charlie shakes his head and starts cutting the cake, passing each slice around the table until everyone has a plate."
+    "You stare down at the piece that's been placed in front of you. You feel resistance in reaching over to eat any, almost as if your body physically won't let you."
+
+    d "Okay, this is good, and I'm always right."
+
+    ch "It is but... you're not though."
+
+    c "You're really not."
+
+    "You watch them bicker and eat, and for a brief moment, the strange feeling in your chest disappears. Then Charlie stops. He puts his fork down."
+
+    ch "...Does anyone else feel weird?"
+
+    d "What do you mean?"
+
+    ch "I don't know. Just... weird."
+
+    "Cat's smile fades."
+
+    c "Actually... Yeah."
+
+    d "Probably just the cake. Wouldn't be the first time we ate something questionable."
+
+    "He tries for a joke but nobody laughs, not even himself. Charlie grips the edge of the table."
+
+    ch "Wait. Something's really wrong."
+
+    "Your stomach drops. Charlie's face has gone pale and Cat's not starting to look well either."
+
+    c "I don't feel so good.."
+
+    d "What the fuck?"
+
+    "Your friends try to stand, try to steady themselves, but it all happens so fast. Groaning turns to mumbling, and mumbling finally, turns into a painful, eerie silence."
+
+    o "Guys...?"
+
+    "Charlie pushes himself up one final time."
+
+    ch "...O-tter...?"
+
+    "You don't move. Horrifyingly, the room looks exactly the way it did in your dream."
+    "You realise it was never a dream. It was never an irrational fear. Was it fate? Was it karma? Your brain feels like it could explode from the pressure."
+    "You reel forward, clutching yourself, as you begin to scream."
+
+    o "..." 
+    
+    o "AHHHHHHH!"
+
+    o "Are they...?"
+
+    o "Did I..."
+
+    o "..."
+
+    o "Guys?!"
+
+    o "Oh god, what have I done?!"
+
+    o "Guys! Please stop fucking playing around!"
+
+    o "..."
+
+    o "PLEEEEEEASEEE!!!!!!!!!"
+
+    if truth == 1:
+
+        "That's when it hits you."
+        "That's when it REALLY hits you."
+        "It comes to you so suddenly that you're forced to clutch your head as a sharp pain surges behind your eyes."
+        "The day before the party. You remember standing over the cake mix. You remember opening the bottle and feeling the tablets in your hand. You remember the anger you'd felt when they told you they were leaving." 
+        "They were going to leave you behind. You couldn't let them leave."
+           
+        o "Oh my god..."
+
+        "You did this. Now they're dying in front of you."
+
+        jump pre_ending
+
+    "You know exactly what's happening. They're dying. Slowly and painfully."
+    "Cat lifts her head up weakly."
+
+label pre_ending:
+
+    c "Please..."
+
+    c "Do something..."
+
+    "Your hands are shaking."
+    "You could call someone. You could run for the phone. You could get them to a hospital."
+    "Or... you could stay exactly where you are."
+    "What will you do?"
+
+menu:
+
+    "Save them" if acceptance > 4:
+        jump acceptance_ending
+
+    "{color=#956dc9}Save them{/color}" (disabled=True) if acceptance < 4:
+        pass
+
+    "Let them die" if betrayal >= 4:
+        jump betrayal_ending
+
+    "{color=#956dc9}Let them die{/color}" (disabled=True) if betrayal < 4:
+        pass
+
+label acceptance_ending:
+
+    "There isn't time to think; you have to get help. You grab the home phone from the dock with shaking hands and nearly drop it before finally dialling 9-1-1."
+
+    o "...Hello?!"
+
+    o "Hello??!!"
+
+    "You stumble through your address, barely able to get the words out. Your eyes keep moving back toward the table, terrified that one of them will stop breathing before anyone arrives."
+
+    o "Please... stay with me..."
+
+    o "I'm so sorry..."
+
+    menu:
+
+        "Inspect photo in pocket" if polaroid == 1:
+            "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+            jump acceptance_ending_closure
+
+
+label acceptance_ending_closure:
+
+    "Somewhere outside, you hear a siren. You close your eyes."
+    "For the first time tonight, you don't care about Columbia. You don't care about what happens tomorrow. You just want them to live."
+    "This is what's right, isn't it?"
+
+    return
+
+
+label betrayal_ending:
+
+    "You grab the home phone from the dock with shaking hands and... you freeze."
+    "Cat stays looking toward you, fear and uncertainty written all over her face. You stare at her."
+    "She looks confused now. Almost... betrayed."
+    "Your eyes drift toward the others, motionless, slumped over the table."
+    
+menu:
+
+    "Inspect photo in pocket" if polaroid == 1:
+        "Who would've thought that the day would end like this? You all looked so happy just hours earlier. What a shame."
+        jump betrayal_ending_closure
+
+label betrayal_ending_closure:
+
+    "You know you should help them. You know there is still time. But for once... They're all exactly where you want them to be. Still here, right in front of you. Not going anywhere."
+    "Maybe this is just what they deserve."
+    
+    o "I'm sorry."
+
+    o "You did this to yourselves though, didn't you?"
+
+    return
+
+
+
+# THAT CONCLUDES DEATH OF A PARTY, FOLKS! #
+
+
+
+
+
+
+
+
+
 
 
 
@@ -732,7 +2223,7 @@ label school_intro:
     hide alex2
     show alex3 at right
 
-    a4 "This hallway is the food chain. You’ve got your typical archetypes: the jocks, band kids, goths, scene kids, nerds."
+    a4 "This hallway is the food chain. You've got your typical archetypes: the jocks, band kids, goths, scene kids, nerds."
 
     hide alex3
     show alex at right
@@ -742,17 +2233,17 @@ label school_intro:
     hide alex
     show alex2 at rightish
 
-    a4 "If there’s a more depressing place to spend the supposed ‘best years of my life,' do me a favour and never take me there."
+    a4 "If there's a more depressing place to spend the supposed ‘best years of my life,' do me a favour and never take me there."
 
     hide alex2
     show alex3 at right
 
-    a4 "Anyway, today’s the big finale. Spring Fling. Balloons. Bad punch. Everyone pretending they’re not about to scatter across the country and forget each other’s names."
+    a4 "Anyway, today's the big finale. Spring Fling. Balloons. Bad punch. Everyone pretending they're not about to scatter across the country and forget each other's names."
 
     hide alex3
     show alex at right
 
-    a4 "It’s supposed to be “magical.” You know what’s magical? Surviving four years in a building where someone {i}still{/i} thinks shoving kids into lockers is peak comedy."
+    a4 "It's supposed to be “magical.” You know what's magical? Surviving four years in a building where someone {i}still{/i} thinks shoving kids into lockers is peak comedy."
 
     hide alex
     show alex5 at rightish
@@ -979,7 +2470,7 @@ label ash_convo2:
     hide alex5
     show alex_looking at right
 
-    a "Eh... just figured I’d ruin someone else’s morning for a change. Congrats, you won the lottery."
+    a "Eh... just figured I'd ruin someone else's morning for a change. Congrats, you won the lottery."
 
     hide alex_looking
     show alex_looking2 at right
@@ -1054,7 +2545,7 @@ label homeroom:
     show alex2 at rightish
     with Dissolve(0.5)
 
-    a4 "Right, Ms. Perkins. I’ll cherish the cafeteria mystery meat, the stuck up asshole who always took my money and all of my nonexistent friends. Memories forever."
+    a4 "Right, Ms. Perkins. I'll cherish the cafeteria mystery meat, the stuck up asshole who always took my money and all of my nonexistent friends. Memories forever."
 
     hide alex2
     show alex_looking at right 
@@ -1114,7 +2605,7 @@ label takes_notes:
     hide alex_looking2
     show alex3 at right
 
-    a4 "Mhm, very insightful. Maybe I’ll write 'life is unfair' instead."
+    a4 "Mhm, very insightful. Maybe I'll write 'life is unfair' instead."
 
     $ char_menu.add("Pretend to take notes.")
 
@@ -1220,21 +2711,21 @@ label scene_table:
     show alex7 at right onlayer alexlayer
     with Dissolve(0.5)
 
-    a4 "Hayley shoots me a look that says ‘you’re tolerated... for now.’ Perfect."
+    a4 "Hayley shoots me a look that says ‘you're tolerated... for now.' Perfect."
 
     hide alex7 onlayer alexlayer
     hide ash
     show alex_looking2 at right
     show ash2 at left
 
-    ash "Alex, you know what I've been thinking about? Do you remember that time in Lincoln Park in ’02 with those dry-ice bottle rockets?"
+    ash "Alex, you know what I've been thinking about? Do you remember that time in Lincoln Park in '02 with those dry-ice bottle rockets?"
 
     hide ash2
     hide alex_looking2
     show alex_happy3 at right
     show ash_happy at left
 
-    ash "You said it was 'basically science class,’ then we completely blew out the neighbor’s windows."
+    ash "You said it was 'basically science class,' then we completely blew out the neighbor's windows."
 
     hide alex_happy3
     show alex_happy at right
@@ -1262,7 +2753,7 @@ label scene_table:
     hide ash_happy2
     show ash_happy at left
 
-    ash "Dude, you were the one who stole the lighter from your mom’s boyfriend! Pretty sure we were two seconds away from becoming a ‘local news cautionary tale.’"
+    ash "Dude, you were the one who stole the lighter from your mom's boyfriend! Pretty sure we were two seconds away from becoming a ‘local news cautionary tale.'"
 
     hide ash_happy
     show ash_happy2 at left
@@ -1306,14 +2797,14 @@ label jocks_table:
     show tyler_angry4 at left
     show alex6 at rightish
 
-    a "Yeah, well, the nerd table was full of people with futures. Thought I’d downgrade."
+    a "Yeah, well, the nerd table was full of people with futures. Thought I'd downgrade."
 
     hide tyler_angry4
     show tyler_happy at left
     hide alex6
     show alex4 at right
 
-    t "Brave. What’s the occasion? Trying to get drafted?"
+    t "Brave. What's the occasion? Trying to get drafted?"
 
     hide alex4
     show alex_looking at right
@@ -1376,7 +2867,7 @@ label bathroom:
     hide alex_looking
     show alex5 at rightish
     
-    a4 "Look at this. Every failure, every bad choice, memorialized. It’s like the Louvre of losers. Someday I’ll be a permanent exhibit."
+    a4 "Look at this. Every failure, every bad choice, memorialized. It's like the Louvre of losers. Someday I'll be a permanent exhibit."
 
     hide alex5
     show alex4 at right
@@ -1454,9 +2945,9 @@ label wall_carvings:
 
     $ burning_man += 1
 
-    jump leave_bathroom
+    jump leave_bathroomm
 
-label leave_bathroom:
+label leave_bathroomm:
 
     hide alex7
     hide alex
@@ -1481,7 +2972,7 @@ label sit_alone:
     hide alex_looking2
     show alex6 at rightish
 
-    a4 "Nope. Everyone else is too loud, too stupid, too obsessed with their hair or stats or whatever... I can’t deal with that. I’ll just sit here and enjoy my miserable cafeteria slop in peace."
+    a4 "Nope. Everyone else is too loud, too stupid, too obsessed with their hair or stats or whatever... I can't deal with that. I'll just sit here and enjoy my miserable cafeteria slop in peace."
 
     hide alex6
 
@@ -1673,7 +3164,7 @@ label evening:
     hide alex
     show alex3 at right
 
-    a4 "I’ll save the long dramatic monologues for someone else."
+    a4 "I'll save the long dramatic monologues for someone else."
 
     hide alex3
     show alex_looking at right
@@ -1751,12 +3242,12 @@ label wake_up_two:
     play sound "sfx/shock.mp3"
     show alex_shocked2 at right
 
-    a4 "Huh. Weird. Didn’t I...?"
+    a4 "Huh. Weird. Didn't I...?"
 
     hide alex_shocked2
     show alex_shocked at right
 
-    a4 "No. No, no, no. That’s impossible. I... I {i}definitely{/i} wasn’t supposed to wake up today. Unless heaven has a suspiciously accurate Cedar Hill zip code..."
+    a4 "No. No, no, no. That's impossible. I... I {i}definitely{/i} wasn't supposed to wake up today. Unless heaven has a suspiciously accurate Cedar Hill zip code..."
 
     hide alex_shocked
     show alex5 at rightish
@@ -1903,7 +3394,7 @@ label read_two:
     hide alex_phone
     show alex_phone3 at rightish
 
-    a4 "Leave it. Let him wonder if I’m dead."
+    a4 "Leave it. Let him wonder if I'm dead."
 
     stop music fadeout 3
 
@@ -1929,17 +3420,17 @@ label school_intro_two:
     hide alex5
     show alex_shocked at right
 
-    a4 "Two lockers down, Brent’s retelling his tragic fountain story."
+    a4 "Two lockers down, Brent's retelling his tragic fountain story."
 
     hide alex_shocked
     show alex_shocked4 at right
 
-    a4 "Right on cue. Perfect comedic timing, if I wasn’t already internally screaming."
+    a4 "Right on cue. Perfect comedic timing, if I wasn't already internally screaming."
 
     hide alex_shocked4
     show alex6 at rightish
 
-    a4 "{i}Fun psychological fact{/i}: this is where a person realizes they’re stuck in a time loop. {i}Fun Alex fact{/i}: I’m still pretending it’s a coincidence. Denial is cheaper than therapy."
+    a4 "{i}Fun psychological fact{/i}: this is where a person realizes they're stuck in a time loop. {i}Fun Alex fact{/i}: I'm still pretending it's a coincidence. Denial is cheaper than therapy."
 
     hide alex6
     show alex3 at right
@@ -1958,7 +3449,7 @@ label school_intro_two:
     hide alex4
     show alex5 at rightish onlayer alexlayer
 
-    a4 "The universe is hitting play on a rerun I didn’t ask for."
+    a4 "The universe is hitting play on a rerun I didn't ask for."
 
     scene hallway_dark2
     show tyler_happy at left
@@ -1968,7 +3459,7 @@ label school_intro_two:
     show alex_looking2 at right
     with Dissolve(0.5)
 
-    t "See that? Around here, you don’t react. Reacting means you care, and caring is blood in the water. These halls run on humiliation. Lunch money? Gone. Dignity? Don’t even bother bringing it."
+    t "See that? Around here, you don't react. Reacting means you care, and caring is blood in the water. These halls run on humiliation. Lunch money? Gone. Dignity? Don't even bother bringing it."
 
     hide tyler_happy
     show tyler_happy2 at left
@@ -2020,7 +3511,7 @@ label dating:
     hide alex
     show alex_looking at right
 
-    a "Thing is, Kane, if you keep asking for my money every day, we’re basically dating. Should I get you a corsage for Spring Fling?"
+    a "Thing is, Kane, if you keep asking for my money every day, we're basically dating. Should I get you a corsage for Spring Fling?"
 
     jump school_hallway_two
 
@@ -2031,7 +3522,7 @@ label taxes:
     hide alex
     show alex_looking at right
 
-    a "Sure, Tyler, but if I’m funding your lunch every day, I’m claiming you as a dependent on my taxes."
+    a "Sure, Tyler, but if I'm funding your lunch every day, I'm claiming you as a dependent on my taxes."
 
     jump school_hallway_two
 
@@ -2042,7 +3533,7 @@ label school_hallway_two:
     hide tyler_happy2
     show tyler_angry5 at left
 
-    t "You’re lucky I’m in a good mood, nerd. Don't let this get to your little head."
+    t "You're lucky I'm in a good mood, nerd. Don't let this get to your little head."
 
     scene hallway_dark
     with Dissolve(0.5)
@@ -2070,7 +3561,7 @@ label school_hallway_two:
         hide alex6
         show alex2 at rightish
 
-        a4 "Tyler said there’d be a Spring Fling ticket wedged above the lockers, right? Sure. And maybe Bigfoot’s up there handing out prom dates too."
+        a4 "Tyler said there'd be a Spring Fling ticket wedged above the lockers, right? Sure. And maybe Bigfoot's up there handing out prom dates too."
 
         hide alex2
         show alex_shocked2 at right
@@ -2108,14 +3599,14 @@ label hallway_day_two:
     hide alex_looking3
     show alex at right
 
-    a4 "He’s even got the same crooked grin, like he knows something I don’t."
+    a4 "He's even got the same crooked grin, like he knows something I don't."
 
     if talked_to_ash == 0:
 
         hide alex
         show alex_looking at right
 
-        a4 "Yesterday... my dream, hallucination, whatever, you walked right past me. I didn’t say a word."
+        a4 "Yesterday... my dream, hallucination, whatever, you walked right past me. I didn't say a word."
 
         hide alex_looking 
         show alex3 at right
@@ -2160,7 +3651,7 @@ menu:
         hide alex
         show alex_looking at right
 
-        a "Thought you’d escaped this prison already."
+        a "Thought you'd escaped this prison already."
 
         jump ash_encounter2
 
@@ -2180,7 +3671,7 @@ label ash_encounter2:
     hide ash_sly3
     show ash_sly at left
 
-    ash "Please. I’m not leaving until I get my diploma {i}and{/i} a tetanus shot."
+    ash "Please. I'm not leaving until I get my diploma {i}and{/i} a tetanus shot."
 
     hide ash_sly
     show ash at left
@@ -2206,7 +3697,7 @@ label ash_encounter2:
     show ash3 at left
     show alex_shocked at right
 
-    a "What can I say? Figured I’d face my fears before graduation, you know. Like 'gym class'."
+    a "What can I say? Figured I'd face my fears before graduation, you know. Like 'gym class'."
 
     hide alex_shocked
     show alex5 at rightish
@@ -2274,12 +3765,12 @@ label ash_no_ticket:
     hide alex onlayer alexlayer
     show alex5 at rightish
 
-    a4 "Oh, thanks for the reminder. I totally forgot that one of the universe’s rules is that prom is gated by a piece of paper."
+    a4 "Oh, thanks for the reminder. I totally forgot that one of the universe's rules is that prom is gated by a piece of paper."
 
     hide alex5
     show alex3 at right
 
-    a4 "Honestly, it’s like the game just handed me a quest marker with a big glowing arrow saying, ‘Hey dummy, get this ticket or nothing happens.’ Thanks. Very subtle."
+    a4 "Honestly, it's like the game just handed me a quest marker with a big glowing arrow saying, ‘Hey dummy, get this ticket or nothing happens.' Thanks. Very subtle."
 
     play sound "sfx/schoolbell.mp3"
     
@@ -2304,17 +3795,17 @@ label ash_ticket:
     hide alex
     show alex3 at right
 
-    a4 "Yesterday I’d have scoffed at that and then gone home to practice my dramatic exit. Dream or loop, this is a new variable."
+    a4 "Yesterday I'd have scoffed at that and then gone home to practice my dramatic exit. Dream or loop, this is a new variable."
 
     hide alex3
     show alex7 at right
     
-    a4 "Yesterday I didn’t even get this far, and today, I can respond. Wow, I feel powerful."
+    a4 "Yesterday I didn't even get this far, and today, I can respond. Wow, I feel powerful."
 
     hide alex7
     show alex_happy7 at right
 
-    a "Hah. Corner’s full. Had to take the scenic route through hell instead. You know... Axe body spray, screaming teenagers."
+    a "Hah. Corner's full. Had to take the scenic route through hell instead. You know... Axe body spray, screaming teenagers."
 
     hide alex_happy7
     show alex_looking at right
@@ -2333,7 +3824,7 @@ label ash_ticket:
     hide alex_looking2
     show alex6 at rightish
 
-    a "Maybe a little of both. I mean, come on. Hayley’s sweet, but even she deserves a chance to panic about her life choices, right?"
+    a "Maybe a little of both. I mean, come on. Hayley's sweet, but even she deserves a chance to panic about her life choices, right?"
 
     hide alex6
     show alex_flustered at right
@@ -2375,7 +3866,7 @@ label ash_encounter_end:
     hide alex6
     show alex7 at right
 
-    a4 "That’s all I need for now. Plant the seed, walk away, let chaos do the rest. One small nudge, a million possible outcomes."
+    a4 "That's all I need for now. Plant the seed, walk away, let chaos do the rest. One small nudge, a million possible outcomes."
 
     hide alex7
     show alex at right
@@ -2472,7 +3963,7 @@ label sarcastic_note_two:
     hide alex4
     show alex_looking at right
     
-    a4 "Hey Ash... uh, hey. I was gonna roast you for ghosting me, but... can’t think of anything clever now. Weird, right? I'm supposed to be smarter than I was yesterday."
+    a4 "Hey Ash... uh, hey. I was gonna roast you for ghosting me, but... can't think of anything clever now. Weird, right? I'm supposed to be smarter than I was yesterday."
 
     stop scribble
 
@@ -2501,7 +3992,7 @@ label take_notes_two:
     hide alex4
     show alex6 at rightish
 
-    a4 "Mhm. Groundbreaking. Maybe I’ll just doodle ‘existence is rigged’..."
+    a4 "Mhm. Groundbreaking. Maybe I'll just doodle ‘existence is rigged'..."
 
     $ char_menu.add("Pretend to write notes.")
 
@@ -2543,7 +4034,7 @@ label no_ticket:
     hide alex
     show alex5 at rightish
 
-    a4 "There’s only one sensible choice. Either endure the jock table, or hide at a corner table and eavesdrop."
+    a4 "There's only one sensible choice. Either endure the jock table, or hide at a corner table and eavesdrop."
 
     hide alex5
     show alex4 at right
@@ -2565,12 +4056,12 @@ label has_ticket:
     hide alex3
     show alex at right
 
-    a4 "Now it’s time for the social nightmare: sitting at the scene table with Ash and Hayley."
+    a4 "Now it's time for the social nightmare: sitting at the scene table with Ash and Hayley."
 
     hide alex
     show alex5 at rightish
 
-    a4 "Yesterday, I would’ve obliterated Ash with sarcasm. Today... I can’t. I can’t think of anything truly mean. And that’s weird. That’s new. That’s... slightly dangerous."
+    a4 "Yesterday, I would've obliterated Ash with sarcasm. Today... I can't. I can't think of anything truly mean. And that's weird. That's new. That's... slightly dangerous."
 
     scene cafeteria_dark2
     with Fade (0.5,0.5,0.5)
@@ -2581,14 +4072,14 @@ label has_ticket:
     show ash_sly2 at left
     with Dissolve(0.5)
 
-    ash "Hey. You made it. And here I thought you’d ghost us again like last year. What’s different today? Did the world finally bribe you to come?"
+    ash "Hey. You made it. And here I thought you'd ghost us again like last year. What's different today? Did the world finally bribe you to come?"
 
     hide ash_sly2
     show ash_sly3 at left
     hide alex4
     show alex_happy7 at right
 
-    a "Oh, Ash... if only you knew I’m not making conscious decisions here. My brain’s just following yesterday’s cheat sheet."
+    a "Oh, Ash... if only you knew I'm not making conscious decisions here. My brain's just following yesterday's cheat sheet."
 
     hide alex_happy7
     show alex5 at rightish
@@ -2600,7 +4091,7 @@ label has_ticket:
     hide ash_sly3
     show ash4 at left
 
-    ash "Huh. That’s... tame. Careful, Hayes, you might actually be growing up. Scary thought."
+    ash "Huh. That's... tame. Careful, Hayes, you might actually be growing up. Scary thought."
 
     hide ash4
     show hayley at left
@@ -2617,7 +4108,7 @@ label has_ticket:
     hide alex_looking2
     show alex_flustered2 at right
 
-    a4 "I want to be snarky. I can’t. My chest does this weird little flutter thing, and I have no idea why. Worst bug in the system."
+    a4 "I want to be snarky. I can't. My chest does this weird little flutter thing, and I have no idea why. Worst bug in the system."
 
     hide hayley3
     show ash2 at left
@@ -2625,14 +4116,14 @@ label has_ticket:
     hide alex_flustered2
     show alex_looking2 at right
 
-    ash "Alex, you know what I've been thinking about? Do you remember that time in Lincoln Park in ’02 with those dry-ice bottle rockets?"
+    ash "Alex, you know what I've been thinking about? Do you remember that time in Lincoln Park in '02 with those dry-ice bottle rockets?"
 
     hide ash2
     hide alex_looking2
     show alex_happy3 at right
     show ash_happy at left
 
-    ash "You said it was 'basically science class,’ then we completely blew out the neighbor’s windows."
+    ash "You said it was 'basically science class,' then we completely blew out the neighbor's windows."
 
     hide alex_happy3
     show alex_happy at right
@@ -2660,7 +4151,7 @@ label has_ticket:
     hide ash_happy2
     show ash_happy at left
 
-    ash "Dude, you were the one who stole the lighter from your mom’s boyfriend! Pretty sure we were two seconds away from becoming a ‘local news cautionary tale.’"
+    ash "Dude, you were the one who stole the lighter from your mom's boyfriend! Pretty sure we were two seconds away from becoming a ‘local news cautionary tale.'"
 
     hide ash_happy
     show ash_happy2 at left
@@ -2681,12 +4172,12 @@ label observe_two_outro:
     hide alex4
     show alex3 at right
 
-    a4 "And now, player, you’ve got the information you need to progress. Ticket: check. Life shit: messy. Feelings: convoluted."
+    a4 "And now, player, you've got the information you need to progress. Ticket: check. Life shit: messy. Feelings: convoluted."
 
     hide alex3
     show alex6 at rightish
 
-    a4 "Let’s see if this edge lasts through the rest of the day... or if I’ll still screw it all up again."
+    a4 "Let's see if this edge lasts through the rest of the day... or if I'll still screw it all up again."
 
     jump hallway_day_two_two
 
@@ -2711,7 +4202,7 @@ label hallway_day_two_two:
         hide alex_happy3
         show alex_happy7 at right
 
-        a4 "Alright, ticket: check. Survival: in progress. Now comes the part of the day I’m still figuring out... the hallway gauntlet."
+        a4 "Alright, ticket: check. Survival: in progress. Now comes the part of the day I'm still figuring out... the hallway gauntlet."
 
         hide alex_happy7
         hide alex5
@@ -2759,12 +4250,12 @@ label hallway_day_two_two:
     hide alex3
     show alex_shocked4 at right
 
-    a4 "Or whatever cosmic rerun I’m trapped in."
+    a4 "Or whatever cosmic rerun I'm trapped in."
 
     hide alex_shocked4
     show alex_looking4 at right
 
-    a4 "But this time I’ve got the ticket. The so-called golden key to teen happiness."
+    a4 "But this time I've got the ticket. The so-called golden key to teen happiness."
 
     hide alex_looking4
     show alex_hopeless at right onlayer alexlayer
@@ -2799,24 +4290,24 @@ label hallway_day_two_two:
     hide alex_flustered2
     show alex_flustered at right
 
-    ash "Hayley told you already, huh? Yeah, she asked me. Guess I’ve got plans tonight."
+    ash "Hayley told you already, huh? Yeah, she asked me. Guess I've got plans tonight."
 
     hide alex_flustered
     hide ash4
     show ash3 at left
     show alex_looking4 at right
 
-    a4 "Plans. Right. Plans that apparently don’t care that I have the actual ticket in my pocket."
+    a4 "Plans. Right. Plans that apparently don't care that I have the actual ticket in my pocket."
 
     hide alex_looking4
     show alex2 at rightish
 
-    a4 "Having obtained the special quest item means you don't have to do all the talking, right? Isn’t that how this game works?"
+    a4 "Having obtained the special quest item means you don't have to do all the talking, right? Isn't that how this game works?"
 
     hide alex2
     show alex_happy2 at right
 
-    a "Cool. That’s... cool. Big night. Balloons. Terrible music. Dream come true."
+    a "Cool. That's... cool. Big night. Balloons. Terrible music. Dream come true."
 
     hide ash3
     show ash5 at left
@@ -2828,7 +4319,7 @@ label hallway_day_two_two:
     hide ash5
     show ash4 at left
 
-    ash "Anyway, if I don’t see you there... guess this is it. End of high school. End of... us being randomly in each other’s way."
+    ash "Anyway, if I don't see you there... guess this is it. End of high school. End of... us being randomly in each other's way."
 
     hide ash4
     show ash6 at left
@@ -2878,7 +4369,7 @@ label hallway_day_two_two:
     hide alex_looking3
     show alex_looking4 at right
 
-    a4 "Yesterday, I thought this was just another reality check. Today? It’s worse."
+    a4 "Yesterday, I thought this was just another reality check. Today? It's worse."
 
     hide alex_looking4
     show alex_hopeless at right
@@ -2893,22 +4384,22 @@ label hallway_day_two_two:
     hide alex_looking4
     show alex_flustered2 at right
 
-    a4 "There it is. The final boss I didn’t know I was fighting."
+    a4 "There it is. The final boss I didn't know I was fighting."
 
     hide alex_flustered2
     show alex_shocked4 at right
     
-    a4 "This isn’t about a dance. It’s about Ash."
+    a4 "This isn't about a dance. It's about Ash."
 
     hide alex_shocked4
     show alex_hopeless at right
 
-    a4 "The loop isn’t punishing me for missing a party, it’s punishing me for running from what I want."
+    a4 "The loop isn't punishing me for missing a party, it's punishing me for running from what I want."
 
     hide alex_hopeless
     show alex6 at rightish
 
-    a4 "Great. So the universe isn’t just glitching, it’s shipping us. And it won’t stop the reruns until I stop being a coward. Fantastic. No pressure."
+    a4 "Great. So the universe isn't just glitching, it's shipping us. And it won't stop the reruns until I stop being a coward. Fantastic. No pressure."
 
     jump evening_two
 
@@ -2925,7 +4416,7 @@ label hallway_day_two_two:
     show alex_looking4 at right
     with Dissolve(0.5)
 
-    a4 "Hayley’s probably picking out a dress right now. Ash is probably texting her. And I’m sitting here holding this piece of paper like it’s a map from hell."
+    a4 "Hayley's probably picking out a dress right now. Ash is probably texting her. And I'm sitting here holding this piece of paper like it's a map from hell."
 
     hide alex_looking4
     show alex_looking3 at right
@@ -2935,7 +4426,7 @@ label hallway_day_two_two:
     hide alex_looking3
     show alex_sad2 at right
     
-    a4 "But I saw it this time. The way it felt when he said goodbye. That wasn’t nothing."
+    a4 "But I saw it this time. The way it felt when he said goodbye. That wasn't nothing."
 
     hide alex_sad2
     show alex_looking4 at right
@@ -3090,12 +4581,12 @@ label school_intro_three:
     with Dissolve(1.0)
     pause 0.5
 
-    a4 "Okay, no time for Tyler, no time for Hayley, no “gee Alex why the long face.” I’ve wasted two chances on fixing things and I'm not about to make it three."
+    a4 "Okay, no time for Tyler, no time for Hayley, no “gee Alex why the long face.” I've wasted two chances on fixing things and I'm not about to make it three."
 
     hide alex5
     show alex3 at right
 
-    a4 "Get the ticket. Find Ash. Fix things for good. No detours, no sarcastic side quests, no NPC chatter. Everyone else can keep looping through May 19th forever; But I’ve got one shot to break the curse."
+    a4 "Get the ticket. Find Ash. Fix things for good. No detours, no sarcastic side quests, no NPC chatter. Everyone else can keep looping through May 19th forever; But I've got one shot to break the curse."
 
     hide alex3
     show alex_angry at right onlayer alexlayer
@@ -3122,7 +4613,7 @@ label school_intro_three:
     hide alex_angry
     show alex6 at rightish onlayer alexlayer
 
-    a "Your mom’s in the principal's office. Something about your ‘borrowed’ skateboard."
+    a "Your mom's in the principal's office. Something about your ‘borrowed' skateboard."
 
     scene hallway_dark
     with Dissolve(0.5)
@@ -3163,7 +4654,7 @@ label school_intro_three:
     hide alex
     show alex_flustered2 at right
 
-    a "Listen. I can’t let today happen again. Yesterday, every yesterday, I fucked things up. I blew my last chance."
+    a "Listen. I can't let today happen again. Yesterday, every yesterday, I fucked things up. I blew my last chance."
 
     hide alex_flustered2
     show alex_flustered at right
@@ -3199,19 +4690,19 @@ label ending_one2:
     hide alex_happy4
     show alex_happy5 at right
 
-    a "Same. And it’s still the best week I’ve ever had."
+    a "Same. And it's still the best week I've ever had."
 
     hide ash_happy
     show ash6 at left
     hide alex_happy5
     show alex_flustered2 at right
 
-    a " Every time this day repeats... ...every time I think about what actually matters, that’s the memory that sticks. Just us, lost in the desert, laughing like idiots."
+    a " Every time this day repeats... ...every time I think about what actually matters, that's the memory that sticks. Just us, lost in the desert, laughing like idiots."
 
     hide alex_flustered2
     show alex_happy2 at right
 
-    a "I don’t know if today’s gonna vanish, or if this is my last shot, but I can’t keep acting like you’re just some old inside joke I outgrew."
+    a "I don't know if today's gonna vanish, or if this is my last shot, but I can't keep acting like you're just some old inside joke I outgrew."
 
     hide alex_happy2
     show alex_happy7 at right
@@ -3250,7 +4741,7 @@ label ending_one2:
     hide alex_flustered
     show alex_happy2 at right
 
-    a "Hey, I’m consistent. Late to everything except bad timing."
+    a "Hey, I'm consistent. Late to everything except bad timing."
 
     hide alex_happy2
     show alex_happy3 at right
@@ -3285,12 +4776,12 @@ label ending_one2:
     hide alex3
     show alex7 at right
 
-    a4 "Now? Somehow, I’m not dead. I’m... even kind of happy? Like I’m a character in some weird indie visual novel, and the player decided that a sad ending was just not good enough."
+    a4 "Now? Somehow, I'm not dead. I'm... even kind of happy? Like I'm a character in some weird indie visual novel, and the player decided that a sad ending was just not good enough."
 
     hide alex7
     show alex_happy7 at right
 
-    a4 "Maybe some days are worth repeating. Or maybe, finally, this one doesn’t have to."
+    a4 "Maybe some days are worth repeating. Or maybe, finally, this one doesn't have to."
 
     jump finale
 
@@ -3301,7 +4792,7 @@ label ending_two:
     hide alex_flustered
     show alex_happy2 at right
 
-    a "Sturgeon Bay, 1999. That homemade flamethrower we almost burned my cousin’s shed down with."
+    a "Sturgeon Bay, 1999. That homemade flamethrower we almost burned my cousin's shed down with."
 
     hide alex_happy2
     show alex_flustered2 at right
@@ -3318,14 +4809,14 @@ label ending_two:
     hide alex_flustered
     show alex_happy3 at right
 
-    ash "Honestly, I wasn’t sure I’d ever hear you like this. But... damn, I’m glad I am."
+    ash "Honestly, I wasn't sure I'd ever hear you like this. But... damn, I'm glad I am."
 
     hide ash5
     show ash6 at left
     hide alex_happy3
     show alex_happy2 at right
 
-    a "I don’t know if today’s gonna vanish, or if this is my last shot, but I can’t keep acting like you’re just some old inside joke I outgrew."
+    a "I don't know if today's gonna vanish, or if this is my last shot, but I can't keep acting like you're just some old inside joke I outgrew."
 
     hide alex_happy2
     show alex_happy7 at right
@@ -3360,7 +4851,7 @@ label ending_two:
     hide ash5
     show ash4 at left
 
-    ash "But some things just can’t be fixed in one day."
+    ash "But some things just can't be fixed in one day."
 
     hide ash4
     show ash6 at left
