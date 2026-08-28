@@ -123,28 +123,46 @@ default music_choice = None
 
 # Scaled Background Images
 init python:
-    SCALE_X = 0.55
-    SCALE_Y = 0.436
+    BEDROOM_SCALE_X = 1.31
+    BEDROOM_SCALE_Y = 1.31
 
     def scaled(name):
+        return im.FactorScale(name, BEDROOM_SCALE_X, BEDROOM_SCALE_Y)
+
+init python:
+    SCALE_X = 0.38
+    SCALE_Y = 0.38
+
+    def scaled2(name):
         return im.FactorScale(name, SCALE_X, SCALE_Y)
 
+init python:
+    PORCH_SCALE_X = 0.55
+    PORCH_SCALE_Y = 0.55
+
+    def scaled3(name):
+        return im.FactorScale(name, PORCH_SCALE_X, PORCH_SCALE_Y)
+
+init python:
+    LOUNGE_SCALE_X = 1.7
+    LOUNGE_SCALE_Y = 1.7
+
+    def scaled4(name):
+        return im.FactorScale(name, LOUNGE_SCALE_X, LOUNGE_SCALE_Y)
+
+    
 init:
-    image bedroom = ("bedroom.png")
-    image bedroom_dark = scaled("bedroom_dark.png")
-    image cafeteria = scaled ("cafeteria.png")
-    image cafeteria_dark = scaled ("cafeteria_dark.png")
-    image classroom = scaled ("classroom.png")
-    image classroom_dark = scaled ("classroom_dark.png")
-    image hallway = scaled ("hallway.png")
-    image hallway_dark = scaled ("hallway_dark.png")
-    image kitchen = scaled ("kitchen.png")
-    image kitchen_dark = scaled ("kitchen_dark.png")
-    image cafeteria_dark2 = scaled ("cafeteria_dark2.png")
-    image hallway_dark2 = scaled ("hallway_dark2.png")
-    image kitchen_dark2 = scaled ("kitchen_dark2.png")
-    image bathroom = scaled ("bathroom.png")
-    image bathroom_dark = scaled ("bathroom_dark.png")
+    image bedroom = scaled("bedroom.png")
+    image doorway = scaled2("doorway.png")
+    image porch = scaled3("porch.png")
+    image lounge = scaled4("lounge.png")
+
+
+
+
+
+
+
 
 init python:
     SCALE_X = 0.5
@@ -171,90 +189,87 @@ init:
 
 # Scaled Sprites
 init python:    
-    SCALE_X = 0.32
-    SCALE_Y = 0.32
+    SCALE_X = 0.5
+    SCALE_Y = 0.5
 
     def scaledsprite(name):
         return im.FactorScale(name, SCALE_X, SCALE_Y)
 
 init:
-    image alex_waking = scaledsprite ("alex_waking.png")
-    image alex = scaledsprite ("alex.png")
-    image alex_angry = scaledsprite ("alex_angry.png")
-    image alex_angry2 = scaledsprite ("alex_angry2.png")
-    image alex_flustered = scaledsprite ("alex_flustered.png")
-    image alex_flustered2 = scaledsprite ("alex_flustered2.png")
-    image alex_happy = scaledsprite ("alex_happy.png")
-    image alex_happy2 = scaledsprite ("alex_happy2.png")
-    image alex_happy3 = scaledsprite ("alex_happy3.png")
-    image alex_happy4 = scaledsprite ("alex_happy4.png")
-    image alex_happy5 = scaledsprite ("alex_happy5.png")
-    image alex_happy6 = scaledsprite ("alex_happy6.png")
-    image alex_happy7 = scaledsprite ("alex_happy7.png")
-    image alex_hopeless = scaledsprite ("alex_hopeless.png")
-    image alex_hurt = scaledsprite ("alex_hurt.png")
-    image alex_phone = scaledsprite ("alex_phone.png")
-    image alex_phone2 = scaledsprite ("alex_phone2.png")
-    image alex_phone3 = scaledsprite ("alex_phone3.png")
-    image alex_phone4 = scaledsprite ("alex_phone4.png")
-    image alex_sad = scaledsprite ("alex_sad.png")
-    image alex_sad2 = scaledsprite ("alex_sad2.png")
-    image alex2 = scaledsprite ("alex2.png")
-    image alex3 = scaledsprite ("alex3.png")
-    image alex4 = scaledsprite ("alex4.png")
-    image alex5 = scaledsprite ("alex5.png")
-    image alex6 = scaledsprite ("alex6.png")
-    image alex7 = scaledsprite ("alex7.png")
-    image alex_looking = scaledsprite ("alex_looking.png")
-    image alex_looking2 = scaledsprite ("alex_looking2.png")
-    image alex_looking3 = scaledsprite ("alex_looking3.png")
-    image alex_looking4 = scaledsprite ("alex_looking4.png")
-    image alex_shocked = scaledsprite ("alex_shocked.png")
-    image alex_shocked2 = scaledsprite ("alex_shocked2.png")
-    image alex_shocked3 = scaledsprite ("alex_shocked3.png")
-    image alex_shocked4 = scaledsprite ("alex_shocked4.png")
-    image alex_shocked5 = scaledsprite ("alex_shocked5.png")
 
-    image ash = scaledsprite ("ash.png")
-    image ash2 = scaledsprite ("ash2.png")
-    image ash3 = scaledsprite ("ash3.png")
-    image ash4 = scaledsprite ("ash4.png")
-    image ash5 = scaledsprite ("ash5.png")
-    image ash6 = scaledsprite ("ash6.png")
-    image ash_cringing = scaledsprite ("ash_cringing.png")
-    image ash_sly = scaledsprite ("ash_sly.png")
-    image ash_sly2 = scaledsprite ("ash_sly2.png")
-    image ash_sly3 = scaledsprite ("ash_sly3.png")
-    image ash_worried = scaledsprite ("ash_worried.png")
-    image ash_happy = scaledsprite ("ash_happy.png")
-    image ash_happy2 = scaledsprite ("ash_happy2.png")
+    image cat_angry = scaledsprite("cat_angry.png")
+    image cat_angry2 = scaledsprite("cat_angry2.png")
+    image cat_angry3 = scaledsprite("cat_angry3.png")
 
-    image hayley = scaledsprite ("hayley.png")
-    image hayley2 = scaledsprite ("hayley2.png")
-    image hayley3 = scaledsprite ("hayley3.png")
-    image hayley_excited = scaledsprite ("hayley_excited.png")
+    image cat_distraught = scaledsprite("cat_distraught.png")
 
-    image tyler_angry = scaledsprite ("tyler_angry.png")
-    image tyler_angry2 = scaledsprite ("tyler_angry2.png")
-    image tyler_angry3 = scaledsprite ("tyler_angry3.png")
-    image tyler_angry4 = scaledsprite ("tyler_angry4.png")
-    image tyler_angry5 = scaledsprite ("tyler_angry5.png")
-    image tyler_happy = scaledsprite ("tyler_happy.png")
-    image tyler_happy2 = scaledsprite ("tyler_happy2.png")
+    image cat_frustrated = scaledsprite("cat_frustrated.png")
+    image cat_frustrated2 = scaledsprite("cat_frustrated2.png")
+    image cat_frustrated3 = scaledsprite("cat_frustrated3.png")
 
-    image mother = scaledsprite ("mother.png")
-    image mother_two = scaledsprite ("mother_two.png")
-    image mother_shocked = scaledsprite ("mother_shocked.png")
-    image mother_shocked2 = scaledsprite ("mother_shocked2.png")
-    image mother_blank = scaledsprite ("mother_blank.png")
-    image mother_looking = scaledsprite ("mother_looking.png")
-    image mother_looking2 = scaledsprite ("mother_looking2.png")
-    image mother_looking3 = scaledsprite ("mother_looking3.png")
-    image mother_klutz = scaledsprite ("mother_klutz.png")
+    image cat_happy = scaledsprite("cat_happy.png")
+    image cat_happy2 = scaledsprite("cat_happy2.png")
+    image cat_happy3 = scaledsprite("cat_happy3.png")
 
-    image teacher = scaledsprite ("teacher.png")
-    image teacher2 = scaledsprite ("teacher2.png")
+    image cat_neutral = scaledsprite("cat_neutral.png")
+    image cat_neutral2 = scaledsprite("cat_neutral2.png")
 
+    image cat_sad = scaledsprite("cat_sad.png")
+    image cat_sad2 = scaledsprite("cat_sad2.png")
+    image cat_sad3 = scaledsprite("cat_sad3.png")
+
+    image cat_shocked = scaledsprite("cat_shocked.png")
+    image cat_shocked2 = scaledsprite("cat_shocked2.png")
+
+    image cat_surprised = scaledsprite("cat_surprised.png")
+
+    image cat_worried = scaledsprite("cat_worried.png")
+    image cat_worried2 = scaledsprite("cat_worried2.png")
+
+    image charlie_confused = scaledsprite("charlie_confused.png")
+    image charlie_confused2 = scaledsprite("charlie_confused2.png")
+    image charlie_confused3 = scaledsprite("charlie_confused3.png")
+
+    image charlie_disgust = scaledsprite("charlie_disgust.png")
+    image charlie_disgust2 = scaledsprite("charlie_disgust2.png")
+
+    image charlie_happy = scaledsprite("charlie_happy.png")
+    image charlie_happy2 = scaledsprite("charlie_happy2.png")
+    image charlie_happy3 = scaledsprite("charlie_happy3.png")
+
+    image charlie_neutral = scaledsprite("charlie_neutral.png")
+    image charlie_neutral2 = scaledsprite("charlie_neutral2.png")
+
+    image charlie_sad = scaledsprite("charlie_sad.png")
+    image charlie_sad2 = scaledsprite("charlie_sad2.png")
+
+    image charlie_shocked = scaledsprite("charlie_shocked.png")
+    image charlie_shocked2 = scaledsprite("charlie_shocked2.png")
+
+    image danny_angry = scaledsprite("danny_angry.png")
+    image danny_angry2 = scaledsprite("danny_angry2.png")
+    image danny_angry3 = scaledsprite("danny_angry3.png")
+
+    image danny_disgust = scaledsprite("danny_disgust.png")
+    image danny_disgust2 = scaledsprite("danny_disgust2.png")
+    image danny_disgust3 = scaledsprite("danny_disgust3.png")
+
+    image danny_happy = scaledsprite("danny_happy.png")
+    image danny_happy2 = scaledsprite("danny_happy2.png")
+    image danny_happy3 = scaledsprite("danny_happy3.png")
+
+    image danny_neutral = scaledsprite("danny_neutral.png")
+    image danny_neutral2 = scaledsprite("danny_neutral2.png")
+    image danny_neutral3 = scaledsprite("danny_neutral3.png")
+
+    image danny_sad = scaledsprite("danny_sad.png")
+    image danny_sad2 = scaledsprite("danny_sad2.png")
+    image danny_sad3 = scaledsprite("danny_sad3.png")
+
+    image danny_surprise = scaledsprite("danny_surprise.png")
+    image danny_surprise2 = scaledsprite("danny_surprise2.png")
+    image danny_surprise3 = scaledsprite("danny_surprise3.png")
+    
 # Assets
 init python:    
     SCALE_X = 0.25
@@ -301,6 +316,25 @@ transform jolt:
     linear 0.05 xoffset -15
     linear 0.05 xoffset 0
 
+transform center_to_right:
+    xalign 0.5
+    yalign 1.0    
+    ease 1.0 xalign 1.0    
+
+transform center_to_left:
+    xalign 0.5
+    yalign 1.0
+    ease 1.0 xalign 0.0
+
+transform right_to_center:
+    xalign 1.0
+    yalign 1.0
+    ease 1.0 xalign 0.5
+
+transform left_to_center:
+    xalign 0.0
+    yalign 1.0
+    ease 1.0 xalign 0.5
 
 # The Game Starts Here
 label start:
@@ -331,7 +365,6 @@ label start:
 
     ## ACT 1 BEGINS HERE !!! ##
 
-
     scene bedroom
     with Dissolve(0.5)
 
@@ -345,8 +378,6 @@ label start:
 label wake_up_menu:
 
 menu:
-    "Inspect room":
-        jump leave_room
 
     "Think about dream":
         $ reply = renpy.random.choice(replies)
@@ -360,12 +391,23 @@ menu:
         o "[reply]"
         jump wake_up_menu
 
+    "Inspect room":
+        jump leave_room
+
 label leave_room:
 
     o "Shit. June 1st already? I'll be expecting them any minute now."
 
     "The calendar hanging across the room tells you it's June 1st, 2006. Your eighteenth birthday."
     "You've been waiting for this day for weeks and absolutely nothing could ruin it."
+
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show doorway
+    with Dissolve(1)
 
     "{i}*BRRRRRRRRRING*{i}"
 
@@ -382,15 +424,17 @@ label leave_room:
     d "Open up already, shithead!"
 
 menu:
-    "Ignore the door":
-        jump ending_one
 
     "Answer the door":
         jump answer_door
 
+    "Ignore the door":
+        jump ending_one
+
+
 label ending_one:
 
-    "you failed to answer the door."
+    "You failed to answer the door."
 
     return
 
@@ -399,25 +443,50 @@ label answer_door:
     "You rest your hand on the doorknob."
     "You force a smile you don't entirely feel and pull the door open."
 
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show porch
+    with Dissolve(1)
+
+    show charlie_happy2
+    with Dissolve(0.5)
+
     ch "Ahh... he emerges! Happy birthday, pal."
+
+    hide charlie_happy2
+    show charlie_neutral
 
     "Charlie has always been easy to read. He's loud and excitable, somehow managing to make everything feel like a bigger deal than it actually is."
 
     "He's the type to want to capture every little moment."
 
+    hide charlie_neutral
+    show cat_shocked
+    with Dissolve(0.5)
+
     c "Jeez, you look terrible. Did you seriously just wake up?"
+
+    hide cat_shocked
+    show cat_neutral2
 
     "Cat's harder to figure out. She's blunt and observant, and has a habit of noticing things you'd rather she didn't."
     "You've never been sure whether she actually likes you or just finds you interesting."
 
 menu:
-    "What's it to you?":
-        jump whats_it_to_you
 
     "Unfortunately":
         jump unfortunately
 
+    "What's it to you?":
+        jump whats_it_to_you
+
 label whats_it_to_you:
+
+    hide cat_neutral2
+    show cat_neutral
 
     o "What's it to you?"
 
@@ -425,33 +494,62 @@ label whats_it_to_you:
 
 label unfortunately:
 
+    hide cat_neutral2
+    show cat_neutral
+
     o "Haha. Yeah, unfortunately."
 
     jump scene_lounge
 
 label scene_lounge:
 
+    hide cat_neutral
+    hide cat_angry
+    show cat_happy
+
     "Cat laughs under her breath, though there's a hint of concern. She casually brushes past you into the hallway."
+
+    hide cat_happy
+    show danny_neutral2
+    with Dissolve(0.5)
 
     d "Or maybe he just forgot what sleep is."
 
+    hide danny_neutral2
+    show danny_happy
+
     "Danny gives you a playful shove with his shoulder."
+
+    hide danny_happy
+    show danny_happy2
 
     d "Happy birthday, little man."
 
+    hide danny_happy2
+    show danny_neutral2
+
     "Danny's different. You still remember when he used to make your life miserable. It makes it weird to think of him as one of your closest friends now."
     "Music is probably the thing you have most in common; you don't know if there's much else anymore."
+
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show lounge
+    with Dissolve(1)
 
     "Charlie is already dropping his stuff off onto the dining table, making far more noise than necessary."
     "Somewhere in the kitchen, Cat is opening cupboards."
     "Danny plops himself down onto the couch."
 
 menu:
-    "...":
-        jump say_nothing
 
     "Make yourselves at home":
         jump make_yourselves_at_home
+
+    "...":
+        jump say_nothing
 
 label say_nothing:
 
@@ -468,39 +566,128 @@ label make_yourselves_at_home:
 
 label lounge:
 
+    show cat_shocked
+    with Dissolve(0.5)
+
     c "Okay. Well we'd better get through these presents before Charlie explodes, man. He's been thinking about your big day for like... two weeks now."
+
+    hide cat_shocked
+    show cat_angry2 at center_to_left
+    with None
+
+    show charlie_confused3 at right
+    with Dissolve(0.5)
 
     ch "Shut up, Catherine. You little rat."
 
+    hide charlie_confused3
+    hide cat_angry2
+    with Dissolve(0.5)
+
     "Charlie is now kneeling on the carpet, trying to organise a pile of presents into something that vaguely resembles a neat stack."
+
+    show charlie_happy2
+    with Dissolve(0.5)
 
     ch "Okay, listen up."
 
-    "He claps his hands together."
+    hide charlie_happy2
+    show charlie_neutral
 
     ch "Some ground rules..."
 
+    hide charlie_neutral
+    show charlie_confused3 at center_to_right
+    with None
+
+    show cat_angry2 at left
+    with Dissolve(0.5)
+
     c "There's... rules?"
+
+    hide charlie_confused3
+    show charlie_confused2 at right
+    hide cat_angry2
+    show cat_neutral at left
 
     ch "Yeah! There are now!"
 
+    hide charlie_confused2
+    show charlie_disgust at right
+    with None
+
+    hide cat_neutral
+    show danny_angry3 at left
+    with Dissolve(0.5)
+
     d "Christ."
 
+    hide danny_angry3
+    show danny_sad at left
+
+    hide charlie_disgust
+    show charlie_happy at right
+    
     ch "Number one. Nobody opens presents until everyone's here."
+
+    hide charlie_happy
+    hide danny_sad
+
+    show danny_disgust2 at left
+    show charlie_confused3 at right
 
     d "...We are all here."
 
+    hide danny_disgust2
+    show danny_disgust at left
+
+    hide charlie_confused3
+    show charlie_happy2 at right
+
     ch "Exactly."
+
+    hide danny_disgust
+    hide charlie_happy2
+
+    show charlie_confused3 at right
+    show danny_angry3 at left
 
     d "So that's... that's not a rule."
 
+    hide charlie_confused3
+    show charlie_sad at right
+    with None
+
+    hide danny_angry3
+    show cat_surprised at left
+    with Dissolve(0.5)
+
     c "It's more of an observation, really..."
+
+    hide cat_surprised
+    show cat_neutral2 at left
+
+    hide charlie_sad
+    show charlie_disgust2 at right
 
     ch "Screw you guys!"
 
+    hide charlie_disgust2
+    show charlie_happy3 at right_to_center
+    with None
+
+    hide cat_neutral2
+    with Dissolve(0.5)
+
     ch "Anyway, number two. Otter gets to decide everything we do today. Birthday privilege."
 
+    hide charlie_happy3
+    show charlie_neutral2
+
     ch "So, what'll it be first?"
+
+    hide charlie_neutral2
+    show charlie_neutral
 
 menu:
     "Take a photo":
@@ -812,11 +999,6 @@ label charlie_present:
     $ char_menu.add("Charlie's present")
 
 menu:
-    "Remember you by?!":
-        o "Remember you by?!"
-        $ betrayal += 1
-        $ violence += 1
-        jump present_menu_intro
 
     "How so?":
         o "How so?"
@@ -824,6 +1006,11 @@ menu:
         $ acceptance += 1
         jump present_menu_intro
 
+    "Remember you by?!":
+        o "Remember you by?!"
+        $ betrayal += 1
+        $ violence += 1
+        jump present_menu_intro
 
 if presents_opened < 3:
     jump present_menu_intro
@@ -844,13 +1031,6 @@ label cat_present:
     $ char_menu.add("Cat's present")
 
 menu:
-    "Are you leaving me?":
-        o "Are you leaving me?"
-        $ betrayal += 1
-        $ violence += 1
-        
-        c "Umm... well, yeah."
-        jump present_menu_intro
 
     "While we're apart?":
         o "While we're apart?"
@@ -858,6 +1038,14 @@ menu:
 
         c "Umm... well, yeah."
         jump present_menu_intro   
+
+    "Are you leaving me?":
+        o "Are you leaving me?"
+        $ betrayal += 1
+        $ violence += 1
+        
+        c "Umm... well, yeah."
+        jump present_menu_intro
 
 label danny_present:
 
@@ -881,19 +1069,20 @@ label danny_present:
     $ char_menu.add("Danny's present")
 
 menu:
-    "Update you on what?!":
-        o "Update you on what?!"
-        $ betrayal += 1
-        $ violence += 1
-
-        jump present_menu_intro
 
     "Gone?":
         o "Gone?"
         $ acceptance += 1
 
         d "Uhh... well, yeah."
-        jump present_menu_intro       
+        jump present_menu_intro    
+
+    "Update you on what?!":
+        o "Update you on what?!"
+        $ betrayal += 1
+        $ violence += 1
+
+        jump present_menu_intro   
 
 label post_presents:
 
@@ -954,20 +1143,20 @@ label post_presents_two:
 
 menu:
 
+    "I'm happy for you" (disabled=violence >= 4) if violence < 4:
+        jump happy_for_you
+
     "{color=#956dc9}I'm happy for you{/color}" (disabled=violence >= 4) if violence >= 4:
         jump happy_for_you
+
+    "Why didn't you tell me?!" (disabled=violence >= 4) if violence < 4:
+        jump why_didnt_you_tell_me
 
     "{color=#956dc9}Why didn't you tell me?!{/color}" (disabled=violence >= 4) if violence >= 4:
         jump why_didnt_you_tell_me
 
     "Fuck all of you" (disabled=violence < 4) if violence >= 4:
         jump fuck_all_of_you   
-
-    "I'm happy for you" (disabled=violence >= 4) if violence < 4:
-        jump happy_for_you
-
-    "Why didn't you tell me?!" (disabled=violence >= 4) if violence < 4:
-        jump why_didnt_you_tell_me
 
     "{color=#956dc9}Fuck all of you{/color}" (disabled=violence < 4) if violence < 4:
         jump fuck_all_of_you   
@@ -1146,15 +1335,15 @@ label charlie_menu:
 
 menu:
 
-    "Now you're leaving me" if charlie_love < 1:
-        o "...Now you're leaving me."
-        $ betrayal += 1
-        jump charlie_path_five
-
     "Promise we'll stay friends?":
         o "Promise me we'll stay friends?"
         $ acceptance += 2
         jump charlie_path_four
+
+    "Now you're leaving me" if charlie_love < 1:
+        o "...Now you're leaving me."
+        $ betrayal += 1
+        jump charlie_path_five
 
     "{color=#956dc9}Could it be anything more?{/color}" (disabled=True) if charlie_love < 1:
         o "Could it be anything more?"
@@ -1223,7 +1412,7 @@ label thanks_otter:
 
 label charlie_heartbreak:
 
-    $ charlie_bond -= 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+    $ charlie_bond -= 999
 
     ch "Oh... uh... okay." 
 
@@ -1391,11 +1580,11 @@ label cat_route_four:
 
 menu:
 
-    "Then why are you leaving me?":
-        jump leaving_me
-
     "Me too.":
         jump me_too
+
+    "Then why are you leaving me?":
+        jump leaving_me
 
 label leaving_me:
 
@@ -1987,19 +2176,6 @@ label violent_ending_closure:
 
     return
 
-
-
-
-
-
-
-
-
-
-
-
-
-    return
 
 label betrayal_and_acceptance_endings:
 
