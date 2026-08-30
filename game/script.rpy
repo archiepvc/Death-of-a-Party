@@ -156,6 +156,7 @@ init:
     image doorway = scaled2("doorway.png")
     image porch = scaled3("porch.png")
     image lounge = scaled4("lounge.png")
+    image lounge_test = scaled4("lounge_test.png")
 
 
 
@@ -529,14 +530,14 @@ label scene_lounge:
     show danny_neutral2
 
     "Danny's different. You still remember when he used to make your life miserable. It makes it weird to think of him as one of your closest friends now."
-    "Music is probably the thing you have most in common; you don't know if there's much else anymore."
+    "Music is probably the thing you have most in common. You don't know if there's much else anymore."
 
     scene black
     with Dissolve(1)
 
     pause 1
 
-    show lounge
+    show lounge_test
     with Dissolve(1)
 
     "Charlie is already dropping his stuff off onto the dining table, making far more noise than necessary."
@@ -705,7 +706,13 @@ label take_photo:
 
     o "A picture first may be nice?"
 
+    hide charlie_neutral
+    show charlie_happy2
+
     ch "Score! One for the scrapbook."
+
+    hide charlie_happy2
+    with Dissolve(0.5)
 
     "Everyone awkwardly squeezes together in the living room."
 
@@ -713,13 +720,39 @@ label take_photo:
 
     "The camera spits out an undeveloped photograph."
 
+    show charlie_confused2
+    with Dissolve(0.5)
+
     ch "Here, if I just shake it around it'll develop faster."
+
+    hide charlie_confused2
+    show charlie_confused3 at center_to_right
+
+    show cat_angry3 at left
+    with Dissolve(0.5)
 
     c "You know that's a myth right? It doesn't do anything."
 
+    hide cat_angry3
+    show cat_shocked at left
+    hide charlie_confused3
+    show charlie_disgust2 at right
+
     ch "You're a total myth! You don't really do anything!"
 
+    hide charlie_disgust2
+    show charlie_confused at right
+    hide cat_shocked
+    show cat_angry at left
+
     "Cat rolls her eyes."
+
+    hide charlie_confused
+    show charlie_happy2 at right_to_center
+    with None
+
+    hide cat_angry
+    with Dissolve(0.5)
 
     ch "Anyway, I'll just slip this in your pocket. Make sure to check back on it later."
 
@@ -733,7 +766,14 @@ label listen_music:
 
     $ danny_bond += 1
 
+    hide charlie_happy2
+    show danny_happy3
+    with Dissolve(0.5)
+
     d "Now we are fuckin' talkin'!"
+
+    hide danny_happy3
+    with Dissolve(0.5)
 
     "You observe Danny as he kneels in front of the CD rack, an overflowing clutter packed with handwritten labels."
 
@@ -899,6 +939,9 @@ label dare:
 
 
 label present_intro:
+
+    hide charlie_happy2
+    show charlie_happy3
 
     ch "Okay, enough messing around. It's present time!"
 
@@ -2380,6 +2423,58 @@ label betrayal_ending_closure:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# SEPERATE GAME #
 
 
 label school_intro:
