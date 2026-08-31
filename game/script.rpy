@@ -73,7 +73,7 @@ init python:
 # Characters
 define o = Character(_("Otter"), color="#956dc9", what_slow_cps=35, callback=text_sounds)
 define ch = Character(_("Charlie"), color="#6082d1", what_slow_cps=35, callback=text_sounds)
-define c = Character(_("Cat"), color="#c36fd6", what_slow_cps=35, callback=text_sounds)
+define c = Character(_("Cat"), color="#eb88cb", what_slow_cps=35, callback=text_sounds)
 define d = Character(_("Danny"), color="#cc9189", what_slow_cps=35, callback=text_sounds)
 define unknown = Character(_("{i}???{/i}"), color="#bdbdbd", what_slow_cps=35, callback=text_sounds)
 define narrator = Character(None, what_slow_cps=35, callback=text_sounds)
@@ -337,6 +337,16 @@ transform left_to_center:
     yalign 1.0
     ease 1.0 xalign 0.5
 
+transform left_to_right:
+    xalign 0.0
+    yalign 1.0
+    ease 1.0 xalign 1.0
+
+transform right_to_left:
+    xalign 1.0
+    yalign 1.0
+    ease 1.0 xalign 0.0
+
 # The Game Starts Here
 label start:
 
@@ -363,11 +373,14 @@ label start:
 
     o "PLEEEEEEASEEE!!!!!!!!!"
 
+    pause 1
+
+    "ACT 1: THE PARTY BEGINS."
 
     ## ACT 1 BEGINS HERE !!! ##
 
     scene bedroom
-    with Dissolve(0.5)
+    with Dissolve(1)
 
     play sound "sfx/yawn.mp3" volume 0.5
 
@@ -704,9 +717,12 @@ label take_photo:
 
     $ charlie_bond +=1
 
+    hide charlie_neutral
+    show charlie_shocked
+
     o "A picture first may be nice?"
 
-    hide charlie_neutral
+    hide charlie_shocked
     show charlie_happy2
 
     ch "Score! One for the scrapbook."
@@ -758,15 +774,24 @@ label take_photo:
 
     $ polaroid += 1
 
+    hide charlie_happy2
+    show charlie_happy3
+    with None
+
     jump present_intro
 
 label listen_music:
+
+    hide charlie_neutral
+    show charlie_shocked
 
     o "Let's play some music."
 
     $ danny_bond += 1
 
     hide charlie_happy2
+    hide charlie_neutral
+    hide charlie_shocked
     show danny_happy3
     with Dissolve(0.5)
 
@@ -777,7 +802,13 @@ label listen_music:
 
     "You observe Danny as he kneels in front of the CD rack, an overflowing clutter packed with handwritten labels."
 
+    show danny_neutral2
+    with Dissolve(0.5)
+
     d "Wanna chuck on one of our mixes or listen to something a bit different?"
+
+    hide danny_neutral2
+    show danny_neutral
 
 menu:
     "Danny's mix":
@@ -796,15 +827,33 @@ label dannys_mix:
 
     $ danny_bond += 1
 
+    hide danny_neutral
+    show danny_surprise2
+
     o "Let's put your one on."
 
+    hide danny_surprise2
+    show danny_happy3
+
     d "Correct answer."
+
+    hide danny_happy3
+    with Dissolve(0.5)
 
     "The room fills with old rock music. It's louder, rougher, and older than anything the rest of you usually listen to."
 
     "Danny drums his fingers to the beat absentmindedly, while Charlie complains that it's 'dad music'."
 
+    show danny_disgust at left
+    show charlie_confused3 at right
+    with Dissolve(0.5)
+
     d "You just don't appreciate the classics."
+
+    hide danny_disgust
+    show danny_angry2 at left
+    hide charlie_confused3
+    show charlie_disgust2 at right
 
     ch "What, are you forty?"
 
@@ -814,33 +863,68 @@ label charlies_mix:
 
     $ charlie_bond += 1
 
+    hide danny_neutral
+    show danny_surprise2
+
     "Let's put Charlie's one on."
+
+    hide danny_surprise2
+    show danny_disgust at center_to_left
+    with None
+
+    show charlie_happy3 at right
+    with Dissolve(0.5)
 
     ch "...Seriously? Aw, thanks!"
 
+    hide charlie_happy3
+    show charlie_confused3 at right
+    hide danny_disgust
+    show danny_angry2 at left
+
     d "Really? Again?"
+
+    hide danny_angry2
+    hide charlie_confused3
+    with Dissolve(0.5)
 
     "Everyone starts humming along to the comfortable tunes almost immediately."
 
     "Charlie laughs every time someone gets a line wrong, insisting they should know all this already, and for a little while, it feels impossible to imagine any of you anywhere else."
-
+        
     jump turn_the_music_off
 
 label cats_mix:
+
+    hide danny_neutral
+    show danny_surprise2
 
     $ cat_bond += 1
 
     "Let's put Cat's one on."
 
+    hide danny_surprise2
+    show cat_shocked
+    with Dissolve(0.5)
+
     c "You gotta hand it to him, he's got taste."
+
+    hide cat_shocked
+    with Dissolve(0.5)
 
     "The music that spills into the room is raw and emotional; unlike anything the others would've picked."
 
     "Charlie wrinkles his nose up while Danny quietly nods along to the rhythm."
 
-    "Cat doesn't seem interested in whether anyone else likes it, and casually leans back, closes her eyes, taking it all in."
+    "Cat doesn't seem interested in whether anyone else likes it, and casually leans back, closes her eyes, and takes it all in."
+
+    show cat_surprised
+    with Dissolve(0.5)
 
     c "I like songs that really feel like they have something to say."
+
+    hide cat_surprised
+    show cat_happy
 
     c "...Gerard Way always has something important to say."
 
@@ -850,11 +934,23 @@ label something_new:
 
     $ acceptance += 1
 
+    hide danny_neutral
+    show danny_surprise2
+
     "Let's put on something new."
+
+    hide danny_surprise2
+    show danny_surprise
 
     d "Wow. That's... surprising."
 
+    hide danny_surprise
+    show danny_disgust3
+
     d "Hmm... let's try this one."
+
+    hide danny_disgust3
+    with Dissolve(0.5)
 
     "A tune fills the space around you, and is clearly something that one of your parents listen to."
 
@@ -866,7 +962,15 @@ label something_new:
 
 label turn_the_music_off:
 
+    hide cat_happy
+    hide danny_angry2
+    hide charlie_disgust2
+    with Dissolve(0.5)
+
     "Charlie turns the music off."
+
+    show charlie_happy3
+    with Dissolve(0.5)
 
     jump present_intro
 
@@ -874,9 +978,18 @@ label play_game:
 
     $ cat_bond += 1
 
+    hide charlie_neutral
+    show charlie_shocked
+
     o "Let's play a game, I suppose."
 
+    hide charlie_shocked
+    with Dissolve(0.5)
+
     "Cat leans back in her chair, looking between the three of you."
+
+    show cat_neutral
+    with Dissolve(0.5)
 
     c "Otter, truth or dare?"
 
@@ -889,59 +1002,144 @@ menu:
 
 label truth:
 
+    hide cat_neutral
+    show cat_happy
+
     o "Truth, I guess."
 
+    hide cat_happy
+    show cat_surprised
+
     c "What do you actually think of us?"
+
+    hide cat_surprised
+    with Dissolve(0.5)
 
     "The question catches you off guard. You know what they're asking, but when you try to put it into words, your mind comes up strangely blank."
     "For some reason, that's a weirdly difficult question."
 
+    show charlie_happy3
+    with Dissolve(0.5)
+
     ch "That pause is brutal, dude!"
 
+    hide charlie_happy3
+    show danny_surprise3
+    with Dissolve(0.5)
+
     d "Yeah, man. You hate us that much?"
+
+    hide danny_surprise3
+    show danny_surprise2
 
     o "Uhh..."
     o "You're cool."
 
+    hide danny_surprise2
+    show cat_shocked
+    with Dissolve(0.5)
+
     c "Haha, reassuring..."
+
+    hide cat_shocked
+    show charlie_happy2
+    with Dissolve(0.5)
 
     jump present_intro
 
 label dare:
 
+    hide cat_neutral
+    show cat_happy
+
     o "Dare, I guess."
 
+    hide cat_happy
+    show cat_surprised
+
     c "I dare you to tell us something you've never told anyone else."
+    
+    hide cat_surprised
+    show cat_angry2 at center_to_left
+    with None
+
+    show charlie_disgust2 at right
+    with Dissolve(0.5)
 
     ch "Uhh... that's a truth, silly Cat. Not a dare."
 
+    hide charlie_disgust2
+    show charlie_happy3 at right_to_center
+    with None
+
+    hide cat_angry2
+    with Dissolve(0.5)
+
     ch "I dare you to let me cut your hair!"
+
+    hide charlie_happy3
+    show charlie_sad
 
     o "Don't even think about it."
 
+    hide charlie_sad
+    show charlie_happy2
+
     ch "Just a little snip?"
+
+    hide charlie_happy2
+    show charlie_sad
 
     o "No."
 
+    hide charlie_sad
+    show charlie_confused3
+
     ch "A teeny tiny one? An inch?"
+
+    hide charlie_confused3
+    show charlie_disgust
 
     o "It's not happening."
 
+    hide charlie_disgust
+    show danny_disgust3
+    with Dissolve(0.5)
+
     d "A shame. I think you're long overdue."
+
+    hide danny_disgust3
+    show cat_surprised
+    with Dissolve(0.5)
 
     c "Yeah, how long has it been, years?"
 
+    hide cat_surprised
+    show cat_worried
+
     c "Probably for the best though, I don't think Charlie would do you much justice."
 
+    hide cat_worried
+    show cat_neutral at center_to_left
+    with None
+
+    show charlie_disgust2 at right
+    with Dissolve(0.5)
+
     ch "Hey!!!"
+
+    hide charlie_disgust2
+    show charlie_happy3 at right_to_center
+    with None
+
+    hide cat_neutral
+    show charlie_happy3
+    with Dissolve(0.5)
 
     jump present_intro
 
 
 label present_intro:
-
-    hide charlie_happy2
-    show charlie_happy3
 
     ch "Okay, enough messing around. It's present time!"
 
@@ -953,25 +1151,89 @@ label present_intro:
 
 label act_two:
 
+    scene black
+    hide charlie_happy3
+    with Dissolve(1)
+
+    pause 1
+
+    "ACT 2: THE PARTY GROWS QUIET."
+
+    show lounge_test
+    with Dissolve(1)
+
     "Charlie rubs his hands together before hurrying everyone onto the carpet. The pile of presents sit proudly in the middle of the living room."
+
+    show danny_disgust2 at left
+    show charlie_neutral at right
+    with Dissolve(0.5)
 
     d "Charlie, quit staring."
 
+    hide danny_disgust2
+    hide charlie_neutral
+    show danny_sad2 at left
+    show charlie_confused2 at right
+
     ch "I'm making sure they look nice."
+
+    hide charlie_confused2
+    hide danny_sad2
+    show charlie_confused3 at right
+    show danny_angry3 at left
 
     d "Oh my god, they're just presents."
 
+    hide danny_angry3
+    hide charlie_confused3
+    show danny_sad at left
+    show charlie_happy2 at right
+
     ch "Exactly."
+
+    hide danny_sad
+    show danny_surprise2 at left_to_right
+    with None
+
+    hide charlie_happy2
+
+    pause 0.25
+
+    show cat_surprised at left
+    with Dissolve(0.5)
 
     c "He ironed the wrapping paper."
 
+    hide cat_surprised
+    show cat_neutral2 at left
+    with None
+
+    hide danny_surprise2
+    show charlie_disgust2 at right
+    with Dissolve(0.5)
+
     ch "...I did not!"
+
+    hide cat_neutral2
+    hide charlie_disgust2
+    show cat_shocked at left
+    show charlie_confused3 at right
 
     c "You totally thought about it."
 
+    hide charlie_confused3
+    hide cat_shocked
+    with Dissolve(0.5)
+
     "Charlie rolls his eyes, though the corners of his mouth curl into a smile anyway."
 
+    show charlie_happy2
+    with Dissolve(0.5)
+
     ch "Alright, pick one."
+
+    hide charlie_happy2
+    with Dissolve(0.5)
 
     "Charlie's is wrapped almost perfectly, every fold crisp enough that it feels wrong to tear it open."
 
@@ -979,11 +1241,36 @@ label act_two:
 
     "Danny's isn't wrapped at all, and is instead a cardboard box with HAPPY BIRTHDAY, OTTER scrawled across the side in black marker."
 
+    show danny_surprise
+    with Dissolve(0.5)
+
     d "What? I'm just saving money. You cannot blame me for that."
+
+    hide danny_surprise
+    show danny_angry2 at center_to_right
+    with None
+
+    show cat_frustrated3 at left
+    with Dissolve(0.5)
 
     c "Or maybe you're just lazy?"
 
+    hide cat_frustrated3
+    show cat_angry at left
+    with None
+
+    hide danny_angry2
+    show charlie_disgust at right
+    with Dissolve(0.5)
+
     ch "Enough, you two."
+
+    hide charlie_disgust
+    show charlie_happy3 at right_to_center
+    with None
+
+    hide cat_angry
+    with Dissolve(0.5)
     
     ch "Which is first, Otter?"
 
@@ -993,6 +1280,12 @@ label present_menu_intro:
 
     if presents_opened == 3:
         jump post_presents
+
+    hide cat_shocked
+    hide charlie_confused3
+    hide danny_disgust
+    show charlie_happy3
+    with Dissolve(0.5)
 
     ch "Ahem...  anyway. Who's is next?"
 
@@ -1017,25 +1310,55 @@ label charlie_present:
     $ charlie_bond += 2
     $ presents_opened += 1
 
-    o "I suppose... Let's go with Charlie's."
+    hide charlie_happy3
+    show charlie_shocked
+
+    o "I suppose... Let's go with yours."
 
     if presents_opened == 1:
+
+        hide charlie_shocked
+        show charlie_happy3
+
         ch "Otter. You flatter me, you really do."
 
+        hide charlie_happy3
+        show charlie_confused
+
         ch "I totally didn't persuade you to choose mine first or anything... did I?"
+
+        hide charlie_confused
+        show charlie_happy2
 
         ch "Ah, besides the point. Open it, open it!!!"
 
     if presents_opened > 1:
+        
+        hide charlie_shocked
+        show charlie_neutral2
+
         ch "Open it, open it!!!"
+
+    hide charlie_neutral2
+    hide charlie_happy2
+    with Dissolve(0.5)
 
     "You carefully peel away the wrapping paper, revealing a thick photo album."
 
     "The first few pages are already filled with photographs from previous birthdays, school trips, and memories you'd long since forgotten."
 
+    show charlie_neutral
+    with Dissolve(0.5)
+
     o "You... kept all these?"
 
+    hide charlie_neutral
+    show charlie_happy2
+
     ch "Somebody had to! Besides, eighteen is a HUGE deal!"
+
+    hide charlie_happy2
+    show charlie_confused3
 
     ch "I figured, after this, you'll need something to really remember us by."
 
@@ -1063,13 +1386,29 @@ label cat_present:
     $ cat_bond += 2
     $ presents_opened += 1
 
+    hide charlie_happy3
+    show charlie_shocked
+
     o "I suppose... Let's go with Cat's."
+
+    hide charlie_shocked
+    show cat_happy
+    with Dissolve(0.5)
 
     c "Cool, man. I hope you like it."
 
+    hide cat_happy
+    with Dissolve(0.5)
+
     "Layers of newspaper slowly give way to a cassette player. A new tape already sits inside."
 
+    show cat_surprised
+    with Dissolve(0.5)
+
     c "It's nothing really... just some new music I thought I could put you on while we're apart."
+
+    hide cat_surprised
+    show cat_neutral
 
     $ char_menu.add("Cat's present")
 
@@ -1079,6 +1418,9 @@ menu:
         o "While we're apart?"
         $ acceptance += 1
 
+        hide cat_neutral
+        show cat_shocked
+
         c "Umm... well, yeah."
         jump present_menu_intro   
 
@@ -1086,6 +1428,9 @@ menu:
         o "Are you leaving me?"
         $ betrayal += 1
         $ violence += 1
+
+        hide cat_neutral
+        show cat_shocked
         
         c "Umm... well, yeah."
         jump present_menu_intro
@@ -1095,19 +1440,49 @@ label danny_present:
     $ danny_bond += 2
     $ presents_opened += 1
 
+    hide charlie_happy3
+    show charlie_shocked
+
     o "I suppose... Let's go with Danny's."
+
+    hide charlie_shocked
+    show danny_disgust
+    with Dissolve(0.5)
 
     d "Didn't wrap it. Sorry."
 
+    hide danny_disgust
+    show danny_angry2 at center_to_left
+    with None
+
+    show charlie_confused2 at right
+    with Dissolve(0.5)
+
     ch "We can see that..."
+
+    hide charlie_confused2
+    hide danny_angry2
+    with Dissolve(0.5)
 
     "Inside sits a vintage polaroid camera. A 600 series from what looks like the early 1980's. It's in excellent condition."
 
+    show danny_neutral2
+    with Dissolve(0.5)
+
     o "Where did you even find this?"
+
+    hide danny_neutral2
+    show danny_disgust2
 
     d "Garage sale."
 
+    hide danny_disgust2
+    show danny_happy3
+
     d "Thought you could keep us updated while we're gone."
+
+    hide danny_happy3
+    show danny_neutral2
 
     $ char_menu.add("Danny's present")
 
@@ -1117,10 +1492,17 @@ menu:
         o "Gone?"
         $ acceptance += 1
 
+        hide danny_neutral2
+        show danny_disgust
+
         d "Uhh... well, yeah."
         jump present_menu_intro    
 
     "Update you on what?!":
+
+        hide danny_neutral2
+        show danny_disgust
+
         o "Update you on what?!"
         $ betrayal += 1
         $ violence += 1
@@ -1129,9 +1511,23 @@ menu:
 
 label post_presents:
 
+    hide cat_shocked
+    hide charlie_confused3
+    hide danny_disgust
+    hide charlie_happy3
+    show cat_worried
+    with Dissolve(0.5)
+
     c "Uh... Otter, you're concerning us."
 
+    hide cat_worried
+    show charlie_sad2
+    with Dissolve(0.5)
+
     ch "Yeah... I mean, I know you don't want to think about us leaving but..."
+
+    hide charlie_sad2
+    show charlie_confused3
 
     ch "It's like you've never even heard of these plans before?"
 
@@ -1144,24 +1540,66 @@ menu:
 
 label post_presents_two:
 
+    hide charlie_confused3
+    show charlie_shocked
+
     o "Plans? Leaving? What are you talking about?!"
+
+    hide charlie_shocked
+    with Dissolve(0.5)
 
     "The room falls silent. Charlie's voice wavers slightly as he speaks."
 
+    show charlie_sad2
+    with Dissolve(0.5)
+
     ch "Well... uhh... pretty much..."
+
+    hide charlie_sad2
+    show cat_surprised
+    with Dissolve(0.5)
 
     c "We're moving away next week. We all got into Columbia."
 
+    hide cat_surprised
+    show charlie_happy3
+    with Dissolve(0.5)
+
     ch "...But! It's nothing against you or anything!"
+
+    hide charlie_happy3
+    show charlie_confused2
+
     ch "We knew you didn't really care about college and we didn't want to make you feel..."
+
+    hide charlie_confused2
+    show danny_disgust
+    with Dissolve(0.5)
 
     d "Like we were abandoning you."
 
+    hide danny_disgust
+    show danny_angry2 at center_to_left
+    with None
+
+    show charlie_disgust2 at right
+    with Dissolve(0.5)
+
     ch "Stop interrupting me! I can speak for myself!"
+
+    hide charlie_disgust2
+    hide danny_angry2
+    with Dissolve(0.5)
 
     "Charlie opens and closes his mouth like a gaping fish, desperately trying to find the right words to say. His shoulders slump."
 
+    show charlie_confused3
+    with Dissolve(0.5)
+
     ch "Yeah... We have been over this a few times now, though..."
+
+    hide charlie_confused3
+    with Dissolve(0.5)
 
     "There's no way they've told you this before, you would definitely remember something this important."
 
@@ -1170,7 +1608,13 @@ label post_presents_two:
     "No one laughs."
     "The day that was supposed to be special suddenly just feels suffocating."
 
+    show cat_worried
+    with Dissolve(0.5)
+
     c "Otter?"
+
+    hide cat_worried
+    with Dissolve(0.5)
 
     "The words seem to stretch out, becoming distant and muffled as the room begins to lose shape."
     "Columbia. You hear it again, but no one is speaking."
