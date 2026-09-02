@@ -157,6 +157,7 @@ init:
     image porch = scaled3("porch.png")
     image lounge = scaled4("lounge.png")
     image lounge_test = scaled4("lounge_test.png")
+    image lounge_two = scaled4 ("lounge_two.png")
 
 
 
@@ -1657,7 +1658,21 @@ label happy_for_you:
 
     o "I'm happy for you. You'll have a great time at Columbia."
 
+    show danny_surprise
+    show charlie_shocked at right
+    show cat_shocked2 at left
+    with Dissolve(0.5)
+
     "The others seem surprised, like they didn't expect that outcome."
+
+    hide danny_surprise
+    hide charlie_shocked
+    show charlie_happy3 at right_to_center
+    with None
+
+    hide danny_surprise
+    hide cat_shocked2
+    with Dissolve(0.5)
 
     jump post_presents_outro
 
@@ -1666,11 +1681,32 @@ label why_didnt_you_tell_me:
     $ betrayal += 2
 
     o "So... You're all leaving me."
+
+    show danny_surprise
+    show charlie_shocked at right
+    show cat_shocked2 at left
+    with Dissolve(0.5)
+
     o "Why didn't you say anything? Why didn't you tell me?!"
+    
+    hide danny_surprise
+    show danny_disgust2
+    with None
+
+    hide charlie_shocked
+    hide cat_shocked2
+    with Dissolve(0.5)
 
     d "Hey, man. It's not like that. We did-"
 
+    hide danny_disgust2
+    show danny_surprise
+
     o "Cut with the shit! You've never told me anything!"
+
+    hide danny_surprise
+    show charlie_happy3
+    with Dissolve(0.5)
 
     jump post_presents_outro
 
@@ -1679,15 +1715,41 @@ label fuck_all_of_you:
     $ betrayal += 2
     $ violence += 1
 
+    show danny_surprise
+    show charlie_shocked at right
+    show cat_shocked2 at left
+    with Dissolve(0.5)
+
     o "You're just gonna drop this on me now and expect me to be okay with it?! Fuck you guys."
+
+    hide danny_surprise
+    show danny_disgust2
+    with None
+
+    hide charlie_shocked
+    hide cat_shocked2
+    with Dissolve(0.5)
 
     d "Hey, man. It's not like that. We did-"
 
+    hide danny_disgust2
+    show danny_surprise
+
     o "Cut with the shit! You've never told me anything!"
+
+    hide danny_surprise
+    show cat_sad2
+    with Dissolve(0.5)
 
     c "Charlie said he thought..."
 
+    hide cat_sad2
+    show cat_worried
+
     c "Something like this might happen..."
+
+    hide cat_worried
+    show cat_sad2
 
 menu:  
     "What's that supposed to mean?":
@@ -1701,12 +1763,34 @@ menu:
 
 label fuck_all_of_you_two:
 
+    hide cat_sad2
+    show cat_worried
+
     $ violence += 1
 
     o "What the fuck is that supposed to mean?"
 
+    hide cat_worried
+    show cat_frustrated at center_to_left
+    with None
+
+    show charlie_disgust2 at right
+    with Dissolve(0.5)
+
     ch "Cat, why did you say that?!"
+
+    hide charlie_disgust2
+    show charlie_happy3 at right_to_center
+    with None
+
+    hide cat_frustrated
+    with Dissolve(0.5)
+
     ch "Hey, it's just... You kinda do have a tendency to..."
+
+    hide charlie_happy3
+    show charlie_sad
+
     ch "Ah... never mind."
 
     jump post_presents_outro_two
@@ -1715,11 +1799,17 @@ label post_presents_outro:
 
     ch "Hey, we'll still keep in touch! See each other on breaks and such?"
 
+    hide charlie_happy3
+    show charlie_sad
+
     o "Yeah... I guess."
 
     jump post_presents_outro_two
 
 label post_presents_outro_two:
+
+    hide charlie_sad
+    with Dissolve(0.5)
 
     "The conversation never recovers."
 
