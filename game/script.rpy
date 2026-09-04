@@ -150,6 +150,13 @@ init python:
     def scaled4(name):
         return im.FactorScale(name, LOUNGE_SCALE_X, LOUNGE_SCALE_Y)
 
+init python:
+    BATH_SCALE_X = 0.8
+    BATH_SCALE_Y = 0.8
+
+    def scaled5(name):
+        return im.FactorScale(name, BATH_SCALE_X, BATH_SCALE_Y)
+
     
 init:
     image bedroom = scaled("bedroom.png")
@@ -158,6 +165,7 @@ init:
     image lounge = scaled4("lounge.png")
     image lounge_test = scaled4("lounge_test.png")
     image lounge_two = scaled4 ("lounge_two.png")
+    image bathroom = scaled5 ("bathroom.png")
 
 
 
@@ -1821,7 +1829,13 @@ label post_presents_outro_two:
 
     "You remain alone in the living room, surrounded by birthday decorations."
 
+    scene black
+
+label find_somebody_else:
+
 menu:
+
+    set char_menu
 
     "Follow Charlie":
         jump follow_charlie
@@ -2376,8 +2390,12 @@ label danny_path_outro:
 
     d "We should probably head back before everyone starts wondering if you finally killed me."
 
+    jump act_three
+
 
 label stay_where_you_are:
+
+    $ char_menu.add("Stay where you are")
 
     "You're better off without them. You must be. How could they ruin your special day? How could they make it all about themselves?"
 
@@ -2480,7 +2498,7 @@ label act_three:
 
     d "I guess you should make a wish then, Otter."
 
-    "Eighteen tiny flames flicker before you. Most eighteen-year-olds would probably wish for something grand or material—a nice car, endless wealth, that sort of thing. But all you really want is..."
+    "Eighteen tiny flames flicker before you. Most eighteen-year-olds would probably wish for something material: A nice car, endless wealth, that sort of thing. But all you really want is..."
 
 menu:
 
