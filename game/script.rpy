@@ -157,7 +157,13 @@ init python:
     def scaled5(name):
         return im.FactorScale(name, BATH_SCALE_X, BATH_SCALE_Y)
 
-    
+init python:
+    KITCHEN_SCALE_X = 0.8
+    KITCHEN_SCALE_Y = 0.8
+
+    def scaled6(name):
+        return im.FactorScale(name, KITCHEN_SCALE_X, KITCHEN_SCALE_Y)
+
 init:
     image bedroom = scaled("bedroom.png")
     image doorway = scaled2("doorway.png")
@@ -166,44 +172,27 @@ init:
     image lounge_test = scaled4("lounge_test.png")
     image lounge_two = scaled4 ("lounge_two.png")
     image bathroom = scaled5 ("bathroom.png")
+    image kitchen = scaled6 ("kitchen.png")
 
+# Scaled Assets
+init python:    
+    ASSET_SCALE_X = 0.5
+    ASSET_SCALE_Y = 0.5
 
+    def scaledasset(name):
+        return im.FactorScale(name, ASSET_SCALE_X, ASSET_SCALE_Y)
 
-
-
-
-
-
-init python:
-    SCALE_X = 0.5
-    SCALE_Y = 0.5
-
-    def ending(name):
-        return im.FactorScale(name, SCALE_X, SCALE_Y)
-
-init:
-    image ball = ending ("ball.png")
-    image ball2 = ending ("ball2.png")
-    image ball3 = ending ("ball3.png")
-    image car = ending ("car.png")
-
-init python:
-    SCALE_X = 0.435
-    SCALE_Y = 0.435
-
-    def scaledassault(name):
-        return im.FactorScale(name, SCALE_X, SCALE_Y)
-
-init:
-    image assault = scaledassault ("assault.png")
+image danny_gift = scaledasset("danny_gift.png")
+image cat_gift = scaledasset("cat_gift.png")
+image charlie_gift = scaledasset("charlie_gift.png")
 
 # Scaled Sprites
 init python:    
-    SCALE_X = 0.5
-    SCALE_Y = 0.5
+    SPRITE_SCALE_X = 0.5
+    SPRITE_SCALE_Y = 0.5
 
     def scaledsprite(name):
-        return im.FactorScale(name, SCALE_X, SCALE_Y)
+        return im.FactorScale(name, SPRITE_SCALE_X, SPRITE_SCALE_Y)
 
 init:
 
@@ -1829,8 +1818,6 @@ label post_presents_outro_two:
 
     "You remain alone in the living room, surrounded by birthday decorations."
 
-    scene black
-
 label find_somebody_else:
 
 menu:
@@ -1851,29 +1838,60 @@ menu:
 
 label follow_charlie:
 
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show black
+    with Dissolve(1)
+
     $ charlie_bond += 1
 
     "You slide the back door open and the warm summer air immediately wraps around you. Charlie sits on the porch, looking at a picture in his wallet. He notices you almost immediately."
 
+    show charlie_happy3
+    with Dissolve(0.5)
+
     ch "Oh... hey!"
 
+    hide charlie_happy3
+    show charlie_confused3
+
     ch "Sorry about earlier, when we told you bef-"
+
+    hide charlie_confused3
+    show charlie_happy3
+
     ch "I mean, I really should've said something sooner. Sorry."
 
 menu:
 
     "It's alright":
+        hide charlie_happy3
+        show charlie_neutral
         o "It's alright, Charlie."
         $ acceptance += 1
         jump charlie_path_two
 
     "You really should have":
+        hide charlie_happy3
+        show charlie_sad
         o "Yep. You really should have."
         $ betrayal += 1
         $ violence += 1
         jump charlie_path_two
 
 label charlie_path_two:
+
+    hide charlie_sad
+    hide charlie_neutral
+    with Dissolve(0.5)
+    
+    pause 1
+
+    show charlie_gift
+    with Dissolve(0.5)
 
     "Charlie looks down, distractedly admiring the photograph of you two and the goldfish you were so attached to. You couldn't have been older than twelve."
 
@@ -1891,6 +1909,14 @@ label charlie_path_two:
 
     o "..."
 
+    hide charlie_gift
+    with Dissolve(0.5)
+
+    pause 1
+
+    show charlie_happy3
+    with Dissolve(0.5)
+
     ch "You know, I always thought we'd end up like this."
 
 menu: 
@@ -1906,15 +1932,24 @@ menu:
 
 label charlie_love:
 
+    hide charlie_happy3
+    show charlie_shocked
+
     $ charlie_love +=1
 
     o "...Together?"
+
+    hide charlie_shocked
+    show charlie_happy3
 
     ch "Ahh.. well, still together after graduation, looking back. It felt like it came way too soon..."
 
     jump charlie_menu
 
 label charlie_path_three:
+
+    hide charlie_happy3
+    show charlie_neutral2
 
     ch "Still together after graduation, looking back. It felt like it came way too soon..."
 
@@ -1924,6 +1959,10 @@ label charlie_path_three:
 
 label charlie_menu:
 
+    hide charlie_neutral2
+    hide charlie_happy3
+    show charlie_neutral
+
 menu:
 
     "Promise we'll stay friends?":
@@ -1932,6 +1971,8 @@ menu:
         jump charlie_path_four
 
     "Now you're leaving me" if charlie_love < 1:
+        hide charlie_neutral
+        show charlie_sad
         o "...Now you're leaving me."
         $ betrayal += 1
         jump charlie_path_five
@@ -1941,6 +1982,8 @@ menu:
         pass
 
     "Could it be anything more?" if charlie_love > 0:
+        hide charlie_neutral
+        show charlie_shocked
         $ charlie_love +=1
         o "Could it be anything more?"
         jump charlie_path_five
@@ -1948,24 +1991,52 @@ menu:
 
 label charlie_path_four:
 
-    "His smile seems to fade as soon as it came. He lets out a quiet breath through his nose and closes his wallet with a soft thud."
-    "His eyes stay fixed on the garden."
+    hide charlie_shocked
+    hide charlie_sad
+    hide charlie_neutral
+    show charlie_happy
+
+    "Charlie smiles, the warm glow in his eyes promising you that he wouldn't have it any other way."
+
+    hide charlie_happy
+    show charlie_neutral2
 
     ch "I promise."
 
 
 label charlie_path_five:
 
+    hide charlie_neutral2
+    hide charlie_shocked
+    hide charlie_sad
+    hide charlie_neutral
+    with Dissolve(0.5)
+
     "His smile seems to fade as soon as it came, and he lets out a quiet breath through his nose and closes his wallet with a soft thud."
     "His eyes stay fixed on the garden."
 
+    show charlie_happy3
+    with Dissolve(0.5)
+
     ch "Actually, there's something I wanted to tell you."
+
+    hide charlie_happy3
+    show charlie_sad
 
     ch "..."
 
+    hide charlie_sad
+    show charlie_sad2
+
     ch "It's stupid, but... well..."
 
+    hide charlie_sad2
+    show charlie_confused2
+
     ch "...I think I like Cat?"
+
+    hide charlie_confused2
+    show charlie_sad
 
     "For just a second, everything else fades into the background. Even Charlie, who's suddenly far more interested in his own shoes than your reaction."
 
@@ -1973,20 +2044,36 @@ label charlie_path_five:
         $ betrayal += 1
         "After what you'd just confessed, you feel a little humiliated."
 
+    hide charlie_sad
+    show charlie_confused3
+
     ch "Trust me, I know how ridiculous that sounds."
+
+    hide charlie_confused3
+    show charlie_shocked2
 
     ch "We've been friends forever, and I still can't tell whether she actually likes me or if she's just... Cat?"
 
+    hide charlie_shocked2
+    show charlie_confused2
+
     ch "Half the time I can't even tell what she's thinking."
+
+    hide charlie_confused2
+    show charlie_confused
 
 menu:
     "Thanks for telling me" if charlie_love < 2:
+        hide charlie_confused
+        show charlie_neutral
         o "Wow... Thanks for confiding in me. I won't tell anyone."
         jump thanks_otter
 
     "That's not a good idea":
         $ betrayal += 1
         $ violence += 1
+        hide charlie_confused
+        show charlie_sad
         o "That's not a good idea. I know she doesn't like you."
         jump charlie_heartbreak
 
@@ -1997,6 +2084,10 @@ menu:
 
 label thanks_otter:
 
+    hide charlie_neutral
+    hide charlie_confused
+    show charlie_neutral2
+
     ch "Thanks Otter. I knew I could count on you."
     
     jump charlie_path_outro
@@ -2004,14 +2095,23 @@ label thanks_otter:
 label charlie_heartbreak:
 
     $ charlie_bond -= 999
+    hide charlie_sad
+    show charlie_sad2
 
     ch "Oh... uh... okay." 
+
+    hide charlie_sad2
+    show charlie_sad
 
     ch " I see..."
 
     jump charlie_path_outro
 
 label charlie_path_outro:
+
+    hide charlie_neutral2
+    hide charlie_sad
+    show charlie_happy3
 
     ch "Anyway, let's go back inside huh? I heard there's some cake just begging to be eaten!"
 
@@ -2021,8 +2121,19 @@ label follow_cat:
 
     $ cat_bond +=1
 
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show black
+    with Dissolve(1)
+
     "You make your way down the hallway, noting that the door to your bedroom is already half open. Cat stands by the window, her back to you."
     "She notices your reflection in the glass before she hears your footsteps."
+
+    show cat_sad
+    with Dissolve(0.5)
 
     c "Look, Otto... I'm really sorry we're leaving."
 
@@ -2041,6 +2152,9 @@ label its_alright:
 
     $ acceptance += 1
 
+    hide cat_sad
+    show cat_neutral
+
     o "Ah... it's alright."
 
     jump cat_route_two
@@ -2050,19 +2164,30 @@ label you_cant_leave:
     $ betrayal += 1
     $ violence += 1
 
+    hide cat_sad
+    show cat_worried
+
     o "You can't leave. You can't..."
+
+    hide cat_worried
+    show cat_sad3
 
     c "Otter, we really have to go."
 
     jump cat_route_two
-
 
 label some_notice:
 
     $ betrayal += 1
     $ violence += 1
 
+    hide cat_sad
+    show cat_sad2
+
     o "Yeah, some notice would've been nice."
+
+    hide cat_sad2
+    show cat_worried
 
     c "Ah... yeah. Right."
     
@@ -2070,17 +2195,37 @@ label some_notice:
 
 label cat_route_two:
 
+    hide cat_worried
+    hide cat_sad3
+    hide cat_neutral
+    show cat_sad
+
     c "I'm really gonna miss you. You're one of the most interesting people I know."
 
     o "That's not true. You don't even know me."
 
+    hide cat_sad
+    show cat_angry
+
     c "Maybe I do, at least more than you think."
+
+    hide cat_angry
+    show cat_surprised
 
     c "I remember when we first met. You were always doing something weird. You'd say something completely insane and then just stare at everyone like you couldn't understand why they were laughing."
 
+    hide cat_surprised
+    show cat_worried
+
     c "I used to think that was just your humour... that was, until your dog died."
 
+    hide cat_worried
+    show cat_distraught
+
     c "You invited us over for some kind of impromptu gaming session and told us that your crying family was just 'being dramatic'"
+
+    hide cat_distraught
+    show cat_sad2
 
     c "Did you even cry? Did you even care?"
 
@@ -2096,17 +2241,38 @@ menu:
 
 label cat_route_three:
 
+    hide cat_sad2
+    show cat_worried2
+
     c "Uh..."
+
+    hide cat_worried2
+    show cat_surprised
 
     c "I just mean... most people are sad when they lose something they love."
 
+    hide cat_surprised
+    show cat_shocked2
+
     o "I was sad."
+
+    hide cat_shocked2
+    show cat_shocked
 
     c "Were you? You didn't act like it."
 
+    hide cat_shocked
+    show cat_worried
+
     o "What was I supposed to do?"
 
+    hide cat_worried
+    show cat_distraught
+
     c "I don't know... mourn him? Talk about it?"
+
+    hide cat_distraught
+    show cat_sad2
 
 menu:
 
@@ -2118,19 +2284,45 @@ menu:
 
 label didnt_know_how:
 
+    hide cat_sad2
+    show cat_shocked2
+
+    o "I just... didn't know how. I've never known how."
+
     "The words feel heavy on your tongue and, for a moment, Cat doesn't say anything at all. The usual teasing expression on her face disappears, replaced by something closer to understanding. You hate looking weak."
+
+    hide cat_shocked2
+    show cat_shocked
 
     c "What do you mean?"
 
+    hide cat_shocked
+    show cat_sad
+
     o "Something has always been wrong with me."
+
+    hide cat_sad
+    show cat_sad2
 
     c "Otter..."
 
+    hide cat_sad2
+    show cat_sad3
+
     c "You should've told someone sooner."
+
+    hide cat_sad3
+    show cat_sad
 
     o "Who? Everyone calls me creepy. Even you."
 
+    hide cat_sad
+    show cat_surprised
+
     c "Yeah well... You are a little creepy."
+
+    hide cat_surprised
+    show cat_happy
 
     c "But you're my creepy friend."
 
@@ -2149,15 +2341,30 @@ menu:
 label just_friends:
     $ cat_love += 1
 
+    hide cat_happy
+    show cat_shocked
+
     o "Are we just friends?"
 
     "The question comes out quieter than you intended. For once, Cat doesn't immediately make a joke."
 
+    hide cat_shocked
+    show cat_surprised
+
     c "Do you want us to be?"
+
+    hide cat_surprised
+    show cat_happy
 
     o "I don't know."
 
+    hide cat_happy
+    show cat_happy2
+
     c "That sounds a lot like you."
+
+    hide cat_happy2
+    show cat_happy3
 
     c "Maybe let's figure it out together."
 
@@ -2165,9 +2372,18 @@ label just_friends:
 
 label cat_route_four:
 
+    hide cat_happy3
+    show cat_neutral
+
     c "Hmm... I'm gonna miss you, Otter."
 
+    hide cat_neutral
+    show cat_sad3
+
     c "I just wish we had more time."
+
+    hide cat_sad3
+    show cat_sad2
 
 menu:
 
@@ -2183,9 +2399,15 @@ label leaving_me:
 
     o "Then why are you leaving me?"
 
+    hide cat_sad2
+    show cat_surprised
+
     c "I couldn't pass up an opportunity like Columbia, you know that."
 
-    c "I'm just sorry we told you so late."
+    hide cat_surprised
+    show cat_sad2
+
+    c "I'm just sorry you... found out so late."
 
     jump cat_path_outro
 
@@ -2195,26 +2417,49 @@ label me_too:
 
     o "Me too."
 
+    hide cat_surprised
+    show cat_happy2
+
     "Cat smiles warmly."
 
     jump cat_path_outro
 
 label dont_feel_things:
 
+    hide cat_sad2
+    show cat_shocked
+
     o "Well, maybe I just don't feel things the way you do."
 
     "Cat's smile fades. She's trying to figure out if you're joking, but your face says otherwise."
 
+    hide cat_shocked
+    show cat_worried2
+
     c "Do you mean you know what you’re supposed to feel, but you don’t actually feel it?"
+
+    hide cat_worried2
+    show cat_sad3
 
     c "Does that bother you?"
 
+    hide cat_sad3
+    show cat_sad2
+
     o "Should it?"
+
+    hide cat_sad2
+    show cat_shocked
 
     c "Sometimes I forget you're joking."
 
+    hide cat_shocked
+    show cat_shocked2
+
     o "I'm not."
 
+    hide cat_shocked2
+    show cat_worried
     c "I see."
 
     $ violence += 1
@@ -2222,7 +2467,15 @@ label dont_feel_things:
 
 label cat_path_outro:
 
+    hide cat_sad2
+    hide cat_happy2
+    hide cat_worried
+    show cat_surprised
+
     c "Anyway, we should probably head back before everyone starts wondering where we are."
+
+    hide cat_surprised
+    with Dissolve(0.5)
 
     jump act_three
 
@@ -2230,18 +2483,46 @@ label follow_danny:
 
     $ danny_bond += 2
 
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show black
+    with Dissolve(1)
+
     "Danny leans against the front of the house, admiring the neighbourhood."
     "You close the front door and turns to look at you."
 
+    show danny_disgust2
+    with Dissolve(0.5)
+
     d "You know, every time I turn around you're just there. Staring."
+
+    hide danny_disgust2
+    show danny_surprise2
 
     d "If I didn't know you I'd probably think you were a serial killer."
 
+    hide danny_surprise2
+    show danny_neutral
+
     o "And because you know me?"
+
+    hide danny_neutral
+    show danny_happy2
 
     d "I'm only like fifty percent sure."
 
-    "He laughs, nudging your shoulder, but shortly notices that you aren't laughing at all. His smile fades too."
+    "He laughs, nudging your shoulder, but shortly notices that you aren't laughing at all."
+    
+    hide danny_happy2
+    show danny_surprise2
+
+    "His smile fades too."
+
+    hide danny_surprise2
+    show danny_disgust3
 
     d "Want a smoke?"
 
@@ -2401,6 +2682,14 @@ label stay_where_you_are:
 
     "Forget it. You just need your medication. Take it, calm down, and stop spiralling. The pills should be in the bathroom."
 
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show bathroom
+    with Dissolve(1)
+
     o "..."
 
     "Huh. The bottle isn't in its usual spot. You glance toward the bin beside the sink and spot the empty capsule inside. Didn't you just get a new refill?"
@@ -2425,6 +2714,14 @@ label look_in_mirror:
 
 label leave_bathroom:
 
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show black
+    with Dissolve(1)
+
     "You can still hear the others talking somewhere in the distance, their voices muffled by the walls. You could follow them, or you could find your pills. There might be more in the kitchen."
 
 menu:
@@ -2436,6 +2733,14 @@ menu:
         jump find_somebody_else
 
 label go_to_kitchen:
+
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
+    show kitchen
+    with Dissolve(1)
 
     "Something pulls you toward the kitchen."
 
@@ -2471,6 +2776,8 @@ label go_to_kitchen:
     jump act_three
 
 label act_three:
+
+    "ACT 3: THE DEATH OF THE PARTY."
 
     "..."
 
