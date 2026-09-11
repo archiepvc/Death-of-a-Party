@@ -76,7 +76,7 @@ define ch = Character(_("Charlie"), color="#6082d1", what_slow_cps=35, callback=
 define c = Character(_("Cat"), color="#eb88cb", what_slow_cps=35, callback=text_sounds)
 define d = Character(_("Danny"), color="#cc9189", what_slow_cps=35, callback=text_sounds)
 define unknown = Character(_("{i}???{/i}"), color="#bdbdbd", what_slow_cps=35, callback=text_sounds)
-define narrator = Character(None, what_slow_cps=35, callback=text_sounds)
+define narrator = Character(None, what_italic=True, what_slow_cps=35, callback=text_sounds)
 define replies = [
     ("It wasn't real."),
     ("I think I had a bad dream...."),
@@ -120,6 +120,10 @@ default has_charlie_album = False
 default has_cat_gift = False
 default has_danny_cassette = False
 default music_choice = None
+
+# Testing
+
+default time_of_day = "2:00 PM"
 
 # Scaled Background Images
 init python:
@@ -377,6 +381,7 @@ label start:
 
     ## ACT 1 BEGINS HERE !!! ##
 
+    show screen time_indicator
     scene bedroom
     with Dissolve(1)
 
@@ -935,7 +940,7 @@ label something_new:
     hide danny_neutral
     show danny_surprise2
 
-    "Let's put on something new."
+    o "Let's put on something new."
 
     hide danny_surprise2
     show danny_surprise
@@ -1156,6 +1161,8 @@ label act_two:
     pause 1
 
     "ACT 2: THE PARTY GROWS QUIET."
+
+    $ time_of_day = "3:00 PM"
 
     show lounge_test
     with Dissolve(1)

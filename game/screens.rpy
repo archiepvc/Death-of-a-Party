@@ -9,6 +9,18 @@ init offset = -1
 ## Styles
 ################################################################################
 
+# Testing
+
+screen time_indicator():
+    frame:
+        xalign 0.98
+        yalign 0.02
+        padding (10, 10)
+        
+        text "[time_of_day]" size 35
+
+# Testing
+
 style default:
     properties gui.text_properties()
     language gui.language
