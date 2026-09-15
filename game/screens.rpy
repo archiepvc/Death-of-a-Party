@@ -11,6 +11,12 @@ init offset = -1
 
 # Testing
 
+screen noise_overlay():
+    add "texture.jpg":
+        blend "multiply"
+        alpha 0.1
+        xysize (config.screen_width, config.screen_height)
+
 screen time_indicator():
     frame:
         xalign 0.98
@@ -18,6 +24,8 @@ screen time_indicator():
         padding (10, 10)
         
         text "[time_of_day]" size 35
+
+
 
 # Testing
 

@@ -88,6 +88,8 @@ define replies2 = [
 ]
 define alex_expressions = ["alex", "alex3",]
 define config.layers = ['master', 'alexlayer', 'transient', 'screens']
+define config.top_layers = [ 'toplayer' ]
+define config.say_layer = "toplayer"
 define flashbeat = Fade(0.4, 0.0, 0.05, color="#ffffff")
 
 $ config.menu_include_disabled = True
@@ -123,7 +125,7 @@ default music_choice = None
 
 # Testing
 
-default time_of_day = "2:00 PM"
+default time_of_day = "2:30PM"
 
 # Scaled Background Images
 init python:
@@ -168,15 +170,23 @@ init python:
     def scaled6(name):
         return im.FactorScale(name, KITCHEN_SCALE_X, KITCHEN_SCALE_Y)
 
+init python:
+    OVERLAY_SCALE_X = 0.5
+    OVERLAY_SCALE_Y = 0.5
+
+    def overlay(name):
+        return im.FactorScale(name, OVERLAY_SCALE_X, OVERLAY_SCALE_Y)
+
 init:
     image bedroom = scaled("bedroom.png")
     image doorway = scaled2("doorway.png")
     image porch = scaled3("porch.png")
     image lounge = scaled4("lounge.png")
     image lounge_test = scaled4("lounge_test.png")
-    image lounge_two = scaled4 ("lounge_two.png")
-    image bathroom = scaled5 ("bathroom.png")
+    image lounge_two = scaled4("lounge_two.png")
+    image bathroom = scaled5("bathroom.png")
     image kitchen = scaled6 ("kitchen.png")
+    image noise_overlay = overlay ("texture.jpg")
 
 # Scaled Assets
 init python:    
@@ -272,6 +282,18 @@ init:
     image danny_surprise = scaledsprite("danny_surprise.png")
     image danny_surprise2 = scaledsprite("danny_surprise2.png")
     image danny_surprise3 = scaledsprite("danny_surprise3.png")
+
+    image danny_disgust_smoking = scaledsprite("danny_disgust_smoking.png")
+    image danny_disgust_smoking2 = scaledsprite("danny_disgust_smoking2.png")
+    image danny_sad_smoking = scaledsprite("danny_sad_smoking.png")
+    image danny_sad_smoking2 = scaledsprite("danny_sad_smoking2.png")
+    image danny_happy_smoking = scaledsprite("danny_happy_smoking.png")
+    image danny_happy_smoking2 = scaledsprite("danny_happy_smoking2.png")
+    image danny_neutral_smoking2 = scaledsprite("danny_neutral_smoking.png")
+    image danny_shocked_smoking = scaledsprite("danny_shocked_smoking.png")
+    image danny_shocked_smoking2 = scaledsprite("danny_shocked_smoking2.png")
+    image danny_concerned_smoking = scaledsprite("danny_concerned_smoking.png")
+    image danny_concerned_smoking2 = scaledsprite("danny_concerned_smoking2.png")
     
 # Assets
 init python:    
@@ -353,6 +375,7 @@ transform right_to_left:
 label start:
 
     scene black
+    show screen noise_overlay
     with Fade(3,3,3)
 
     o "..." 
@@ -383,6 +406,7 @@ label start:
 
     show screen time_indicator
     scene bedroom
+    show screen noise_overlay
     with Dissolve(1)
 
     play sound "sfx/yawn.mp3" volume 0.5
@@ -464,6 +488,8 @@ label answer_door:
     with Dissolve(1)
 
     pause 1
+
+    $ time_of_day = "2:45 PM"
 
     show porch
     with Dissolve(1)
@@ -552,6 +578,8 @@ label scene_lounge:
     with Dissolve(1)
 
     pause 1
+
+    $ time_of_day = "3:00 PM"
 
     show lounge_test
     with Dissolve(1)
@@ -1160,9 +1188,9 @@ label act_two:
 
     pause 1
 
-    "ACT 2: THE PARTY GROWS QUIET."
+    $ time_of_day = "3:30 PM"
 
-    $ time_of_day = "3:00 PM"
+    "ACT 2: THE PARTY GROWS QUIET."
 
     show lounge_test
     with Dissolve(1)
@@ -1516,6 +1544,8 @@ menu:
 
 label post_presents:
 
+    $ time_of_day = "4:00 PM"
+
     hide cat_shocked
     hide charlie_confused3
     hide danny_disgust
@@ -1812,6 +1842,8 @@ label post_presents_outro:
 
 label post_presents_outro_two:
 
+    $ time_of_day = "4:15 PM"
+
     hide charlie_sad
     with Dissolve(0.5)
 
@@ -1832,12 +1864,15 @@ menu:
     set char_menu
 
     "Follow Charlie":
+        $ time_of_day = "4:30 PM"
         jump follow_charlie
 
     "Follow Cat":
+        $ time_of_day = "4:30 PM"
         jump follow_cat
 
     "Follow Danny":
+        $ time_of_day = "4:30 PM"
         jump follow_danny
 
     "Stay where you are":
@@ -2501,35 +2536,38 @@ label follow_danny:
     "Danny leans against the front of the house, admiring the neighbourhood."
     "You close the front door and turns to look at you."
 
-    show danny_disgust2
+    show danny_disgust_smoking
     with Dissolve(0.5)
 
     d "You know, every time I turn around you're just there. Staring."
 
-    hide danny_disgust2
-    show danny_surprise2
+    hide danny_disgust_smoking
+    show danny_shocked_smoking2
 
     d "If I didn't know you I'd probably think you were a serial killer."
 
-    hide danny_surprise2
-    show danny_neutral
+    hide danny_shocked_smoking2
+    show danny_shocked_smoking
 
     o "And because you know me?"
 
-    hide danny_neutral
-    show danny_happy2
+    hide danny_shocked_smoking
+    show danny_happy_smoking2
 
     d "I'm only like fifty percent sure."
 
+    hide danny_happy_smoking2
+    show danny_happy_smoking
+
     "He laughs, nudging your shoulder, but shortly notices that you aren't laughing at all."
     
-    hide danny_happy2
-    show danny_surprise2
+    hide danny_happy_smoking
+    show danny_shocked_smoking
 
     "His smile fades too."
 
-    hide danny_surprise2
-    show danny_disgust3
+    hide danny_shocked_smoking
+    show danny_concerned_smoking2
 
     d "Want a smoke?"
 
@@ -2543,9 +2581,18 @@ menu:
 
 label have_smoke:
 
+    hide danny_concerned_smoking2
+    show danny_happy_smoking2
+
     o "Yeah, okay. Sure."
 
+    hide danny_happy_smoking2
+    with Dissolve(0.5)
+
     "You inhale, coughing almost the second it hits the back of your throat."
+
+    show danny_happy3
+    with Dissolve(0.5)
 
     d "Hah. I'll have that back then."
 
@@ -2555,19 +2602,41 @@ label dont_smoke:
 
     o "No. I'm okay."
 
+    hide danny_concerned_smoking2
+    show danny_shocked_smoking
+
     d "Suit yourself."
 
 label danny_route_two:
 
+    hide danny_happy3
+    hide danny_shocked_smoking
+    show danny_sad_smoking
+
     d "..."
+
+    hide danny_sad_smoking
+    show danny_disgust_smoking
     
     d "Sorry. You know I don't actually think that. The serial killer thing."
 
+    hide danny_disgust_smoking
+    show danny_concerned_smoking
+
     d "I mean, I kinda did when we were kids."
+
+    hide danny_concerned_smoking
+    show danny_sad_smoking
 
     d "I was a dick."
 
+    hide danny_sad_smoking
+    show danny_concerned_smoking2
+
     d "I still think about the day we left you  during hide-and-seek. We were just fucking around, but we took it way too far."
+
+    hide danny_concerned_smoking2
+    show danny_sad_smoking
 
     d "And now, I guess I'm still leaving you behind."
 
@@ -2583,15 +2652,33 @@ label dont_want_you_to_go:
 
     $ betrayal +=1
 
+    hide danny_sad_smoking
+    show danny_shocked_smoking
+
     o "I don't want you to go."
+
+    hide danny_shocked_smoking
+    show danny_sad_smoking
 
     d "Yeah. I know."
 
+    hide danny_sad_smoking
+    show danny_shocked_smoking2
+
     d "I actually thought you'd be the first one to leave us."
+
+    hide danny_shocked_smoking2
+    show danny_concerned_smoking
 
     o "Why?"
 
+    hide danny_concerned_smoking
+    show danny_shocked_smoking2
+
     d "I dunno. You just always seemed like you were somewhere else."
+
+    hide danny_shocked_smoking2
+    show danny_concerned_smoking
 
     d "Like you didn't really need anyone."
 
@@ -2611,13 +2698,28 @@ menu:
 
 label show_i_cared:
 
+    hide danny_concerned_smoking
+    show danny_shocked_smoking
+
     o "I just didn't know how to show it. I thought it was obvious."
+
+    hide danny_shocked_smoking
+    show danny_concerned_smoking2
 
     d "Otter. You literally never say anything."
 
+    hide danny_concerned_smoking2
+    show danny_shocked_smoking2
+
     o "I know."
 
+    hide danny_shocked_smoking2
+    show danny_concerned_smoking
+
     d "Yeah. I suppose that is your whole thing."
+
+    hide danny_concerned_smoking
+    show danny_happy_smoking
 
     d "But I know now. Thanks for telling me."
 
@@ -2627,17 +2729,29 @@ label danny_love:
 
     $ danny_love += 1
 
+    hide danny_concerned_smoking
+    show danny_shocked_smoking
+
     o "You were the only one I ever truly cared about."
 
     "Your voice cracks. You've never been so raw and vulnerable before. For once, it seems like Danny has truly been caught off guard."
 
     d "..."
 
+    hide danny_shocked_smoking
+    show danny_shocked_smoking2
+
     d "...Seriously?"
+
+    hide danny_shocked_smoking2
+    show danny_shocked_smoking
 
     d "Even after I was a jerk to you?"
 
     o "Yeah."
+
+    hide danny_shocked_smoking
+    show danny_concerned_smoking
 
     d "Man... you really are weird."
 
@@ -2658,6 +2772,9 @@ label your_fault:
     $ violence += 1
     $ danny_bond -= 999
 
+    hide danny_concerned_smoking
+    show danny_sad_smoking
+
     o "You treated me like shit."
 
     o "You made everyone look at me like some kind of freak."
@@ -2666,7 +2783,13 @@ label your_fault:
 
 label danny_says_sorry_two:
 
+    hide danny_sad_smoking
+    show danny_concerned_smoking2
+
     d "I know. I'm sorry."
+
+    hide danny_concerned_smoking2
+    show danny_sad_smoking
 
     d "..."
 
@@ -2674,12 +2797,22 @@ label danny_says_sorry_two:
 
 label danny_path_outro:
 
+    hide danny_sad_smoking
+    hide danny_concerned_smoking
+    hide danny_happy_smoking
+    with Dissolve(0.5)
+
     "Danny stubs his cigarette out with his shoe."
+
+    show danny_happy2
+    with Dissolve(0.5)
 
     d "We should probably head back before everyone starts wondering if you finally killed me."
 
-    jump act_three
+    hide danny_happy2
+    with Dissolve(0.5)
 
+    jump act_three
 
 label stay_where_you_are:
 
@@ -2693,6 +2826,8 @@ label stay_where_you_are:
     with Dissolve(1)
 
     pause 1
+
+    $ time_of_day = "4:30 PM"
 
     show bathroom
     with Dissolve(1)
@@ -2784,6 +2919,15 @@ label go_to_kitchen:
 
 label act_three:
 
+    scene black
+    with Dissolve(1)
+
+    pause 1
+    $ time_of_day = "5:00 PM"
+
+    show black
+    with Dissolve(1)
+
     "ACT 3: THE DEATH OF THE PARTY."
 
     "..."
@@ -2844,6 +2988,8 @@ menu:
 
 label act_three_part_two:
 
+    $ time_of_day = "6:15 PM"
+
     "Suddenly, the voices of your friends become distant and muffled as though somewhere far away. The table. Your friends, slumped over it. It's all you can see. The dream feels more real now than ever."
     
     "You can't take it anymore."
@@ -2902,6 +3048,8 @@ o "Okay, let's go."
 
 d "Sweet. Let's bounce."
 
+$ time_of_day = "8:30 PM"
+
 "Danny turns the radio up as you drive, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
 
 "The smell should bother you more than it does, but all you can think is that it smells like Danny."
@@ -2952,6 +3100,8 @@ label cat_real_ending:
     o "Okay, let's go."
 
     c "Cool, let's head out."
+
+    $ time_of_day = "8:30 PM"
 
     "The two of you walk for a while, neither of you really knowing where you're going. Eventually, Cat slows down, looking back toward the house in the distance."
 
@@ -3013,6 +3163,8 @@ label charlie_real_ending:
 
     ch "Cool! Let's get outta here."
 
+    $ time_of_day = "8:30 PM"
+
     "You and Charlie slip out of the house and make your way toward the football field, climbing up into the empty bleachers. The town is quiet from up here, and the party feels impossibly far away, like it happened hours ago."
 
     ch "I think that fish was called Goldie. I'm actually sure of it."
@@ -3032,6 +3184,8 @@ label charlie_real_ending:
     return
 
 label violent_ending:
+
+    $ time_of_day = "8:30 PM"
 
     c "Otter-"
 
@@ -3088,6 +3242,8 @@ label violent_ending_closure:
 
 label betrayal_and_acceptance_endings:
 
+    $ time_of_day = "8:30 PM"
+
     "For a moment, nobody says anything. Your heart is pounding so hard that you can barely hear anything else."
 
     ch "Uhhh... Okay..."
@@ -3143,6 +3299,8 @@ label betrayal_and_acceptance_endings:
     "Charlie pushes himself up one final time."
 
     ch "...O-tter...?"
+
+    $ time_of_day = "10:45 PM"
 
     "You don't move. Horrifyingly, the room looks exactly the way it did in your dream."
     "You realise it was never a dream. It was never an irrational fear. Was it fate? Was it karma? Your brain feels like it could explode from the pressure."
@@ -3212,6 +3370,8 @@ menu:
 
 label acceptance_ending:
 
+    $ time_of_day = "11:30 PM"
+
     "There isn't time to think; you have to get help. You grab the home phone from the dock with shaking hands and nearly drop it before finally dialling 9-1-1."
 
     o "...Hello?!"
@@ -3241,6 +3401,8 @@ label acceptance_ending_closure:
 
 
 label betrayal_ending:
+
+    $ time_of_day = "11:30 PM"
 
     "You grab the home phone from the dock with shaking hands and... you freeze."
     "Cat stays looking toward you, fear and uncertainty written all over her face. You stare at her."
