@@ -188,6 +188,10 @@ init:
     image kitchen = scaled6 ("kitchen.png")
     image noise_overlay = overlay ("texture.jpg")
 
+# Endings
+
+    image ending_one = ("ending_one.png")
+
 # Scaled Assets
 init python:    
     ASSET_SCALE_X = 0.5
@@ -196,9 +200,24 @@ init python:
     def scaledasset(name):
         return im.FactorScale(name, ASSET_SCALE_X, ASSET_SCALE_Y)
 
-image danny_gift = scaledasset("danny_gift.png")
-image cat_gift = scaledasset("cat_gift.png")
-image charlie_gift = scaledasset("charlie_gift.png")
+init python:    
+    MIRROR_SCALE_X = 0.4
+    MIRROR_SCALE_Y = 0.4
+
+    def mirror(name):
+        return im.FactorScale(name, MIRROR_SCALE_X, MIRROR_SCALE_Y)
+
+image danny_present = scaledasset("danny_gift.png")
+image cat_present = scaledasset("cat_gift.png")
+image charlie_present = scaledasset("charlie_gift.png")
+image danny_present_wrapped = scaledasset("danny_gift.png")
+image cat_present_wrapped = scaledasset("cat_gift.png")
+image charlie_present_wrapped = scaledasset("charlie_gift.png")
+image otter_mirror = mirror ("otter_mirror.png")
+image otter_mirror_transparent = mirror ("otter_mirror_transparent.png")
+image goldfish_photo = scaledasset("otter_mirror.png")
+image group_photo = scaledasset("otter_mirror.png")
+image ending_danny = ("ending_danny.png")
 
 # Scaled Sprites
 init python:    
@@ -427,9 +446,16 @@ menu:
         jump wake_up_menu
 
     "Look in the mirror":
+        scene black
+        show otter_mirror:
+            xalign 0.5
+            yalign 0.2
+        with Dissolve(1)
         $ reply = renpy.random.choice(replies2)
 
         o "[reply]"
+        scene bedroom
+        with Dissolve(1)
         jump wake_up_menu
 
     "Inspect room":
@@ -475,7 +501,16 @@ menu:
 
 label ending_one:
 
-    "You failed to answer the door."
+    scene black
+    hide screen time_of_day
+    with Dissolve(1)
+
+    pause 1
+
+    show ending_one
+    with Dissolve(1)
+
+    "You failed to answer the door this time."
 
     return
 
@@ -3063,6 +3098,17 @@ d "We're gonna be alright, you know. Me and you."
 d "I can't wait to see everyone at Columbia."
 
 d "Try not to miss me too much, serial killer."
+
+scene black
+with Dissolve (1)
+
+show danny_ending
+with Dissolve(1)
+
+pause 5
+
+scene black
+with Dissolve(1)
 
 return
 
