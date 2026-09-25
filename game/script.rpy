@@ -191,6 +191,13 @@ init python:
     def scaled8(name):
         return im.FactorScale(name, PORCH_SCALE_X, PORCH_SCALE_Y)
 
+init python:
+    NEW_KITCHEN_SCALE_X = 1.1
+    NEW_KITCHEN_SCALE_Y = 1.1
+
+    def scaled9(name):
+        return im.FactorScale(name, NEW_KITCHEN_SCALE_X, NEW_KITCHEN_SCALE_Y)
+
 init:
     image bedroom = scaled("bedroom.png")
     image doorway = scaled2("doorway.png")
@@ -199,7 +206,7 @@ init:
     image lounge_test = scaled4("lounge_test.png")
     image lounge_two = scaled4("lounge_two.png")
     image bathroom = scaled5("bathroom.png")
-    image kitchen = scaled6 ("kitchen.png")
+    image kitchen = scaled9("kitchen.png")
     image outside = scaled6("outside.png")
     image house_exterior = scaled6("house_exterior.png")
     image house_exterior_two = scaled6("house_exterior_two.png")
@@ -2932,7 +2939,9 @@ label go_to_kitchen:
 
     pause 1
 
-    show kitchen
+    show kitchen:
+        xalign 0.5
+        yalign 0.35
     with Dissolve(1)
 
     "Something pulls you toward the kitchen."
