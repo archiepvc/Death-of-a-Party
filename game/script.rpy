@@ -184,6 +184,13 @@ init python:
     def scaled7(name):
         return im.FactorScale(name, HALLWAY_SCALE_X, HALLWAY_SCALE_Y)
 
+init python:
+    PORCH_SCALE_X = 0.65
+    PORCH_SCALE_Y = 0.65
+
+    def scaled8(name):
+        return im.FactorScale(name, PORCH_SCALE_X, PORCH_SCALE_Y)
+
 init:
     image bedroom = scaled("bedroom.png")
     image doorway = scaled2("doorway.png")
@@ -197,6 +204,8 @@ init:
     image house_exterior = scaled6("house_exterior.png")
     image house_exterior_two = scaled6("house_exterior_two.png")
     image hallway = scaled7("hallway.png")
+    image back_porch = scaled8("back_porch.png")
+    image balcony = ("balcony.png")
 
     image noise_overlay = overlay ("texture.jpg")
 
@@ -1922,7 +1931,10 @@ label follow_charlie:
 
     $ charlie_bond += 1
 
-    show outside
+    show back_porch:
+        xalign 0.5
+        yalign 0.55
+    
     with Dissolve(1)
 
     "You slide the back door open and the warm summer air immediately wraps around you. Charlie sits on the porch, looking at a picture in his wallet. He notices you almost immediately."
@@ -2567,11 +2579,11 @@ label follow_danny:
 
     pause 1
 
-    show black
+    show balcony
     with Dissolve(1)
 
-    "Danny leans against the front of the house, admiring the neighbourhood."
-    "You close the front door and turns to look at you."
+    "Danny leans against the wire gate on the balcony, admiring the neighbourhood."
+    "You close the front door and he turns to look at you."
 
     show danny_disgust_smoking
     with Dissolve(0.5)
