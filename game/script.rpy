@@ -87,9 +87,9 @@ define replies2 = [
     ("Have I always been so pale?"),   
 ]
 define alex_expressions = ["alex", "alex3",]
-define config.layers = ['master', 'alexlayer', 'transient', 'screens']
+define config.layers = ['master', 'alexlayer', 'transient', 'say', 'screens',]
 define config.top_layers = [ 'toplayer' ]
-define config.say_layer = "toplayer"
+define config.say_layer = "say"
 define flashbeat = Fade(0.4, 0.0, 0.05, color="#ffffff")
 
 $ config.menu_include_disabled = True
@@ -177,6 +177,13 @@ init python:
     def overlay(name):
         return im.FactorScale(name, OVERLAY_SCALE_X, OVERLAY_SCALE_Y)
 
+init python:
+    HALLWAY_SCALE_X = 0.78
+    HALLWAY_SCALE_Y = 0.78
+
+    def scaled7(name):
+        return im.FactorScale(name, HALLWAY_SCALE_X, HALLWAY_SCALE_Y)
+
 init:
     image bedroom = scaled("bedroom.png")
     image doorway = scaled2("doorway.png")
@@ -186,11 +193,17 @@ init:
     image lounge_two = scaled4("lounge_two.png")
     image bathroom = scaled5("bathroom.png")
     image kitchen = scaled6 ("kitchen.png")
+    image outside = scaled6("outside.png")
+    image house_exterior = scaled6("house_exterior.png")
+    image house_exterior_two = scaled6("house_exterior_two.png")
+    image hallway = scaled7("hallway.png")
+
     image noise_overlay = overlay ("texture.jpg")
 
 # Endings
 
     image ending_one = ("ending_one.png")
+    image ending_danny = ("ending_danny.png")
 
 # Scaled Assets
 init python:    
@@ -215,9 +228,8 @@ image cat_present_wrapped = scaledasset("cat_gift.png")
 image charlie_present_wrapped = scaledasset("charlie_gift.png")
 image otter_mirror = mirror ("otter_mirror.png")
 image otter_mirror_transparent = mirror ("otter_mirror_transparent.png")
-image goldfish_photo = scaledasset("otter_mirror.png")
-image group_photo = scaledasset("otter_mirror.png")
-image ending_danny = ("ending_danny.png")
+image goldfish_photo = scaledasset("goldfish_photo.png")
+image group_photo = scaledasset("group_photo.png")
 
 # Scaled Sprites
 init python:    
@@ -313,18 +325,6 @@ init:
     image danny_shocked_smoking2 = scaledsprite("danny_shocked_smoking2.png")
     image danny_concerned_smoking = scaledsprite("danny_concerned_smoking.png")
     image danny_concerned_smoking2 = scaledsprite("danny_concerned_smoking2.png")
-    
-# Assets
-init python:    
-    SCALE_X = 0.25
-    SCALE_Y = 0.25
-
-    def scaledasset(name):
-        return im.FactorScale(name, SCALE_X, SCALE_Y)
-
-init:
-
-    image text = scaledasset ("text.png")
     
 # Transforms for Sprites
 transform right:
@@ -502,7 +502,7 @@ menu:
 label ending_one:
 
     scene black
-    hide screen time_of_day
+    hide screen time_indicator
     with Dissolve(1)
 
     pause 1
@@ -1920,10 +1920,10 @@ label follow_charlie:
 
     pause 1
 
-    show black
-    with Dissolve(1)
-
     $ charlie_bond += 1
+
+    show outside
+    with Dissolve(1)
 
     "You slide the back door open and the warm summer air immediately wraps around you. Charlie sits on the porch, looking at a picture in his wallet. He notices you almost immediately."
 
@@ -1967,7 +1967,7 @@ label charlie_path_two:
     
     pause 1
 
-    show charlie_gift
+    show charlie_present
     with Dissolve(0.5)
 
     "Charlie looks down, distractedly admiring the photograph of you two and the goldfish you were so attached to. You couldn't have been older than twelve."
@@ -2030,7 +2030,7 @@ label charlie_path_three:
 
     ch "Still together after graduation, looking back. It felt like it came way too soon..."
 
-    $ charlie_not_love
+    $ charlie_not_love += 1
 
     jump charlie_menu
 
@@ -2171,7 +2171,7 @@ label thanks_otter:
 
 label charlie_heartbreak:
 
-    $ charlie_bond -= 999
+    $ charlie_bond = -999
     hide charlie_sad
     show charlie_sad2
 
@@ -2196,14 +2196,14 @@ label charlie_path_outro:
 
 label follow_cat:
 
-    $ cat_bond +=1
-
     scene black
     with Dissolve(1)
 
     pause 1
 
-    show black
+    $ cat_bond +=1
+
+    show bedroom
     with Dissolve(1)
 
     "You make your way down the hallway, noting that the door to your bedroom is already half open. Cat stands by the window, her back to you."
@@ -2308,11 +2308,11 @@ label cat_route_two:
 
 menu:
 
-    "Crying wouldn't change anything.":
+    "Crying wouldn't change anything":
         o "It's not like crying would've changed anything."
         jump cat_route_three
 
-    "That dog was annoying.":
+    "That dog was annoying":
         o "So what? He was annoying."
         jump cat_route_three
 
@@ -2356,7 +2356,7 @@ menu:
     "I didn't know how":
         jump didnt_know_how
 
-    "I don't feel things like you.":
+    "I don't feel things like you":
         jump dont_feel_things
 
 label didnt_know_how:
@@ -2449,6 +2449,7 @@ label just_friends:
 
 label cat_route_four:
 
+    hide cat_happy
     hide cat_happy3
     show cat_neutral
 
@@ -2464,7 +2465,7 @@ label cat_route_four:
 
 menu:
 
-    "Me too.":
+    "Me too":
         jump me_too
 
     "Then why are you leaving me?":
@@ -2494,6 +2495,7 @@ label me_too:
 
     o "Me too."
 
+    hide cat_sad2
     hide cat_surprised
     show cat_happy2
 
@@ -2540,7 +2542,7 @@ label dont_feel_things:
     c "I see."
 
     $ violence += 1
-    $ cat_bond -= 9999
+    $ cat_bond = -999
 
 label cat_path_outro:
 
@@ -2641,6 +2643,8 @@ label dont_smoke:
     show danny_shocked_smoking
 
     d "Suit yourself."
+
+    jump danny_route_two
 
 label danny_route_two:
 
@@ -2805,7 +2809,7 @@ label your_fault:
 
     $ betrayal += 1
     $ violence += 1
-    $ danny_bond -= 999
+    $ danny_bond = -999
 
     hide danny_concerned_smoking
     show danny_sad_smoking
@@ -3036,7 +3040,7 @@ label act_three_part_two:
     if danny_bond > 4:
         jump danny_ending
 
-    elif cat_bond > 4:
+    elif cat_bond > 3:
         jump cat_ending
 
     elif charlie_bond > 4:
@@ -3100,9 +3104,10 @@ d "I can't wait to see everyone at Columbia."
 d "Try not to miss me too much, serial killer."
 
 scene black
+hide time_indicator
 with Dissolve (1)
 
-show danny_ending
+show ending_danny
 with Dissolve(1)
 
 pause 5
@@ -3140,6 +3145,8 @@ label cat_fakeout_ending:
     "You nod."
 
     c "As you wish."
+
+    jump betrayal_and_acceptance_endings
 
 label cat_real_ending:
 
@@ -3247,17 +3254,19 @@ label violent_ending:
 
     "Looking around, the anger suddenly drains out of you. You look at their faces and realise how scared they are."
 
-    menu:
+    if polaroid > 0:
 
-        "Inspect photo in pocket" if polaroid == 1:
-            "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
-            jump violent_ending_closure
+        menu:
+
+            "Inspect photo in pocket":
+                "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+                jump violent_ending_closure
 
 label violent_ending_closure:
 
     o "...I'm sorry"
 
-    o "I just dont want you to go..."
+    o "I just don't want you to go..."
 
     c "Otter, we're not leaving you!"
 
@@ -3372,7 +3381,7 @@ label betrayal_and_acceptance_endings:
 
     o "PLEEEEEEASEEE!!!!!!!!!"
 
-    if truth == 1:
+    if truth > 0:
 
         "That's when it hits you."
         "That's when it REALLY hits you."
@@ -3405,14 +3414,14 @@ menu:
     "Save them" if acceptance > 4:
         jump acceptance_ending
 
-    "{color=#956dc9}Save them{/color}" (disabled=True) if acceptance < 4:
+    "{color=#956dc9}Save them{/color}" (disabled=True) if acceptance <= 4:
         pass
 
-    "Let them die" if betrayal >= 4:
+    "{color=#956dc9}Let them die{/color}" (disabled=True) if acceptance > 4:
+        pass
+
+    "Let them die" if acceptance <= 4:
         jump betrayal_ending
-
-    "{color=#956dc9}Let them die{/color}" (disabled=True) if betrayal < 4:
-        pass
 
 label acceptance_ending:
 
@@ -3430,11 +3439,13 @@ label acceptance_ending:
 
     o "I'm so sorry..."
 
-    menu:
+    if polaroid > 0:
 
-        "Inspect photo in pocket" if polaroid == 1:
-            "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
-            jump acceptance_ending_closure
+        menu:
+
+            "Inspect photo in pocket":
+                "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+                jump acceptance_ending_closure
 
 
 label acceptance_ending_closure:
@@ -3455,11 +3466,13 @@ label betrayal_ending:
     "She looks confused now. Almost... betrayed."
     "Your eyes drift toward the others, motionless, slumped over the table."
     
-menu:
+    if polaroid > 0:
 
-    "Inspect photo in pocket" if polaroid == 1:
-        "Who would've thought that the day would end like this? You all looked so happy just hours earlier. What a shame."
-        jump betrayal_ending_closure
+        menu:
+
+            "Inspect photo in pocket":
+                "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+                jump betrayal_ending_closure
 
 label betrayal_ending_closure:
 
