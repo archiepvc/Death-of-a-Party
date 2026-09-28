@@ -200,6 +200,13 @@ init python:
     def scaled9(name):
         return im.FactorScale(name, NEW_KITCHEN_SCALE_X, NEW_KITCHEN_SCALE_Y)
 
+init python:
+    DINING_TABLE_SCALE_X = 1.52
+    DINING_TABLE_SCALE_Y = 1.52
+
+    def scaled10(name):
+        return im.FactorScale(name, DINING_TABLE_SCALE_X, DINING_TABLE_SCALE_Y)
+
 init:
     image bedroom = scaled("bedroom.png")
     image doorway = scaled2("doorway.png")
@@ -215,6 +222,7 @@ init:
     image hallway = scaled7("hallway.png")
     image back_porch = scaled8("back_porch.png")
     image balcony = ("balcony.png")
+    image dining_table = scaled10("dining_table2.png")
 
     image noise_overlay = overlay ("texture.jpg")
 
@@ -648,7 +656,7 @@ menu:
     "Make yourselves at home":
         jump make_yourselves_at_home
 
-    "...":
+    "Say nothing":
         jump say_nothing
 
 label say_nothing:
@@ -1277,7 +1285,7 @@ label act_two:
     show lounge_test
     with Dissolve(1)
 
-    "Charlie rubs his hands together before hurrying everyone onto the carpet. The pile of presents sit proudly in the middle of the living room."
+    "Charlie rubs his hands together before hurrying everyone onto the carpet. The pile of presents sits proudly in the middle of the living room."
 
     show danny_disgust2 at left
     show charlie_neutral at right
@@ -1402,7 +1410,7 @@ label present_menu_intro:
     show charlie_happy3
     with Dissolve(0.5)
 
-    ch "Ahem...  anyway. Who's is next?"
+    ch "Ahem...  anyway. Whose is next?"
 
 label present_menu:
 
@@ -1422,7 +1430,11 @@ menu:
 
 label charlie_present:
 
-    $ charlie_bond += 2
+    if presents_opened ==0:
+        $ charlie_bond += 2
+    else:
+        $ charlie_bond +=1
+    
     $ presents_opened += 1
 
     hide charlie_happy3
@@ -1505,7 +1517,11 @@ if presents_opened < 3:
 
 label cat_present:
 
-    $ cat_bond += 2
+    if presents_opened ==0:
+        $ cat_bond += 2
+    else:
+        $ cat_bond +=1
+    
     $ presents_opened += 1
 
     hide charlie_happy3
@@ -1566,7 +1582,11 @@ menu:
 
 label danny_present:
 
-    $ danny_bond += 2
+    if presents_opened ==0:
+        $ danny_bond += 2
+    else:
+        $ danny_bond +=1
+
     $ presents_opened += 1
 
     hide charlie_happy3
@@ -1773,8 +1793,8 @@ menu:
     "I'm happy for you" (disabled=violence >= 4) if violence < 4:
         jump happy_for_you
 
-    "{color=#956dc9}I'm happy for you{/color}" (disabled=violence >= 4) if violence >= 4:
-        jump happy_for_you
+    "{color=#956dc9}Why didn't you tell me?!{/color}" (disabled=violence >=4) if violence >= 4:
+        jump why_didnt_you_tell_me
 
     "Why didn't you tell me?!" (disabled=violence >= 4) if violence < 4:
         jump why_didnt_you_tell_me
@@ -2230,7 +2250,7 @@ menu:
         o "That's not a good idea. I know she doesn't like you."
         jump charlie_heartbreak
 
-    "Good for you..." if charlie_love == 2:
+    "Try to sound happy for him" if charlie_love == 2:
         o "Oh... er... good for you, man."
         $ betrayal += 1
         jump thanks_otter
@@ -2288,7 +2308,7 @@ label follow_cat:
     show cat_sad
     with Dissolve(0.5)
 
-    c "Look, Otto... I'm really sorry we're leaving."
+    c "Look, Otter... I'm really sorry we're leaving."
 
 menu:
 
@@ -2686,7 +2706,7 @@ label follow_danny:
 
 menu:
 
-    "Sure.":
+    "Sure":
         jump have_smoke
 
     "I'm okay":
@@ -2949,7 +2969,7 @@ label stay_where_you_are:
 
     o "..."
 
-    "Huh. The bottle isn't in its usual spot. You glance toward the bin beside the sink and spot the empty capsule inside. Didn't you just get a new refill?"
+    "Huh. The bottle isn't in its usual spot. You glance toward the bin beside the sink and spot the empty bottle inside. Didn't you just get a new refill?"
     
 menu:
 
@@ -3024,11 +3044,11 @@ label go_to_kitchen:
     "You remember noticing them pulling away. You remember how often they'd started talking about the future, about college, hushed and out of sight."
     "You remember the sinking feeling that something was being kept from you, and the anger that came with it. You remember being afraid that they were going to leave."
 
-    "Columbia. They had mentioned it before. You can't believe you'd forgot."
+    "Columbia. They had mentioned it before. You can't believe you'd forgotten."
 
     $ truth += 1
 
-    "A loud voice echoes throughout the house, seperating you from your thoughts."
+    "A loud voice echoes throughout the house, separating you from your thoughts."
 
     ch "Otter! Let's finally get into that cake, huh?"
 
@@ -3042,18 +3062,18 @@ label act_three:
     pause 1
     $ time_of_day = "5:00 PM"
 
-    show black
+    show dining_table at truecenter
     with Dissolve(1)
 
     "ACT 3: THE DEATH OF THE PARTY."
 
     "..."
 
-    "The four of you sit around the dining table. You don't really remember getting here, it happened all so fast."
+    "The four of you sit around the dining table. You don't really remember getting here, it all happened so fast."
 
     "The room is dimmer than it was earlier, with birthday decorations still hanging from the walls, and everyone now sporting these colourful, pointy, party hats. The cake sits in the center."
 
-    "All three of them are sitting together in front of you, and its clear that nobody wants to be the first one to talk."
+    "All three of them are sitting together in front of you, and it's clear that nobody wants to be the first one to talk."
 
     "They look nervous."
 
@@ -3067,7 +3087,7 @@ label act_three:
 
     ch "What do you want me to say? No one else was saying anything!"
 
-    c "Please don't make a him do a speech."
+    c "Please don't make him give a speechspeech."
 
     "The room falls silent again."
 
@@ -3312,7 +3332,7 @@ label charlie_real_ending:
 
     ch "You know, I'm gonna miss you little man, you're always gonna be my best pal."
 
-    ch "But, I'm looking forward to see what's next."
+    ch "But, I'm looking forward to seeing what's next."
 
     ch "I really can't wait for college with those guys..."
 
@@ -3456,7 +3476,7 @@ label betrayal_and_acceptance_endings:
 
     ch "Wait. Something's really wrong."
 
-    "Your stomach drops. Charlie's face has gone pale and Cat's not starting to look well either."
+    "Your stomach drops. Charlie's face has gone pale and Cat doesn't look well either."
 
     c "I don't feel so good.."
 
