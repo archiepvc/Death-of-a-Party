@@ -11,6 +11,9 @@ init offset = -1
 
 # Testing
 
+
+# Testing
+
 screen noise_overlay():
     add "texture.jpg":
         blend "multiply"
@@ -313,7 +316,7 @@ screen navigation():
         style_prefix "navigation"
 
         xpos gui.navigation_xpos
-        yalign 0.5
+        yalign 0.35
 
         spacing gui.navigation_spacing
 
@@ -407,7 +410,7 @@ style main_menu_frame:
     xsize 420
     yfill True
 
-    background "gui/overlay/main_menu.png"
+
 
 style main_menu_vbox:
     xalign 1.0
