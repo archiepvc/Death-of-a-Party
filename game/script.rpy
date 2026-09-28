@@ -69,6 +69,47 @@ init python:
         elif event in ("slow_done", "end"):
             renpy.sound.stop(channel="textsound")
 
+transform ending_box_appear:
+    alpha 0.0
+    linear 0.3 alpha 1.0
+
+screen ending_text():
+    frame:
+        at ending_box_appear
+        xpos 70
+        yalign 0.72
+        xpadding 30
+        ypadding 20
+        background Solid("#342559")
+
+        text "YOU FAILED TO ANSWER THE DOOR":
+            color "#ffffff"
+            size 50
+            slow_cps 15
+
+screen act_one_text():
+    text "ACT ONE: THE PARTY BEGINS":
+        xalign 0.5
+        yalign 0.5
+        color "#ffffff"
+        size 50
+        slow_cps 15
+
+screen act_two_text():
+    text "ACT TWO: THE PARTY GROWS QUIET":
+        xalign 0.5
+        yalign 0.5
+        color "#ffffff"
+        size 50
+        slow_cps 15
+
+screen act_three_text():
+    text "ACT THREE: THE PARTY GROWS QUIET":
+        xalign 0.5
+        yalign 0.5
+        color "#ffffff"
+        size 50
+        slow_cps 15
 
 # Characters
 define o = Character(_("Otter"), color="#956dc9", what_slow_cps=35, callback=text_sounds)
@@ -79,7 +120,7 @@ define unknown = Character(_("{i}???{/i}"), color="#bdbdbd", what_slow_cps=35, c
 define narrator = Character(None, what_italic=True, what_slow_cps=35, callback=text_sounds)
 define replies = [
     ("It wasn't real."),
-    ("I think I had a bad dream...."),
+    ("I think I had a bad dream..."),
     ("Why can't I remember?"),
 ]
 define replies2 = [
@@ -112,6 +153,8 @@ default danny_love = 0
 default presents_opened = 0
 
 default greyed_out = False
+
+default annoying = 0
 
 image white = Solid("#ffffff")
 
@@ -213,7 +256,7 @@ init:
     image porch = scaled3("porch.png")
     image lounge = scaled4("lounge.png")
     image lounge_test = scaled4("lounge_test.png")
-    image lounge_two = scaled4("lounge_two.png")
+    image lounge_two = scaled7("lounge_two.png")
     image bathroom = scaled5("bathroom.png")
     image kitchen = scaled9("kitchen.png")
     image outside = scaled6("outside.png")
@@ -418,6 +461,14 @@ transform right_to_left:
     yalign 1.0
     ease 1.0 xalign 0.0
 
+transform text_shake:
+    xoffset 0
+    linear 0.02 xoffset -10
+    linear 0.02 xoffset 10
+    linear 0.02 xoffset -6
+    linear 0.02 xoffset 6
+    linear 0.02 xoffset 0
+
 # The Game Starts Here
 label start:
 
@@ -445,16 +496,21 @@ label start:
 
     o "PLEEEEEEASEEE!!!!!!!!!"
 
-    pause 1
+    show black
+    with Dissolve(1)
 
-    "ACT 1: THE PARTY BEGINS."
+
+    show screen act_one_text
+    pause 3.0
+    hide screen act_one_text
+    with Dissolve(1)
 
     ## ACT 1 BEGINS HERE !!! ##
 
     show screen time_indicator
     scene bedroom
     show screen noise_overlay
-    with Dissolve(1)
+    with Dissolve(5)
 
     play sound "sfx/yawn.mp3" volume 0.5
 
@@ -467,7 +523,7 @@ label wake_up_menu:
 
 menu:
 
-    "Think about dream":
+    "Think about the dream":
         $ reply = renpy.random.choice(replies)
 
         o "[reply]"
@@ -486,7 +542,7 @@ menu:
         with Dissolve(1)
         jump wake_up_menu
 
-    "Inspect room":
+    "Get out of bed":
         jump leave_room
 
 label leave_room:
@@ -494,7 +550,7 @@ label leave_room:
     o "Shit. June 1st already? I'll be expecting them any minute now."
 
     "The calendar hanging across the room tells you it's June 1st, 2006. Your eighteenth birthday."
-    "You've been waiting for this day for weeks and absolutely nothing could ruin it."
+    "You've spent weeks imagining today. It has to go well. Your parents won't even be home anytime soon."
 
     scene black
     with Dissolve(1)
@@ -529,23 +585,51 @@ menu:
 
 label ending_one:
 
+    $ annoying += 1
+
+    with hpunch
+    "{i} KNOCK KNOCK {/i}"
+
+    with hpunch
+    "{i} KNOCK KNOCK {/i}"
+    with hpunch
+
+    d "OTTER! OPEN UP!"
+
+menu:
+
+    "Answer the door":
+        jump answer_door
+
+    "Ignore the door... again":
+        jump ending_one_final
+
+
+label ending_one_final:
+
     scene black
     hide screen time_indicator
-    with Dissolve(1)
+    with Dissolve(3)
 
-    pause 1
+    pause 2
 
     show ending_one
+    show screen ending_text
     with Dissolve(1)
 
-    "You failed to answer the door this time."
+    pause 5
+
+    scene black
+    hide screen ending_text
+    with Dissolve(5)
+
+    pause 5
 
     return
 
 label answer_door:
 
-    "You rest your hand on the doorknob."
-    "You force a smile you don't entirely feel and pull the door open."
+    "You rest your hand on the doorknob. Forcing a smile you don't entirely feel, you pull the door open."
 
     scene black
     with Dissolve(1)
@@ -560,7 +644,14 @@ label answer_door:
     show charlie_happy2
     with Dissolve(0.5)
 
+    if annoying == 1:
+
+        ch "Finally! He emerges! Happy birthday, pal."
+        jump skip_intro
+
     ch "Ahh... he emerges! Happy birthday, pal."
+
+label skip_intro:
 
     hide charlie_happy2
     show charlie_neutral
@@ -694,7 +785,7 @@ label lounge:
     hide cat_angry2
     with Dissolve(0.5)
 
-    "Charlie is now kneeling on the carpet, trying to organise a pile of presents into something that vaguely resembles a neat stack."
+    "Charlie is now kneeling on the carpet, trying to organize a pile of presents into something that vaguely resembles a neat stack."
 
     show charlie_happy2
     with Dissolve(0.5)
@@ -816,7 +907,7 @@ label take_photo:
     hide charlie_neutral
     show charlie_shocked
 
-    o "A picture first may be nice?"
+    o "Can we get a picture first?"
 
     hide charlie_shocked
     show charlie_happy2
@@ -857,7 +948,7 @@ label take_photo:
     show cat_angry3 at left
     with Dissolve(0.5)
 
-    c "You know that's a myth right? It doesn't do anything."
+    c "You know that's a myth, right? It doesn't do anything."
 
     hide cat_angry3
     show cat_shocked at left
@@ -976,7 +1067,7 @@ label charlies_mix:
     hide danny_neutral
     show danny_surprise2
 
-    "Let's put Charlie's one on."
+    o "Let's put Charlie's one on."
 
     hide danny_surprise2
     show danny_disgust at center_to_left
@@ -1011,7 +1102,7 @@ label cats_mix:
 
     $ cat_bond += 1
 
-    "Let's put Cat's one on."
+    o "Let's put Cat's one on."
 
     hide danny_surprise2
     show cat_shocked
@@ -1022,7 +1113,7 @@ label cats_mix:
     hide cat_shocked
     with Dissolve(0.5)
 
-    "The music that spills into the room is raw and emotional; unlike anything the others would've picked."
+    "The music that spills into the room is raw and emotional, unlike anything the others would've picked."
 
     "Charlie wrinkles his nose up while Danny quietly nods along to the rhythm."
 
@@ -1062,7 +1153,7 @@ label something_new:
     hide danny_disgust3
     with Dissolve(0.5)
 
-    "A tune fills the space around you, and is clearly something that one of your parents listen to."
+    "A tune fills the space around you, and is clearly something that your parents listen to."
 
     "It's not unpleasant, and the four of you find yourselves getting lost in the gentle rhythm."
 
@@ -1274,15 +1365,22 @@ label act_two:
 
     scene black
     hide charlie_happy3
+    hide screen time_indicator
     with Dissolve(1)
 
     pause 1
 
+    show screen act_two_text
+    pause 3.0
+    hide screen act_two_text
+    with Dissolve(1)
+
+    ## ACT 1 BEGINS HERE !!! ##
+
     $ time_of_day = "3:30 PM"
-
-    "ACT 2: THE PARTY GROWS QUIET."
-
-    show lounge_test
+    show screen time_indicator
+    scene lounge_two
+    show screen noise_overlay
     with Dissolve(1)
 
     "Charlie rubs his hands together before hurrying everyone onto the carpet. The pile of presents sits proudly in the middle of the living room."
@@ -1440,7 +1538,7 @@ label charlie_present:
     hide charlie_happy3
     show charlie_shocked
 
-    o "I suppose... Let's go with yours."
+    o "Let's open yours."
 
     if presents_opened == 1:
 
@@ -1527,7 +1625,7 @@ label cat_present:
     hide charlie_happy3
     show charlie_shocked
 
-    o "I suppose... Let's go with Cat's."
+    o "Cat's next."
 
     hide charlie_shocked
     show cat_happy
@@ -1550,7 +1648,7 @@ label cat_present:
     hide cat_present
     with Dissolve(1)
 
-    c "It's nothing really... just some new music I thought I could put you on while we're apart."
+    c "It's nothing really... just some new music I thought you might like while we're apart."
 
     hide cat_surprised
     show cat_neutral
@@ -1592,7 +1690,7 @@ label danny_present:
     hide charlie_happy3
     show charlie_shocked
 
-    o "I suppose... Let's go with Danny's."
+    o "Let's try Danny's."
 
     hide charlie_shocked
     show danny_disgust
@@ -1619,7 +1717,7 @@ label danny_present:
         zoom 0.8
     with Dissolve(2)
 
-    "Inside sits a vintage polaroid camera. A 600 series from what looks like the early 1980's. It's in excellent condition."
+    "Inside sits a vintage polaroid camera. A 600 series from what looks like the early 1980s. It's in excellent condition."
 
     hide danny_present
     with Dissolve(1)
@@ -1763,7 +1861,7 @@ label post_presents_two:
 
     "There's no way they've told you this before, you would definitely remember something this important."
 
-    "You look from Charlie to Cat... then Danny... waiting for someone to laugh, to say its a joke, that they'd all decided to mess with you on your birthday."
+    "You look from Charlie to Cat... then Danny... waiting for someone to laugh, to say it's a joke, that they'd all decided to mess with you on your birthday."
 
     "No one laughs."
     "The day that was supposed to be special suddenly just feels suffocating."
@@ -1861,7 +1959,7 @@ label why_didnt_you_tell_me:
     hide danny_disgust2
     show danny_surprise
 
-    o "Cut with the shit! You've never told me anything!"
+    o "Cut the shit! You've never told me anything!"
 
     hide danny_surprise
     show charlie_happy3
@@ -1976,7 +2074,7 @@ label post_presents_outro_two:
 
     "Charlie quietly excuses himself, muttering something about needing some air before disappearing through the sliding door into the backyard."
 
-    "Danny pats his pockets and leaves through the front door, clearly hinting at having a smoke."
+    "Danny pats his pockets and leaves out the balcony, clearly hinting at having a smoke."
 
     "Cat lingers for a moment before slipping down the hallway out of sight."
 
@@ -2000,7 +2098,7 @@ menu:
         $ time_of_day = "4:30 PM"
         jump follow_danny
 
-    "Stay where you are":
+    "Take a minute alone":
         jump stay_where_you_are
 
 label follow_charlie:
@@ -2082,13 +2180,13 @@ label charlie_path_two:
 
     o "..."
 
-    hide charlie_present
-    with Dissolve(0.5)
+    hide goldfish_photo
+    with Dissolve(1)
 
-    pause 1
+    pause 0.5
 
     show charlie_happy3
-    with Dissolve(0.5)
+    with Dissolve(1)
 
     ch "You know, I always thought we'd end up like this."
 
@@ -2115,7 +2213,7 @@ label charlie_love:
     hide charlie_shocked
     show charlie_happy3
 
-    ch "Ahh.. well, still together after graduation, looking back. It felt like it came way too soon..."
+    ch "Ahh... well, still together after graduation, looking back. It felt like it came way too soon..."
 
     jump charlie_menu
 
@@ -2261,7 +2359,7 @@ label thanks_otter:
     hide charlie_confused
     show charlie_neutral2
 
-    ch "Thanks Otter. I knew I could count on you."
+    ch "Thanks, Otter. I knew I could count on you."
     
     jump charlie_path_outro
 
@@ -2276,7 +2374,7 @@ label charlie_heartbreak:
     hide charlie_sad2
     show charlie_sad
 
-    ch " I see..."
+    ch "I see..."
 
     jump charlie_path_outro
 
@@ -2286,7 +2384,7 @@ label charlie_path_outro:
     hide charlie_sad
     show charlie_happy3
 
-    ch "Anyway, let's go back inside huh? I heard there's some cake just begging to be eaten!"
+    ch "Anyway, let's go back inside, huh? I heard there's some cake just begging to be eaten!"
 
     jump act_three
 
@@ -2395,7 +2493,7 @@ label cat_route_two:
     hide cat_worried
     show cat_distraught
 
-    c "You invited us over for some kind of impromptu gaming session and told us that your crying family was just 'being dramatic'"
+    c "You invited us over for some kind of impromptu gaming session and told us that your crying family was just 'being dramatic.'"
 
     hide cat_distraught
     show cat_sad2
@@ -2606,7 +2704,7 @@ label dont_feel_things:
 
     o "Well, maybe I just don't feel things the way you do."
 
-    "Cat's smile fades. She's trying to figure out if you're joking, but your face says otherwise."
+    "Cat goes quiet. She's trying to figure out if you're joking, but your face says otherwise."
 
     hide cat_shocked
     show cat_worried2
@@ -2666,7 +2764,7 @@ label follow_danny:
     show balcony
     with Dissolve(1)
 
-    "Danny leans against the wire gate on the balcony, admiring the neighbourhood."
+    "Danny leans against the wire gate on the balcony, admiring the neighborhood."
     "You close the front door and he turns to look at you."
 
     show danny_disgust_smoking
@@ -2692,7 +2790,7 @@ label follow_danny:
     hide danny_happy_smoking2
     show danny_happy_smoking
 
-    "He laughs, nudging your shoulder, but shortly notices that you aren't laughing at all."
+    "He laughs, nudging your shoulder, then notices that you aren't laughing at all."
     
     hide danny_happy_smoking
     show danny_shocked_smoking
@@ -2768,7 +2866,7 @@ label danny_route_two:
     hide danny_sad_smoking
     show danny_concerned_smoking2
 
-    d "I still think about the day we left you  during hide-and-seek. We were just fucking around, but we took it way too far."
+    d "I still think about the day we left you during hide-and-seek. We were just fucking around, but we took it way too far."
 
     hide danny_concerned_smoking2
     show danny_sad_smoking
@@ -2981,7 +3079,7 @@ menu:
 
 label look_in_mirror:
 
-    "You lean closer to the mirror. The dark circles under your eyes look worse than usual. That's odd. You could've sworn you got a good night's sleep."
+    "You lean closer to the mirror. The dark circles under your eyes look worse than usual. That's odd. You slept for hours. You should look better than this."
 
     o "Pull yourself together. Freak."
 
@@ -3048,7 +3146,7 @@ label go_to_kitchen:
 
     $ truth += 1
 
-    "A loud voice echoes throughout the house, separating you from your thoughts."
+    "A loud voice echoes throughout the house, pulling you out of your thoughts."
 
     ch "Otter! Let's finally get into that cake, huh?"
 
@@ -3057,21 +3155,26 @@ label go_to_kitchen:
 label act_three:
 
     scene black
+    hide screen time_indicator
     with Dissolve(1)
 
     pause 1
-    $ time_of_day = "5:00 PM"
 
+    show screen act_three_text
+    pause 3.0
+    hide screen act_three_text
+    with Dissolve(1)
+
+    $ time_of_day = "5:00 PM"
+    show screen time_indicator
     show dining_table at truecenter
     with Dissolve(1)
 
-    "ACT 3: THE DEATH OF THE PARTY."
-
     "..."
 
-    "The four of you sit around the dining table. You don't really remember getting here, it all happened so fast."
+    "The four of you sit around the dining table. You don't really remember getting here. It all happened so fast."
 
-    "The room is dimmer than it was earlier, with birthday decorations still hanging from the walls, and everyone now sporting these colourful, pointy, party hats. The cake sits in the center."
+    "The room is dimmer than it was earlier, with birthday decorations still hanging from the walls, and everyone now sporting these colorful paper party hats. The cake sits in the center."
 
     "All three of them are sitting together in front of you, and it's clear that nobody wants to be the first one to talk."
 
@@ -3081,7 +3184,7 @@ label act_three:
 
     "Finally, Charlie clears his throat."
 
-    ch "Well... happy birthday, Otter"
+    ch "Well... happy birthday, Otter."
 
     d "That's it?"
 
@@ -3093,7 +3196,7 @@ label act_three:
 
     d "I guess you should make a wish then, Otter."
 
-    "Eighteen tiny flames flicker before you. Most eighteen-year-olds would probably wish for something material: A nice car, endless wealth, that sort of thing. But all you really want is..."
+    "Eighteen tiny flames flicker before you. Most eighteen-year-olds would probably wish for something material: a nice car, endless wealth, that sort of thing. But all you really want is..."
 
 menu:
 
@@ -3114,7 +3217,7 @@ menu:
         jump act_three_part_two
 
     "For them to die" if violence > 4:
-        o "{i} I wish that they would just die. {i}"
+        o "{i}I wish that they would just die.{i}"
         "The thought arrives so suddenly that it catches you off guard. You don't mean it, do you?"
         "At least, you don't think you do."
 
@@ -3187,7 +3290,7 @@ d "Sweet. Let's bounce."
 
 $ time_of_day = "8:30 PM"
 
-"Danny turns the radio up as you drive, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
+"Danny turns the radio up as he drives, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
 
 "The smell should bother you more than it does, but all you can think is that it smells like Danny."
 
@@ -3268,13 +3371,13 @@ label cat_real_ending:
 
     c "Anytime."
 
-    "She laughs, nudging your shoulder with hers. For a second, it almost seems as if she's blushing. If you blinked you'd have missed it."
+    "She laughs, nudging your shoulder with hers. For a second, it almost seems as if she's blushing. If you blinked you'd almost miss it."
 
     c "You know, I'm actually excited."
 
     c "For Columbia, that is."
 
-    "She looks ahead smiling to herself."
+    "She looks ahead, smiling."
 
     c "It's gonna be weird not having you around, but..."
 
@@ -3308,7 +3411,7 @@ label charlie_fakeout_ending:
 
     "You nod."
 
-    ch "Uh... alright! As you wish"
+    ch "Uh... alright!"
 
     jump betrayal_and_acceptance_endings
 
@@ -3326,11 +3429,11 @@ label charlie_real_ending:
 
     o "It was Bubbles."
 
-    ch "Yeah whatever you say, fish murderer."
+    ch "Yeah, whatever you say, fish murderer."
 
     "He looks out over the field, the empty rows of seats stretching out beneath you."
 
-    ch "You know, I'm gonna miss you little man, you're always gonna be my best pal."
+    ch "You know, I'm gonna miss you, little man. You're always gonna be my best pal."
 
     ch "But, I'm looking forward to seeing what's next."
 
@@ -3383,7 +3486,7 @@ label violent_ending:
 
 label violent_ending_closure:
 
-    o "...I'm sorry"
+    o "...I'm sorry."
 
     o "I just don't want you to go..."
 
@@ -3450,11 +3553,11 @@ label betrayal_and_acceptance_endings:
     d "Please. I'm starving."
 
     "Charlie shakes his head and starts cutting the cake, passing each slice around the table until everyone has a plate."
-    "You stare down at the piece that's been placed in front of you. You feel resistance in reaching over to eat any, almost as if your body physically won't let you."
+    "You stare down at the piece that's been placed in front of you. Your fork stays on the table. You can't make yourself pick it up, almost as if your body physically won't let you."
 
     d "Okay, this is good, and I'm always right."
 
-    ch "It is but... you're not though."
+    ch "It is. You're not."
 
     c "You're really not."
 
@@ -3478,11 +3581,11 @@ label betrayal_and_acceptance_endings:
 
     "Your stomach drops. Charlie's face has gone pale and Cat doesn't look well either."
 
-    c "I don't feel so good.."
+    c "I don't feel so good..."
 
     d "What the fuck?"
 
-    "Your friends try to stand, try to steady themselves, but it all happens so fast. Groaning turns to mumbling, and mumbling finally, turns into a painful, eerie silence."
+    "Your friends try to stand, try to steady themselves, but it all happens so fast. Groaning turns to mumbling, and mumbling finally turns into a painful, eerie silence."
 
     o "Guys...?"
 
@@ -3546,10 +3649,10 @@ label pre_ending:
 
 menu:
 
-    "Save them" if acceptance > 4:
+    "Call for help" if acceptance > 4:
         jump acceptance_ending
 
-    "{color=#956dc9}Save them{/color}" (disabled=True) if acceptance <= 4:
+    "{color=#956dc9}Call for help{/color}" (disabled=True) if acceptance <= 4:
         pass
 
     "{color=#956dc9}Let them die{/color}" (disabled=True) if acceptance > 4:
@@ -3569,6 +3672,12 @@ label acceptance_ending:
     o "Hello??!!"
 
     "You stumble through your address, barely able to get the words out. Your eyes keep moving back toward the table, terrified that one of them will stop breathing before anyone arrives."
+
+    if truth > 0:
+
+        o "I... I think I put something in the cake. I think I did this to them."
+
+        "You feel sick to your stomach. You did this."
 
     o "Please... stay with me..."
 
@@ -3597,7 +3706,7 @@ label betrayal_ending:
     $ time_of_day = "11:30 PM"
 
     "You grab the home phone from the dock with shaking hands and... you freeze."
-    "Cat stays looking toward you, fear and uncertainty written all over her face. You stare at her."
+    "Cat keeps looking at you, fear and uncertainty written all over her face. You stare at her."
     "She looks confused now. Almost... betrayed."
     "Your eyes drift toward the others, motionless, slumped over the table."
     
@@ -3611,12 +3720,12 @@ label betrayal_ending:
 
 label betrayal_ending_closure:
 
-    "You know you should help them. You know there is still time. But for once... They're all exactly where you want them to be. Still here, right in front of you. Not going anywhere."
+    "You know you should help them. You know there is still time. But for once, they're all exactly where you want them to be. Still here, right in front of you. Not going anywhere."
     "Maybe this is just what they deserve."
     
     o "I'm sorry."
 
-    o "You did this to yourselves though, didn't you?"
+    o "You did this to yourselves, didn't you?"
 
     return
 
