@@ -1604,8 +1604,13 @@ menu:
         $ acceptance += 1
         jump present_menu_intro
 
-    "Remember you by?!":
-        o "Remember you by?!"
+    "Remember you by?":
+        o "To remember you by? Where are you going?"
+        $ betrayal += 1
+        jump present_menu_intro
+
+    "Where the fuck are you going?!":
+        o "Where the fuck are you going?!"
         $ betrayal += 1
         $ violence += 1
         jump present_menu_intro
@@ -1670,12 +1675,22 @@ menu:
     "Are you leaving me?":
         o "Are you leaving me?"
         $ betrayal += 1
-        $ violence += 1
 
         hide cat_neutral
         show cat_shocked
         
         c "Umm... well, yeah."
+        jump present_menu_intro
+
+    "Where are you going?!":
+        o "Where are you going?!"
+        $ betrayal += 1
+        $ violence += 1
+
+        hide cat_neutral
+        show cat_shocked
+        
+        c "Uhh... what?"
         jump present_menu_intro
 
 label danny_present:
@@ -1754,12 +1769,22 @@ menu:
         d "Uhh... well, yeah."
         jump present_menu_intro    
 
-    "Update you on what?!":
+    "Update you on what?":
 
         hide danny_neutral2
         show danny_disgust
 
-        o "Update you on what?!"
+        o "Update you on what?"
+        $ betrayal += 1
+
+        jump present_menu_intro   
+
+    "What the fuck?!":
+
+        hide danny_neutral2
+        show danny_disgust
+
+        o "What the fuck? Where are you going?!"
         $ betrayal += 1
         $ violence += 1
 
@@ -1776,7 +1801,7 @@ label post_presents:
     show cat_worried
     with Dissolve(0.5)
 
-    c "Uh... Otter, you're concerning us."
+    c "Otter, you're concerning us."
 
     hide cat_worried
     show charlie_sad2
@@ -1891,7 +1916,7 @@ menu:
     "I'm happy for you" (disabled=violence >= 4) if violence < 4:
         jump happy_for_you
 
-    "{color=#956dc9}Why didn't you tell me?!{/color}" (disabled=violence >=4) if violence >= 4:
+    "{color=#956dc9}I'm happy for you{/color}" (disabled=violence >=4) if violence >= 4:
         jump why_didnt_you_tell_me
 
     "Why didn't you tell me?!" (disabled=violence >= 4) if violence < 4:
@@ -3190,7 +3215,7 @@ label act_three:
 
     ch "What do you want me to say? No one else was saying anything!"
 
-    c "Please don't make him give a speechspeech."
+    c "Please don't make him give a speech."
 
     "The room falls silent again."
 
@@ -3599,7 +3624,11 @@ label violent_ending_closure:
     hide screen time_indicator
     with Dissolve (1)
 
-    pause 5
+    pause 3
+
+    "Danny tried to fight you, but ultimately, he lost to the knife."
+
+    "Charlie and Cat didn't get very far."
 
     show ending_violent
     with Dissolve(1)
