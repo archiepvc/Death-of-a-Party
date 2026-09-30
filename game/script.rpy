@@ -507,9 +507,9 @@ label start:
 
     ## ACT 1 BEGINS HERE !!! ##
 
-    show screen time_indicator
     scene bedroom
     show screen noise_overlay
+    show screen time_indicator
     with Dissolve(5)
 
     play sound "sfx/yawn.mp3" volume 0.5
@@ -560,7 +560,7 @@ label leave_room:
     show doorway
     with Dissolve(1)
 
-    "{i}*BRRRRRRRRRING*{i}"
+    "{i}BRRRRRRRRRING{i}"
 
     "The doorbell rings through the house, and a familiar voice echoes from outside."
 
@@ -1625,7 +1625,7 @@ label cat_present:
     hide charlie_happy3
     show charlie_shocked
 
-    o "Cat's next."
+    o "I'll open Cat's."
 
     hide charlie_shocked
     show cat_happy
@@ -3244,7 +3244,7 @@ label act_three_part_two:
     elif cat_bond > 3:
         jump cat_ending
 
-    elif charlie_bond > 4:
+    elif charlie_bond > 3:
         jump charlie_ending
 
     elif violence > 4:
@@ -3284,41 +3284,61 @@ label danny_fakeout_ending:
 
 label danny_real_ending:
 
-o "Okay, let's go."
+    o "Okay, let's go."
 
-d "Sweet. Let's bounce."
+    d "Sweet. Let's bounce."
 
-$ time_of_day = "8:30 PM"
+    scene black
+    hide screen time_indicator
+    with Dissolve(1)
 
-"Danny turns the radio up as he drives, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
+    pause 1
 
-"The smell should bother you more than it does, but all you can think is that it smells like Danny."
+    show black
+    $ time_of_day = "8:30 PM"
+    show screen time_indicator
+    with Dissolve(1)
 
-d "Hey."
+    "Danny turns the radio up as he drives, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
 
-d "We're gonna be alright, you know. Me and you."
+    "The smell should bother you more than it does, but all you can think is that it smells like Danny."
 
-"He smiles to himself, keeping his eyes on the road."
+    d "Hey."
 
-d "I can't wait to see everyone at Columbia."
+    d "We're gonna be alright, you know. Me and you."
 
-d "Try not to miss me too much, serial killer."
+    "He smiles to himself, keeping his eyes on the road."
 
-scene black
-hide screen time_indicator
-with Dissolve (1)
+    d "I can't wait to see everyone at Columbia."
 
-pause 5
+    d "Try not to miss me too much, serial killer."
 
-show ending_danny
-with Dissolve(1)
+    scene black
+    hide screen time_indicator
+    with Dissolve (1)
 
-pause 5
+    pause 3
 
-scene black
-with Dissolve(1)
+    show ending_danny
+    with Dissolve(1)
 
-pause 5
+    pause 5
+
+    scene black
+    with Dissolve(1)
+
+    pause 3
+
+    show ending_betrayal
+    with Dissolve(1)
+
+    pause 1
+
+    scene black
+    with Dissolve(1)
+
+    pause 1
+
 
 return
 
@@ -3359,7 +3379,16 @@ label cat_real_ending:
 
     c "Cool, let's head out."
 
+    scene black
+    hide screen time_indicator
+    with Dissolve(1)
+
+    pause 1
+
+    show black
     $ time_of_day = "8:30 PM"
+    show screen time_indicator
+    with Dissolve(1)
 
     "The two of you walk for a while, neither of you really knowing where you're going. Eventually, Cat slows down, looking back toward the house in the distance."
 
@@ -3382,6 +3411,32 @@ label cat_real_ending:
     c "It's gonna be weird not having you around, but..."
 
     c "I can't wait to be with those guys over there."
+
+    scene black
+    hide screen time_indicator
+    with Dissolve (1)
+
+    pause 3
+
+    show ending_cat
+    with Dissolve(1)
+
+    pause 5
+
+    scene black
+    with Dissolve(1)
+
+    pause 3
+
+    show ending_betrayal
+    with Dissolve(1)
+
+    pause 1
+
+    scene black
+    with Dissolve(1)
+
+    pause 1
 
     return
 
@@ -3421,7 +3476,16 @@ label charlie_real_ending:
 
     ch "Cool! Let's get outta here."
 
+    scene black
+    hide screen time_indicator
+    with Dissolve(1)
+
+    pause 1
+
+    show black
     $ time_of_day = "8:30 PM"
+    show screen time_indicator
+    with Dissolve(1)
 
     "You and Charlie slip out of the house and make your way toward the football field, climbing up into the empty bleachers. The town is quiet from up here, and the party feels impossibly far away, like it happened hours ago."
 
@@ -3443,7 +3507,7 @@ label charlie_real_ending:
     hide screen time_indicator
     with Dissolve (1)
 
-    pause 5
+    pause 3
 
     show ending_charlie
     with Dissolve(1)
@@ -3453,8 +3517,17 @@ label charlie_real_ending:
     scene black
     with Dissolve(1)
 
-    pause 5
+    pause 3
 
+    show ending_betrayal
+    with Dissolve(1)
+
+    pause 1
+
+    scene black
+    with Dissolve(1)
+
+    pause 1
 
     return
 
@@ -3481,7 +3554,15 @@ label violent_ending:
         menu:
 
             "Inspect photo in pocket":
+                show group_photo:
+                    xalign 0.5
+                    yalign 0.35
+                with Dissolve(1)
+                
                 "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+                hide group_photo
+                with Dissolve(1)
+
                 jump violent_ending_closure
 
 label violent_ending_closure:
@@ -3688,7 +3769,15 @@ label acceptance_ending:
         menu:
 
             "Inspect photo in pocket":
+                show group_photo:
+                    xalign 0.5
+                    yalign 0.35
+                with Dissolve(1)
+
                 "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+                hide group_photo
+                with Dissolve(1)
+
                 jump acceptance_ending_closure
 
 
@@ -3715,7 +3804,16 @@ label betrayal_ending:
         menu:
 
             "Inspect photo in pocket":
+                show group_photo:
+                    xalign 0.5
+                    yalign 0.35
+                with Dissolve(1)
+
                 "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
+                
+                hide group_photo
+                with Dissolve(1)
+
                 jump betrayal_ending_closure
 
 label betrayal_ending_closure:
