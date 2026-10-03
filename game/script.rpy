@@ -523,13 +523,13 @@ label wake_up_menu:
 
 menu:
 
-    "Think about the dream":
+    "{i}Think about the dream{/i}":
         $ reply = renpy.random.choice(replies)
 
         o "[reply]"
         jump wake_up_menu
 
-    "Look in the mirror":
+    "{i}Look in the mirror{/i}":
         scene black
         show otter_mirror:
             xalign 0.5
@@ -542,7 +542,7 @@ menu:
         with Dissolve(1)
         jump wake_up_menu
 
-    "Get out of bed":
+    "{i}Get out of bed{/i}":
         jump leave_room
 
 label leave_room:
@@ -576,10 +576,10 @@ label leave_room:
 
 menu:
 
-    "Answer the door":
+    "{i}Answer the door{/i}":
         jump answer_door
 
-    "Ignore the door":
+    "{i}Ignore the door{/i}":
         jump ending_one
 
 
@@ -598,10 +598,10 @@ label ending_one:
 
 menu:
 
-    "Answer the door":
+    "{i}Answer the door{/i}":
         jump answer_door
 
-    "Ignore the door... again":
+    "{i}Ignore the door... again{/i}":
         jump ending_one_final
 
 
@@ -747,7 +747,7 @@ menu:
     "Make yourselves at home":
         jump make_yourselves_at_home
 
-    "Say nothing":
+    "{i}Say nothing{/i}":
         jump say_nothing
 
 label say_nothing:
@@ -891,13 +891,13 @@ label lounge:
     show charlie_neutral
 
 menu:
-    "Take a photo":
+    "{i}Take a photo{/i}":
         jump take_photo
 
-    "Listen to music":
+    "{i}Listen to music{/i}":
         jump listen_music
 
-    "Play a game":
+    "{i}Play a game{/i}":
         jump play_game
 
 label take_photo:
@@ -2111,19 +2111,19 @@ menu:
 
     set char_menu
 
-    "Follow Charlie":
+    "{i}Follow Charlie{/i}":
         $ time_of_day = "4:30 PM"
         jump follow_charlie
 
-    "Follow Cat":
+    "{i}Follow Cat{/i}":
         $ time_of_day = "4:30 PM"
         jump follow_cat
 
-    "Follow Danny":
+    "{i}Follow Danny{/i}":
         $ time_of_day = "4:30 PM"
         jump follow_danny
 
-    "Take a minute alone":
+    "{i}Take a minute alone{/i}":
         jump stay_where_you_are
 
 label follow_charlie:
@@ -2373,7 +2373,7 @@ menu:
         o "That's not a good idea. I know she doesn't like you."
         jump charlie_heartbreak
 
-    "Try to sound happy for him" if charlie_love == 2:
+    "{i}Try to sound happy for him{/i}" if charlie_love == 2:
         o "Oh... er... good for you, man."
         $ betrayal += 1
         jump thanks_otter
@@ -3096,10 +3096,10 @@ label stay_where_you_are:
     
 menu:
 
-    "Look in the mirror":
+    "{i}Look in the mirror{/i}":
         jump look_in_mirror
 
-    "Leave the bathroom":
+    "{i}Leave the bathroom{/i}":
         jump leave_bathroom
 
 label look_in_mirror:
@@ -3126,10 +3126,10 @@ label leave_bathroom:
 
 menu:
 
-    "Go to the kitchen":
+    "{i}Go to the kitchen{/i}":
         jump go_to_kitchen
 
-    "Find somebody else":
+    "{i}Find somebody else{/i}":
         jump find_somebody_else
 
 label go_to_kitchen:
@@ -3225,28 +3225,28 @@ label act_three:
 
 menu:
 
-    "For them to stay here forever" if acceptance <= 4 and violence <= 4:
+    "{i}For them to stay here forever{/i}" if acceptance <= 4 and violence <= 4:
         o "{i}I wish they would stop talking about leaving. I wish nobody would go anywhere and everything could just stay like this. I don't want to lose anyone.{i}"
 
         jump act_three_part_two
 
-    "{color=#956dc9}For them to stay here forever{/color}" (disabled=True) if acceptance > 4 or violence > 4:
+    "{color=#956dc9}{i}For them to stay here forever{/i}{/color}" (disabled=True) if acceptance > 4 or violence > 4:
         pass
 
-    "For them to be happy" if acceptance > 4:
+    "{i}For them to be happy{/i}" if acceptance > 4:
         o "{i}Weirdly enough, I think I just wish... that they were happy.{i}"
 
-    "{color=#956dc9}For them to be happy{/color}" (disabled=True) if acceptance <= 4:
+    "{color=#956dc9}{i}For them to be happy{/i}{/color}" (disabled=True) if acceptance <= 4:
         pass
 
         jump act_three_part_two
 
-    "For them to die" if violence > 4:
+    "{i}For them to die{/i}" if violence > 4:
         o "{i}I wish that they would just die.{i}"
         "The thought arrives so suddenly that it catches you off guard. You don't mean it, do you?"
         "At least, you don't think you do."
 
-    "{color=#956dc9}For them to die{/color}" (disabled=True) if violence <= 4:
+    "{color=#956dc9}{i}For them to die{/i}{/color}" (disabled=True) if violence <= 4:
         pass
 
         jump act_three_part_two
@@ -3578,7 +3578,7 @@ label violent_ending:
 
         menu:
 
-            "Inspect photo in pocket":
+            "{i}Inspect photo in pocket{/i}":
                 show group_photo:
                     xalign 0.5
                     yalign 0.35
@@ -3759,16 +3759,16 @@ label pre_ending:
 
 menu:
 
-    "Call for help" if acceptance > 4:
+    "{i}Call for help{/i}" if acceptance > 4:
         jump acceptance_ending
 
-    "{color=#956dc9}Call for help{/color}" (disabled=True) if acceptance <= 4:
+    "{color=#956dc9}{i}Call for help{/i}{/color}" (disabled=True) if acceptance <= 4:
         pass
 
-    "{color=#956dc9}Let them die{/color}" (disabled=True) if acceptance > 4:
+    "{color=#956dc9}{i}Let them die{/i}{/color}" (disabled=True) if acceptance > 4:
         pass
 
-    "Let them die" if acceptance <= 4:
+    "{i}Let them die{/i}" if acceptance <= 4:
         jump betrayal_ending
 
 label acceptance_ending:
@@ -3797,7 +3797,7 @@ label acceptance_ending:
 
         menu:
 
-            "Inspect photo in pocket":
+            "{i}Inspect photo in pocket{/i}":
                 show group_photo:
                     xalign 0.5
                     yalign 0.35
@@ -3832,7 +3832,7 @@ label betrayal_ending:
 
         menu:
 
-            "Inspect photo in pocket":
+            "{i}Inspect photo in pocket{/i}":
                 show group_photo:
                     xalign 0.5
                     yalign 0.35
