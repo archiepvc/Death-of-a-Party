@@ -310,6 +310,14 @@ init python:
     def scaledsprite(name):
         return im.FactorScale(name, SPRITE_SCALE_X, SPRITE_SCALE_Y)
 
+init python:    
+    RED_SCALE_X = 4
+    RED_SCALE_Y = 4
+
+    def redscale(name):
+        return im.FactorScale(name, RED_SCALE_X, RED_SCALE_Y)
+
+
 init:
 
     image cat_angry = scaledsprite("cat_angry.png")
@@ -396,6 +404,16 @@ init:
     image danny_shocked_smoking2 = scaledsprite("danny_shocked_smoking2.png")
     image danny_concerned_smoking = scaledsprite("danny_concerned_smoking.png")
     image danny_concerned_smoking2 = scaledsprite("danny_concerned_smoking2.png")
+
+    image cat_sitting_scared = ("cat_sitting_scared.png")
+    image charlie_sitting_neutral = ("charlie_sitting_neutral.png")
+    image danny_sitting_speaking = ("danny_sitting_speaking.png")
+    image cake = ("cake.png")
+    image plates = ("plates.png")
+    image plates_food = ("plates_food.png")
+
+
+    image red = ("red.jpg")
     
 # Transforms for Sprites
 transform right:
@@ -3193,6 +3211,11 @@ label act_three:
     $ time_of_day = "5:00 PM"
     show screen time_indicator
     show dining_table at truecenter
+    show cat_sitting_scared
+    show charlie_sitting_neutral
+    show danny_sitting_speaking
+    show plates
+    show cake
     with Dissolve(1)
 
     "..."
@@ -3320,7 +3343,7 @@ label danny_real_ending:
     pause 1
 
     show black
-    $ time_of_day = "8:30 PM"
+    $ time_of_day = "7:00 PM"
     show screen time_indicator
     with Dissolve(1)
 
@@ -3411,7 +3434,7 @@ label cat_real_ending:
     pause 1
 
     show black
-    $ time_of_day = "8:30 PM"
+    $ time_of_day = "7:00 PM"
     show screen time_indicator
     with Dissolve(1)
 
@@ -3508,7 +3531,7 @@ label charlie_real_ending:
     pause 1
 
     show black
-    $ time_of_day = "8:30 PM"
+    $ time_of_day = "7:00 PM"
     show screen time_indicator
     with Dissolve(1)
 
@@ -3620,15 +3643,13 @@ label violent_ending_closure:
 
     d "Put it down! Please! We can talk!"
 
-    scene black
+    scene red
+
+
     hide screen time_indicator
     with Dissolve (1)
 
     pause 3
-
-    "Danny tried to fight you, but ultimately, he lost to the knife."
-
-    "Charlie and Cat didn't get very far."
 
     show ending_violent
     with Dissolve(1)
