@@ -3122,23 +3122,27 @@ menu:
 
 label look_in_mirror:
 
-    "You lean closer to the mirror. The dark circles under your eyes look worse than usual. That's odd. You slept for hours. You should look better than this."
+    scene black
+
+    show otter_mirror:
+        xalign 0.5
+        yalign 0.2
+    
+    with Dissolve(1)
+
+    "You lean closer to the mirror. The dark circles under your eyes look worse than usual. That's odd. You should look better than this."
 
     o "Pull yourself together. Freak."
 
     o "There's nothing wrong with you."
 
+    show bathroom
+    with Dissolve(1)
+
+
     jump leave_bathroom
 
 label leave_bathroom:
-
-    scene black
-    with Dissolve(1)
-
-    pause 1
-
-    show black
-    with Dissolve(1)
 
     "You can still hear the others talking somewhere in the distance, their voices muffled by the walls. You could follow them, or you could find your pills. There might be more in the kitchen."
 
