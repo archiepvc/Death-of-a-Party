@@ -1,35 +1,62 @@
+init python:
+
+    def wait_for_sfx(channel="sound"):
+
+        if renpy.is_skipping():
+            renpy.music.stop(channel=channel, fadeout=0)
+            return
+
+        # Start playback before checking whether it has finished.
+        renpy.music.pump()
+
+        while renpy.music.is_playing(channel=channel):
+
+            if renpy.is_skipping() or renpy.pause(0.1):
+                break
+
+        renpy.music.stop(channel=channel, fadeout=0)
+
+
 # Text Noises
 
 init python:
     import random
 
+    # Separate channel for dialogue typing sounds
+    renpy.music.register_channel("typing", mixer="sfx", loop=False)
+
     def typography(what):
         replacements = [
-                ('. ','. {w=.2}'),
-                ('? ','? {w=.25}'),
-                ('! ','! {w=.25}'),
-                (', ',', {w=.15}'),
+            ('. ', '. {w=.2}'),
+            ('? ', '? {w=.25}'),
+            ('! ', '! {w=.25}'),
+            (', ', ', {w=.15}'),
         ]
+
         for item in replacements:
-            what = what.replace(item[0],item[1])
+            what = what.replace(item[0], item[1])
+
         return what
+
     config.say_menu_text_filter = typography
 
-    # Continuous text sounds
-    def text_sounds(event, interact=False, **kwargs):
-        if event == "show":
-            what = renpy.store._last_say_what
-            if what:
-                sound_count = len(what)
-            else:
-                sound_count = 5
+        # Continuous text sounds, with a different file per character
+    def text_sounds(event, interact=True,
+                    voice_file="audio/popcat1.mp3", **kwargs):
 
-            for _ in range(sound_count):
-                randosound = renpy.random.randint(1, 1)
-                renpy.sound.queue(f"<volume 0.5>audio/popcat{randosound}.mp3", channel="sound", loop=False)
+        if not interact:
+            return
 
-        elif event == "end" or event == "slow_done":
-            renpy.sound.stop(channel="sound")
+        if event == "show_done":
+            renpy.sound.play(
+                f"<volume 0.5>{voice_file}",
+                channel="typing",
+                loop=True
+            )
+
+        elif event in ("slow_done", "end"):
+            renpy.sound.stop(channel="typing")
+
 
 init python:
     renpy.music.register_channel("scribble", "sfx", True, tight=True)
@@ -112,10 +139,10 @@ screen act_three_text():
         slow_cps 15
 
 # Characters
-define o = Character(_("Otter"), color="#956dc9", what_slow_cps=35, callback=text_sounds)
-define ch = Character(_("Charlie"), color="#6082d1", what_slow_cps=35, callback=text_sounds)
-define c = Character(_("Cat"), color="#eb88cb", what_slow_cps=35, callback=text_sounds)
-define d = Character(_("Danny"), color="#cc9189", what_slow_cps=35, callback=text_sounds)
+define o = Character(_("Otter"), color="#956dc9", what_slow_cps=35, callback=text_sounds, cb_voice_file="audio/otter.mp3")
+define ch = Character(_("Charlie"), color="#6082d1", what_slow_cps=35, callback=text_sounds, cb_voice_file="audio/charlie.mp3")
+define c = Character(_("Cat"), color="#eb88cb", what_slow_cps=35, callback=text_sounds, cb_voice_file="audio/cat.mp3")
+define d = Character(_("Danny"), color="#cc9189", what_slow_cps=35, callback=text_sounds, cb_voice_file="audio/danny.mp3")
 define unknown = Character(_("{i}???{/i}"), color="#bdbdbd", what_slow_cps=35, callback=text_sounds)
 define narrator = Character(None, what_italic=True, what_slow_cps=35, callback=text_sounds)
 define replies = [
@@ -297,9 +324,9 @@ init python:
 image danny_present = scaledasset("danny_present.png")
 image cat_present = scaledasset("cat_present.png")
 image charlie_present = scaledasset("charlie_present.png")
-image danny_present_wrapped = scaledasset("danny_present.png")
-image cat_present_wrapped = scaledasset("cat_present.png")
-image charlie_present_wrapped = scaledasset("charlie_gift.png")
+image danny_present_wrapped = scaledasset("danny_present_wrapped.png")
+image cat_present_wrapped = scaledasset("cat_present_wrapped.png")
+image charlie_present_wrapped = scaledasset("charlie_present_wrapped.png")
 image otter_mirror = mirror ("otter_mirror.png")
 image otter_mirror_transparent = mirror ("otter_mirror_transparent.png")
 image goldfish_photo = scaledasset("goldfish_photo.png")
@@ -517,6 +544,8 @@ transform text_shake:
 # The Game Starts Here
 label start:
 
+    play music "sfx/dream/nightmare.mp3" fadeout 3.0 fadein 2.0 volume 0.2
+
     show screen noise_overlay
     scene dining_table
     show plates onlayer alexlayer
@@ -546,11 +575,16 @@ label start:
 
     o "PLEEEEEEASEEE!!!!!!!!!"
 
+    window hide
+
+    stop music fadeout 2.0
     show black
     hide charlie_dead onlayer charlielayer
     hide cake_knife onlayer alexlayer
     hide plates onlayer alexlayer
     with Dissolve(3)
+
+    play music "sfx/act 1/act_one.mp3" volume 0.2 fadein 2.0
 
     pause 1
 
@@ -565,8 +599,6 @@ label start:
     show screen noise_overlay
     show screen time_indicator
     with Dissolve(5)
-
-    play sound "sfx/yawn.mp3" volume 0.5
 
     pause 1
 
@@ -614,7 +646,9 @@ label leave_room:
     show doorway
     with Dissolve(1)
 
-    "{i}BRRRRRRRRRING{i}"
+    play sound "sfx/sfx/doorbell.mp3"
+
+    pause 1
 
     "The doorbell rings through the house, and a familiar voice echoes from outside."
 
@@ -641,11 +675,12 @@ label ending_one:
 
     $ annoying += 1
 
+    play sound "sfx/sfx/knocking.mp3"
     with hpunch
-    "{i} KNOCK KNOCK {/i}"
 
-    with hpunch
-    "{i} KNOCK KNOCK {/i}"
+    pause 1
+
+    play sound "sfx/sfx/knocking.mp3"
     with hpunch
 
     d "OTTER! OPEN UP!"
@@ -956,7 +991,7 @@ menu:
 
 label take_photo:
 
-    $ charlie_bond +=1
+    $ change_bond("Charlie", 1)
 
     hide charlie_neutral
     show charlie_shocked
@@ -975,6 +1010,7 @@ label take_photo:
 
     show white
     with Dissolve(0.05)
+    play sound "sfx/sfx/picture_taken.mp3"
 
     pause 0.15
 
@@ -1040,9 +1076,9 @@ label listen_music:
     hide charlie_neutral
     show charlie_shocked
 
-    o "Let's play some music."
+    $ change_bond("Danny", 1)
 
-    $ danny_bond += 1
+    o "Let's play some music."
 
     hide charlie_happy2
     hide charlie_neutral
@@ -1080,7 +1116,7 @@ menu:
 
 label dannys_mix:
 
-    $ danny_bond += 1
+    $ change_bond("Danny", 1)
 
     hide danny_neutral
     show danny_surprise2
@@ -1116,7 +1152,7 @@ label dannys_mix:
 
 label charlies_mix:
 
-    $ charlie_bond += 1
+    $ change_bond("Charlie", 1)
 
     hide danny_neutral
     show danny_surprise2
@@ -1154,7 +1190,7 @@ label cats_mix:
     hide danny_neutral
     show danny_surprise2
 
-    $ cat_bond += 1
+    $ change_bond("Cat", 1)
 
     o "Let's put Cat's one on."
 
@@ -1231,7 +1267,7 @@ label turn_the_music_off:
 
 label play_game:
 
-    $ cat_bond += 1
+    $ change_bond("Cat", 1)
 
     hide charlie_neutral
     show charlie_shocked
@@ -1417,10 +1453,14 @@ label present_intro:
 
 label act_two:
 
+    stop music fadeout 2.0
+
     scene black
     hide charlie_happy3
     hide screen time_indicator
     with Dissolve(1)
+
+    play music "sfx/act 2/act_two.mp3" volume 0.5 fadein 2.0
 
     pause 1
 
@@ -1428,8 +1468,6 @@ label act_two:
     pause 3.0
     hide screen act_two_text
     with Dissolve(1)
-
-    ## ACT 1 BEGINS HERE !!! ##
 
     $ time_of_day = "3:30 PM"
     show screen time_indicator
@@ -1512,7 +1550,7 @@ label act_two:
 
     "Charlie's is wrapped almost perfectly, every fold crisp enough that it feels wrong to tear it open."
 
-    "Cat's has been wrapped in newspaper and held together with a thin string, tied into a bow at one end. There's a doodle of a cat in the corner."
+    "Cat's has been wrapped in newspaper and held together with a thin string, tied into a bow at one end."
 
     "Danny's isn't wrapped at all, and is instead a cardboard box with HAPPY BIRTHDAY, OTTER scrawled across the side in black marker."
 
@@ -1564,28 +1602,53 @@ label present_menu_intro:
 
     ch "Ahem...  anyway. Whose is next?"
 
+#label present_menu:
+
+#menu:
+
+    #set char_menu
+
+    #"Charlie's present":
+        #jump charlie_present
+
+    #"Cat's present":
+        #jump cat_present
+
+    #"Danny's present": 
+        #jump danny_present
+
 label present_menu:
 
-menu:
+    if presents_opened >= 3:
+        jump post_presents
 
-    set char_menu
+    window hide
 
-    "Charlie's present":
+    call screen choose_present(_with_none=False) with Dissolve(0.35)
+    with Dissolve(0.35)
+
+    $ char_menu.add(_return)
+
+    window auto
+
+    if _return == "Charlie's present":
         jump charlie_present
 
-    "Cat's present":
+    elif _return == "Cat's present":
         jump cat_present
 
-    "Danny's present": 
+    elif _return == "Danny's present":
         jump danny_present
 
+    else:
+        jump present_menu
 
 label charlie_present:
 
     if presents_opened ==0:
-        $ charlie_bond += 2
+        $ change_bond("Charlie", 2)
     else:
-        $ charlie_bond +=1
+        $ change_bond("Charlie", 1)
     
     $ presents_opened += 1
 
@@ -1675,9 +1738,9 @@ if presents_opened < 3:
 label cat_present:
 
     if presents_opened ==0:
-        $ cat_bond += 2
+        $ change_bond("Cat", 2)
     else:
-        $ cat_bond +=1
+        $ change_bond("Cat", 1)
     
     $ presents_opened += 1
 
@@ -1750,9 +1813,9 @@ menu:
 label danny_present:
 
     if presents_opened ==0:
-        $ danny_bond += 2
+        $ change_bond("Danny", 2)
     else:
-        $ danny_bond +=1
+        $ change_bond("Danny", 1)
 
     $ presents_opened += 1
 
@@ -2187,7 +2250,7 @@ label follow_charlie:
 
     pause 1
 
-    $ charlie_bond += 1
+    $ change_bond("Charlie", 1)
 
     show back_porch:
         xalign 0.5
@@ -2444,7 +2507,7 @@ label thanks_otter:
 
 label charlie_heartbreak:
 
-    $ charlie_bond = -999
+    $ change_bond("Charlie", -999, absolute=True)
     hide charlie_sad
     show charlie_sad2
 
@@ -2474,7 +2537,7 @@ label follow_cat:
 
     pause 1
 
-    $ cat_bond +=1
+    $ change_bond("Cat", 1)
 
     show bedroom
     with Dissolve(1)
@@ -2689,7 +2752,9 @@ menu:
         jump just_friends
 
 label just_friends:
+
     $ cat_love += 1
+    $ liked_notice("Cat")
 
     hide cat_happy
     show cat_shocked
@@ -2781,6 +2846,9 @@ label dont_feel_things:
     hide cat_sad2
     show cat_shocked
 
+    $ violence += 1
+    $ change_bond("Cat", -999, absolute=True)
+
     o "Well, maybe I just don't feel things the way you do."
 
     "Cat goes quiet. She's trying to figure out if you're joking, but your face says otherwise."
@@ -2814,9 +2882,6 @@ label dont_feel_things:
     show cat_worried
     c "I see."
 
-    $ violence += 1
-    $ cat_bond = -999
-
 label cat_path_outro:
 
     hide cat_sad2
@@ -2833,7 +2898,7 @@ label cat_path_outro:
 
 label follow_danny:
 
-    $ danny_bond += 2
+    $ change_bond("Danny", 2)
 
     scene black
     with Dissolve(1)
@@ -3040,6 +3105,7 @@ label show_i_cared:
 label danny_love:
 
     $ danny_love += 1
+    $ liked_notice("Danny")
 
     hide danny_concerned_smoking
     show danny_shocked_smoking
@@ -3082,7 +3148,7 @@ label your_fault:
 
     $ betrayal += 1
     $ violence += 1
-    $ danny_bond = -999
+    $ change_bond("Danny", -999, absolute=True)
 
     hide danny_concerned_smoking
     show danny_sad_smoking
@@ -3251,9 +3317,15 @@ label go_to_kitchen:
 
 label act_three:
 
+## ACT 3 BEGINS HERE !!! ##
+
+    stop music fadeout 2.0
+
     scene black
     hide screen time_indicator
     with Dissolve(1)
+
+    play music "sfx/act 3/act_three.mp3" volume 0.5 fadein 2.0
 
     pause 1
 
@@ -3374,6 +3446,7 @@ label act_three_part_two:
     show cat_dead
     show charlie_dead onlayer charlielayer
     show danny_dead
+    play music "sfx/dream/nightmare.mp3" volume 0.5 fadeout 2.0 fadein 2.0
     with Dissolve(1.5)
 
     "Suddenly, the voices of your friends become distant and muffled as though somewhere far away. The table. Your friends, slumped over it. It's all you can see. The dream feels more real now than ever."
@@ -3388,6 +3461,7 @@ label act_three_part_two:
     show cat_sitting_scared
     show charlie_sitting_worried
     show danny_sitting_scared
+    play music "sfx/act 3/act_three.mp3" volume 0.5 fadeout 0.5 fadein 0.5
     with Dissolve (0.5)
     
     "The others recoil, visibly startled."
@@ -4171,6 +4245,16 @@ label acceptance_ending:
     $ time_of_day = "11:30 PM"
 
     "There isn't time to think; you have to get help. You grab the home phone from the dock with shaking hands before dialling 9-1-1."
+
+    window hide
+
+    play sound "sfx/sfx/9-1-1.mp3" noloop volume 6.5
+    $ wait_for_sfx()
+
+    play sound "sfx/sfx/ring.mp3" noloop volume 0.65
+    $ wait_for_sfx()
+
+    window auto
 
     o "...Hello?!"
 

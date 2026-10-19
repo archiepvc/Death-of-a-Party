@@ -230,7 +230,11 @@ screen choice(items):
 
     vbox:
         for i in items:
-            textbutton i.caption action If(i.kwargs.get("disabled", False), NullAction(), i.action)
+            textbutton i.caption:
+                action i.action
+                sensitive (i.action is not None and not i.kwargs.get("disabled", False))
+                text_insensitive_color "#956dc9"
+                activate_sound "sfx/sfx/click.mp3"
 
 
 style choice_vbox is vbox
@@ -1640,3 +1644,12 @@ style slider_vbox:
 style slider_slider:
     variant "small"
     xsize 900
+
+
+# CLICKY NOISES!!! #
+
+style button:
+    activate_sound "sfx/sfx/click.mp3"
+
+style image_button:
+    activate_sound "sfx/sfx/click.mp3"
