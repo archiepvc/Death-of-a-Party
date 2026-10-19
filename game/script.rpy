@@ -6,7 +6,6 @@ init python:
             renpy.music.stop(channel=channel, fadeout=0)
             return
 
-        # Start playback before checking whether it has finished.
         renpy.music.pump()
 
         while renpy.music.is_playing(channel=channel):
@@ -22,7 +21,6 @@ init python:
 init python:
     import random
 
-    # Separate channel for dialogue typing sounds
     renpy.music.register_channel("typing", mixer="sfx", loop=False)
 
     def typography(what):
@@ -40,7 +38,6 @@ init python:
 
     config.say_menu_text_filter = typography
 
-        # Continuous text sounds, with a different file per character
     def text_sounds(event, interact=True,
                     voice_file="audio/popcat1.mp3", **kwargs):
 
@@ -646,7 +643,7 @@ label leave_room:
     show doorway
     with Dissolve(1)
 
-    play sound "sfx/sfx/doorbell.mp3"
+    play sound "sfx/sfx/doorbell.mp3" volume 0.65
 
     pause 1
 
@@ -676,11 +673,13 @@ label ending_one:
     $ annoying += 1
 
     play sound "sfx/sfx/knocking.mp3"
+    pause 0.2
     with hpunch
 
     pause 1
 
     play sound "sfx/sfx/knocking.mp3"
+    pause 0.2
     with hpunch
 
     d "OTTER! OPEN UP!"
@@ -2245,12 +2244,12 @@ menu:
 
 label follow_charlie:
 
+    $ change_bond("Charlie", 1)
+
     scene black
     with Dissolve(1)
 
     pause 1
-
-    $ change_bond("Charlie", 1)
 
     show back_porch:
         xalign 0.5
@@ -2487,6 +2486,7 @@ menu:
         $ violence += 1
         hide charlie_confused
         show charlie_sad
+        $ change_bond("Charlie", -999, absolute=True)
         o "That's not a good idea. I know she doesn't like you."
         jump charlie_heartbreak
 
@@ -2507,7 +2507,6 @@ label thanks_otter:
 
 label charlie_heartbreak:
 
-    $ change_bond("Charlie", -999, absolute=True)
     hide charlie_sad
     show charlie_sad2
 
@@ -2532,12 +2531,12 @@ label charlie_path_outro:
 
 label follow_cat:
 
+    $ change_bond("Cat", 1)
+
     scene black
     with Dissolve(1)
 
     pause 1
-
-    $ change_bond("Cat", 1)
 
     show bedroom
     with Dissolve(1)

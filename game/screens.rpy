@@ -234,7 +234,7 @@ screen choice(items):
                 action i.action
                 sensitive (i.action is not None and not i.kwargs.get("disabled", False))
                 text_insensitive_color "#956dc9"
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
 
 
 style choice_vbox is vbox
@@ -1649,7 +1649,7 @@ style slider_slider:
 # CLICKY NOISES!!! #
 
 style button:
-    activate_sound "sfx/sfx/click.mp3"
+    activate_sound "<volume 0.65>sfx/sfx/click.mp3"
 
 style image_button:
-    activate_sound "sfx/sfx/click.mp3"
+    activate_sound "<volume 0.65>sfx/sfx/click.mp3"
