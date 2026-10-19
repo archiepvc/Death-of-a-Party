@@ -128,7 +128,7 @@ define replies2 = [
     ("Have I always been so pale?"),   
 ]
 define alex_expressions = ["alex", "alex3",]
-define config.layers = ['master', 'alexlayer', 'transient', 'say', 'screens',]
+define config.layers = ['master', 'alexlayer', 'charlielayer', 'photolayer', 'transient', 'say', 'screens',]
 define config.top_layers = [ 'toplayer' ]
 define config.say_layer = "say"
 define flashbeat = Fade(0.4, 0.0, 0.05, color="#ffffff")
@@ -274,7 +274,10 @@ init:
     image ending_one = ("ending_one.png")
     image ending_danny = ("ending_danny.png")
     image ending_charlie = ("ending_charlie.png")
+    image ending_cat = ("ending_cat.png")
     image ending_violent = ("ending_violent.png")
+    image ending_betrayal = ("ending_betrayal.png")
+    image ending_acceptance = ("ending_acceptance.png")
 
 # Scaled Assets
 init python:    
@@ -405,13 +408,37 @@ init:
     image danny_concerned_smoking = scaledsprite("danny_concerned_smoking.png")
     image danny_concerned_smoking2 = scaledsprite("danny_concerned_smoking2.png")
 
+
+    image cat_sitting_neutral = ("cat_sitting_neutral.png")
+    image cat_sitting_neutral2 = ("cat_sitting_neutral2.png")
+    image cat_sitting_neutral3 = ("cat_sitting_neutral3.png")
+    image cat_sitting_talking = ("cat_sitting_talking.png")
     image cat_sitting_scared = ("cat_sitting_scared.png")
-    image charlie_sitting_neutral = ("charlie_sitting_neutral.png")
+    image cat_sitting_scared2 = ("cat_sitting_scared2.png")
+    image cat_dead = ("cat_dead.png")
+
+    image danny_sitting_hand = ("danny_sitting_hand.png")
+    image danny_sitting_worried = ("danny_sitting_worried.png")
+    image danny_sitting_neutral = ("danny_sitting_neutral.png")
+    image danny_sitting_neutral2 = ("danny_sitting_neutral2.png")
+    image danny_sitting_scared = ("danny_sitting_scared.png")
+    image danny_sitting_scared2 = ("danny_sitting_scared2.png")
     image danny_sitting_speaking = ("danny_sitting_speaking.png")
+    image danny_dead = ("danny_dead.png")
+    image danny_dead2 = ("danny_dead2.png")
+    
+    image charlie_sitting_neutral = ("charlie_sitting_neutral.png")
+    image charlie_sitting_neutral2 = ("charlie_sitting_neutral2.png")
+    image charlie_sitting_talking = ("charlie_sitting_talking.png")
+    image charlie_sitting_talking2 = ("charlie_sitting_talking2.png")
+    image charlie_sitting_worried = ("charlie_sitting_worried.png")
+    image charlie_sitting_scared = ("charlie_sitting_scared.png")
+    image charlie_sitting_scared2 = ("charlie_sitting_scared2.png")
+    image charlie_dead = ("charlie_dead.png")
+
     image cake = ("cake.png")
     image plates = ("plates.png")
     image plates_food = ("plates_food.png")
-
 
     image red = ("red.jpg")
     
@@ -490,8 +517,13 @@ transform text_shake:
 # The Game Starts Here
 label start:
 
-    scene black
     show screen noise_overlay
+    scene dining_table
+    show plates onlayer alexlayer
+    show cake_knife onlayer alexlayer
+    show charlie_dead onlayer charlielayer
+    show cat_dead
+    show danny_dead
     with Fade(3,3,3)
 
     o "..." 
@@ -515,8 +547,12 @@ label start:
     o "PLEEEEEEASEEE!!!!!!!!!"
 
     show black
-    with Dissolve(1)
+    hide charlie_dead onlayer charlielayer
+    hide cake_knife onlayer alexlayer
+    hide plates onlayer alexlayer
+    with Dissolve(3)
 
+    pause 1
 
     show screen act_one_text
     pause 3.0
@@ -1059,7 +1095,7 @@ label dannys_mix:
     hide danny_happy3
     with Dissolve(0.5)
 
-    "The room fills with old rock music. It's louder, rougher, and older than anything the rest of you usually listen to."
+    "The room fills with old rock music. It's louder and more rustic than anything the rest of you usually listen to."
 
     "Danny drums his fingers to the beat absentmindedly, while Charlie complains that it's 'dad music'."
 
@@ -1919,7 +1955,7 @@ label post_presents_two:
 
     "The words seem to stretch out, becoming distant and muffled as the room begins to lose shape."
     "Columbia. You hear it again, but no one is speaking."
-    "It's the same word from the dream, buried all the way underneath the screaming. You can see the table again. The cake. Your friends slumped over in their seats."
+    "It's the same word from the dream, buried underneath the screaming. You can see the table again. The cake. Your friends slumped over in their seats."
     "You're staring at the people you love, watching them disappear one by one, and somewhere in the back of your mind you can hear yourself saying the same thing over and over..."
     "...It wasn't my fault."
 
@@ -2159,7 +2195,7 @@ label follow_charlie:
     
     with Dissolve(1)
 
-    "You slide the back door open and the warm summer air immediately wraps around you. Charlie sits on the porch, looking at a picture in his wallet. He notices you almost immediately."
+    "You slide the back door open and the warm summer air immediately wraps around you. Charlie sits on the porch, looking at a picture in his wallet. He looks up when he notices you."
 
     show charlie_happy3
     with Dissolve(0.5)
@@ -2207,7 +2243,7 @@ label charlie_path_two:
         ypos -150
     with Dissolve(1)
 
-    "Charlie looks down, distractedly admiring the photograph of you two and the goldfish you were so attached to. You couldn't have been older than twelve."
+    "Charlie looks back down, admiring the photograph of you two and the goldfish you were so attached to. You couldn't have been older than twelve."
 
     ch "Hey, remember this little guy? Bubbles... or... was it Goldie?"
 
@@ -2310,7 +2346,7 @@ label charlie_path_four:
     hide charlie_neutral
     show charlie_happy
 
-    "Charlie smiles, the warm glow in his eyes promising you that he wouldn't have it any other way."
+    "Charlie smiles, the glint in his eyes promising you that he wouldn't have it any other way."
 
     hide charlie_happy
     show charlie_neutral2
@@ -2352,7 +2388,7 @@ label charlie_path_five:
     hide charlie_confused2
     show charlie_sad
 
-    "For just a second, everything else fades into the background. Even Charlie, who's suddenly far more interested in his own shoes than your reaction."
+    "For just a second, everything else disappears into the background. Even Charlie, who's suddenly far more interested in his own shoes than your reaction."
 
     if charlie_love > 1:
         $ betrayal += 1
@@ -3094,7 +3130,7 @@ label stay_where_you_are:
 
     $ char_menu.add("Stay where you are")
 
-    "You're better off without them. You must be. How could they ruin your special day? How could they make it all about themselves?"
+    "You're better off without them. How could they ruin your special day? How could they make it all about themselves?"
 
     "Forget it. You just need your medication. Take it, calm down, and stop spiralling. The pills should be in the bathroom."
 
@@ -3168,15 +3204,29 @@ label go_to_kitchen:
 
     "Something pulls you toward the kitchen."
 
-    "Arriving, you notice the cake. You can't shake the feeling that you've seen it somewhere before."
+    "Arriving, you notice the cake, stepping closer when suddenly-"
 
-    "You step closer when suddenly- the kitchen is gone."
+    scene dining_table
+    show plates onlayer alexlayer
+    show cake_knife onlayer alexlayer
+    show charlie_dead onlayer charlielayer
+    show cat_dead
+    show danny_dead
+    with Dissolve(1)
 
     "They sit around the table, motionless, with the cake sitting in the center. You can hear your own breath, loud and frantic in your ears."
 
     o "..."
 
     o "IT WASN'T MY FAULT!"
+
+    show kitchen:
+        xalign 0.5
+        yalign 0.35
+    hide plates onlayer alexlayer
+    hide cake_knife onlayer alexlayer
+    hide charlie_dead onlayer charlielayer
+    with Dissolve(1)
 
     "You come back to yourself, gripping the counter. Your heart is pounding, and your eyes are blown wide."
 
@@ -3214,19 +3264,21 @@ label act_three:
 
     $ time_of_day = "5:00 PM"
     show screen time_indicator
+
     show dining_table at truecenter
-    show cat_sitting_scared
+
+    show cat_sitting_neutral3
     show charlie_sitting_neutral
-    show danny_sitting_speaking
-    show plates
-    show cake
+    show danny_sitting_neutral
+    show plates onlayer alexlayer
+    show cake onlayer alexlayer
     with Dissolve(1)
 
     "..."
 
     "The four of you sit around the dining table. You don't really remember getting here. It all happened so fast."
 
-    "The room is dimmer than it was earlier, with birthday decorations still hanging from the walls, and everyone now sporting these colorful paper party hats. The cake sits in the center."
+    "The room is dimmer than it was earlier, with birthday decorations still hanging from the walls. The cake sits in the center."
 
     "All three of them are sitting together in front of you, and it's clear that nobody wants to be the first one to talk."
 
@@ -3236,19 +3288,53 @@ label act_three:
 
     "Finally, Charlie clears his throat."
 
+    hide charlie_sitting_neutral
+    show charlie_sitting_worried
+
+    hide cat_sitting_neutral3
+    hide danny_sitting_neutral
+
+    show cat_sitting_scared
+    show danny_sitting_scared
+
     ch "Well... happy birthday, Otter."
+
+    hide charlie_sitting_worried
+    show charlie_sitting_scared
+
+    hide danny_sitting_scared
+    show danny_sitting_speaking
 
     d "That's it?"
 
+    hide danny_sitting_speaking
+    show danny_sitting_neutral
+    
     ch "What do you want me to say? No one else was saying anything!"
+
+    
+    hide cat_sitting_scared
+    show cat_sitting_talking
 
     c "Please don't make him give a speech."
 
+    hide cat_sitting_talking
+    show cat_sitting_neutral3
+
+    hide charlie_sitting_scared
+    show charlie_sitting_neutral
+
     "The room falls silent again."
+
+    hide danny_sitting_neutral
+    show danny_sitting_speaking
 
     d "I guess you should make a wish then, Otter."
 
-    "Eighteen tiny flames flicker before you. Most eighteen-year-olds would probably wish for something material: a nice car, endless wealth, that sort of thing. But all you really want is..."
+    hide danny_sitting_speaking
+    show danny_sitting_neutral
+
+    "The tiny flames flicker before you. Most eighteen-year-olds would probably wish for something material: a nice car, endless wealth, that sort of thing. But all you really want is..."
 
 menu:
 
@@ -3282,11 +3368,27 @@ label act_three_part_two:
 
     $ time_of_day = "6:15 PM"
 
+    hide danny_sitting_neutral
+    hide cat_sitting_neutral3
+    hide charlie_sitting_neutral 
+    show cat_dead
+    show charlie_dead onlayer charlielayer
+    show danny_dead
+    with Dissolve(1.5)
+
     "Suddenly, the voices of your friends become distant and muffled as though somewhere far away. The table. Your friends, slumped over it. It's all you can see. The dream feels more real now than ever."
     
     "You can't take it anymore."
 
     o "IT WASN'T MY FAULT!!!"
+
+    hide charlie_dead onlayer charlielayer
+    hide cat_dead
+    hide danny_dead
+    show cat_sitting_scared
+    show charlie_sitting_worried
+    show danny_sitting_scared
+    with Dissolve (0.5)
     
     "The others recoil, visibly startled."
 
@@ -3308,11 +3410,20 @@ label act_three_part_two:
 
 label danny_ending:
 
+    hide danny_sitting_scared
+    show danny_sitting_worried
+
     d "Hey man... you good?"
 
     d "We could go on a drive if you want?"
 
+    hide danny_sitting_worried
+    show danny_sitting_speaking
+
     d "Might help to ease uh... whatever the fuck is going on here."
+
+    hide danny_sitting_speaking
+    show danny_sitting_neutral
 
 menu:
 
@@ -3326,11 +3437,26 @@ label danny_fakeout_ending:
 
     o "No, no. I want to stay."
 
+    hide danny_sitting_neutral
+    show danny_sitting_speaking
+
     d "You're sure?"
+
+    hide danny_sitting_speaking
+    show danny_sitting_neutral
 
     "You nod."
 
+    hide danny_sitting_neutral
+    show danny_sitting_neutral2
+
     d "Cool, suit yourself."
+
+    hide danny_sitting_neutral2
+    show danny_sitting_neutral
+
+    hide charlie_sitting_worried
+    show charlie_sitting_scared
 
     jump betrayal_and_acceptance_endings
 
@@ -3338,9 +3464,14 @@ label danny_real_ending:
 
     o "Okay, let's go."
 
+    hide danny_sitting_neutral
+    show danny_sitting_speaking
+
     d "Sweet. Let's bounce."
 
     scene black
+    hide cake onlayer alexlayer
+    hide plates onlayer alexlayer
     hide screen time_indicator
     with Dissolve(1)
 
@@ -3353,7 +3484,7 @@ label danny_real_ending:
 
     "Danny turns the radio up as he drives, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
 
-    "The smell should bother you more than it does, but all you can think is that it smells like Danny."
+    "It should bother you more than it does, but it smells like Danny."
 
     d "Hey."
 
@@ -3381,12 +3512,19 @@ label danny_real_ending:
 
     pause 3
 
-    show ending_betrayal
+    scene dining_table
+    show plates onlayer alexlayer
+    show cake_knife onlayer alexlayer
+    show charlie_dead onlayer charlielayer
+    show cat_dead
     with Dissolve(1)
 
     pause 1
 
     scene black
+    hide plates onlayer alexlayer
+    hide cake_knife onlayer alexlayer
+    hide charlie_dead onlayer charlielayer
     with Dissolve(1)
 
     pause 1
@@ -3398,11 +3536,17 @@ label cat_ending:
 
     "Cat focuses in on you."
 
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+
     c "Hey... you okay?"
 
     c "We could go on a little walk if you'd like?"
 
     c "Get some fresh air?"
+
+    hide cat_sitting_scared2
+    show cat_sitting_scared
 
 menu:
 
@@ -3417,23 +3561,43 @@ label cat_fakeout_ending:
 
     o "No, no. I want to stay."
 
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+
     c "You're sure?"
+
+    hide cat_sitting_scared2
+    show cat_sitting_scared
 
     "You nod."
 
-    c "As you wish."
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+
+    c "Up to you."
+
+    hide cat_sitting_scared2
+    show cat_sitting_scared
 
     jump betrayal_and_acceptance_endings
 
 label cat_real_ending:
 
+    hide cat_sitting_scared
+    show cat_sitting_neutral
+
     o "Okay, let's go."
+
+    hide cat_sitting_neutral
+    show cat_sitting_talking
 
     c "Cool, let's head out."
 
     scene black
+    hide cake onlayer alexlayer
+    hide plates onlayer alexlayer
     hide screen time_indicator
-    with Dissolve(1)
+    with Dissolve(3)
 
     pause 1
 
@@ -3442,7 +3606,7 @@ label cat_real_ending:
     show screen time_indicator
     with Dissolve(1)
 
-    "The two of you walk for a while, neither of you really knowing where you're going. Eventually, Cat slows down, looking back toward the house in the distance."
+    "The two of you walk for a while, and neither of you really know where you're going. Eventually, Cat slows down, looking back toward the house in the distance."
 
     c "You know what?"
 
@@ -3480,12 +3644,19 @@ label cat_real_ending:
 
     pause 3
 
-    show ending_betrayal
+    scene dining_table
+    show plates onlayer alexlayer
+    show cake_knife onlayer alexlayer
+    show charlie_dead onlayer charlielayer
+    show danny_dead
     with Dissolve(1)
 
     pause 1
 
     scene black
+    hide plates onlayer alexlayer
+    hide cake_knife onlayer alexlayer
+    hide charlie_dead onlayer charlielayer
     with Dissolve(1)
 
     pause 1
@@ -3494,13 +3665,22 @@ label cat_real_ending:
 
 label charlie_ending:
 
+    hide charlie_sitting_worried
+    show charlie_sitting_neutral2
+
     "Charlie focuses in on you."
+
+    hide charlie_sitting_neutral2
+    show charlie_sitting_talking
 
     ch "Hey Otter... you doing alright?"
 
     ch "Wanna get out of here for a bit?"
 
     ch "Might be good to de-stress a little?"
+
+    hide charlie_sitting_talking
+    show charlie_sitting_neutral2
 
 menu:
 
@@ -3514,11 +3694,23 @@ label charlie_fakeout_ending:
 
     o "No, no. I want to stay."
 
+    hide charlie_sitting_neutral2
+    show charlie_sitting_talking
+
     ch "You're sure?"
+
+    hide charlie_sitting_talking
+    show charlie_sitting_neutral2
 
     "You nod."
 
+    hide charlie_sitting_neutral2
+    show charlie_sitting_talking
+
     ch "Uh... alright!"
+
+    hide charlie_sitting_talking
+    show charlie_sitting_scared
 
     jump betrayal_and_acceptance_endings
 
@@ -3526,11 +3718,16 @@ label charlie_real_ending:
 
     o "Okay, let's go."
 
+    hide charlie_sitting_neutral2
+    show charlie_sitting_talking
+
     ch "Cool! Let's get outta here."
 
     scene black
+    hide cake onlayer alexlayer
+    hide plates onlayer alexlayer
     hide screen time_indicator
-    with Dissolve(1)
+    with Dissolve(3)
 
     pause 1
 
@@ -3571,12 +3768,18 @@ label charlie_real_ending:
 
     pause 3
 
-    show ending_betrayal
+    scene dining_table
+    show plates onlayer alexlayer
+    show cake_knife onlayer alexlayer
+    show cat_dead
+    show danny_dead
     with Dissolve(1)
 
     pause 1
 
     scene black
+    hide plates onlayer alexlayer
+    hide cake_knife onlayer alexlayer
     with Dissolve(1)
 
     pause 1
@@ -3587,7 +3790,16 @@ label violent_ending:
 
     $ time_of_day = "8:30 PM"
 
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+
     c "Otter-"
+
+    hide cat_sitting_scared2
+    show cat_sitting_scared
+
+    hide danny_sitting_scared
+    show danny_sitting_scared2
 
     o "SHUT THE FUCK UP!"
 
@@ -3595,7 +3807,13 @@ label violent_ending:
 
     o "You think I don't fucking know?"
 
+    hide charlie_sitting_worried
+    show charlie_sitting_scared2
+
     ch "Hey-"
+
+    hide charlie_sitting_scared2
+    show charlie_sitting_worried
 
     o "Don't. Just don't."
 
@@ -3606,13 +3824,13 @@ label violent_ending:
         menu:
 
             "{i}Inspect photo in pocket{/i}":
-                show group_photo:
+                show group_photo onlayer photolayer:
                     xalign 0.5
                     yalign 0.35
                 with Dissolve(1)
                 
                 "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
-                hide group_photo
+                hide group_photo onlayer photolayer
                 with Dissolve(1)
 
                 jump violent_ending_closure
@@ -3623,13 +3841,28 @@ label violent_ending_closure:
 
     o "I just don't want you to go..."
 
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+
     c "Otter, we're not leaving you!"
+
+    hide cat_sitting_scared2
+    show cat_sitting_scared
 
     o "Then don't go..."
 
+    hide charlie_sitting_worried
+    show charlie_sitting_scared2
+
     ch "We uh... we really do have to, though..."
 
+    hide charlie_sitting_scared2
+    show charlie_sitting_worried
+
     "For a moment, you almost accept it. Then Charlie speaks up again."
+
+    hide charlie_sitting_worried
+    show charlie_sitting_talking
 
     ch "But we'll visit like all the time! You can visit us too!"
 
@@ -3637,21 +3870,43 @@ label violent_ending_closure:
 
     o "It's not the same..."
 
+    hide charlie_sitting_talking
+    show charlie_sitting_worried
+
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+
     o "IT'S NOT THE SAME!"
+    
+    hide charlie_sitting_worried
+    show charlie_sitting_scared2
+
+    hide cake onlayer alexlayer
+    show cake_empty onlayer alexlayer
 
     "The anger comes back all at once. You grab the knife beside the cake."
 
+    hide danny_sitting_scared2
+    show danny_sitting_worried
+
     d "Put it down."
+
+    hide danny_sitting_worried
+    show danny_sitting_scared2
 
     o "You said you weren't leaving me."
 
+    hide danny_sitting_scared2
+    show danny_sitting_worried
+
     d "Put it down! Please! We can talk!"
 
-    scene red
+    scene black
 
-
+    hide cake_empty onlayer alexlayer
+    hide plates onlayer alexlayer
     hide screen time_indicator
-    with Dissolve (1)
+    with Dissolve (3)
 
     pause 3
 
@@ -3672,61 +3927,181 @@ label betrayal_and_acceptance_endings:
 
     $ time_of_day = "8:30 PM"
 
-    "For a moment, nobody says anything. Your heart is pounding so hard that you can barely hear anything else."
+    "For a moment, nobody says anything. Your heart is pounding so hard that you can barely hear."
+
+    if cat_bond > 3 or danny_bond > 4 or charlie_bond > 3:
+        jump high_bond_reaction
+
+    hide charlie_sitting_worried
+    show charlie_sitting_scared2
 
     ch "Uhhh... Okay..."
 
+    hide charlie_sitting_scared2
+    show charlie_sitting_scared
+    hide danny_sitting_scared
+    show danny_sitting_worried
+
     d "That was fucking weird."
+
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+    hide danny_sitting_worried
+    show danny_sitting_scared
 
     c "Yeah."
 
-    "You look down at your hands, trying to slow your breathing. The feeling is already beginning to fade, leaving behind nothing but the uncomfortable certainty that you've done something wrong, even if you can't remember what."
+    hide cat_sitting_scared2
+    show cat_sitting_scared
+
+label high_bond_reaction:
+
+    "You look down at your hands, trying to slow your breathing. The feeling is already beginning to fade, leaving behind nothing but the uncomfortable certainty that you've done something wrong."
     "Charlie clears his throat."
+
+    hide charlie_sitting_scared
+    show charlie_sitting_worried
 
     ch "Can we just... have the cake?"
 
+    hide charlie_sitting_worried
+    show charlie_sitting_scared
+    hide danny_sitting_scared
+    hide danny_sitting_neutral
+    show danny_sitting_worried
+
     d "Please. I'm starving."
 
-    "Charlie shakes his head and starts cutting the cake, passing each slice around the table until everyone has a plate."
+    hide cat_sitting_scared
+    show cat_sitting_neutral3
+
+    hide charlie_sitting_scared
+    show charlie_sitting_neutral
+
+    hide danny_sitting_worried
+    show danny_sitting_neutral
+
+    hide plates onlayer alexlayer
+    hide cake onlayer alexlayer
+    show plates_food onlayer alexlayer
+    show cake_knife onlayer alexlayer
+
+    with Dissolve(1.5)
+
+    "Charlie starts cutting the cake, passing each slice around the table until everyone has a plate."
     "You stare down at the piece that's been placed in front of you. Your fork stays on the table. You can't make yourself pick it up, almost as if your body physically won't let you."
+
+    hide danny_sitting_neutral
+    show danny_sitting_worried
 
     d "Okay, this is good, and I'm always right."
 
+    hide charlie_sitting_neutral
+    show charlie_sitting_talking2
+
+    hide danny_sitting_worried
+    show danny_sitting_neutral
+    
     ch "It is. You're not."
+
+    hide charlie_sitting_talking2
+    show charlie_sitting_neutral
+
+    hide cat_sitting_neutral3
+    show cat_sitting_scared2
 
     c "You're really not."
 
+    hide cat_sitting_scared2
+    show cat_sitting_talking
+
+    hide charlie_sitting_neutral
+    show charlie_sitting_scared
+
+    hide danny_sitting_neutral
+    show danny_sitting_worried
+
     "You watch them bicker and eat, and for a brief moment, the strange feeling in your chest disappears. Then Charlie stops. He puts his fork down."
+
+    hide charlie_sitting_scared
+    show charlie_sitting_scared2
+
+    hide cat_sitting_talking
+    show cat_sitting_scared
+
+    hide danny_sitting_worried
+    show danny_sitting_scared
 
     ch "...Does anyone else feel weird?"
 
+    hide charlie_sitting_scared2
+    show charlie_sitting_worried
+
+    hide danny_sitting_scared
+    show danny_sitting_worried
+
     d "What do you mean?"
+
+    hide charlie_sitting_worried
+    show charlie_sitting_scared
+
+    hide danny_sitting_worried
+    show danny_sitting_scared
 
     ch "I don't know. Just... weird."
 
-    "Cat's smile fades."
+    hide cat_sitting_scared
+    show cat_sitting_scared2
 
     c "Actually... Yeah."
 
+    hide cat_sitting_scared2
+    show cat_sitting_scared
+
+    hide danny_sitting_scared
+    show danny_sitting_speaking
+
     d "Probably just the cake. Wouldn't be the first time we ate something questionable."
 
-    "He tries for a joke but nobody laughs, not even himself. Charlie grips the edge of the table."
+    hide danny_sitting_speaking
+    show danny_sitting_scared
+
+    "He tries for a joke but nobody laughs, not even himself. Charlie grips the edge of the his seat."
+
+    hide charlie_sitting_scared
+    show charlie_sitting_scared2
 
     ch "Wait. Something's really wrong."
 
+    hide charlie_sitting_scared2
+    show charlie_sitting_worried
+
     "Your stomach drops. Charlie's face has gone pale and Cat doesn't look well either."
+
+    hide cat_sitting_scared
+    show cat_sitting_scared2
+
+    hide charlie_sitting_worried
+    show charlie_sitting_scared
 
     c "I don't feel so good..."
 
+    hide danny_sitting_scared
+    show danny_sitting_scared2
+
     d "What the fuck?"
+
+    hide danny_sitting_scared2
+    hide charlie_sitting_scared
+    hide cat_sitting_scared2
+    show cat_dead
+    show danny_dead
+    show charlie_dead onlayer charlielayer
+    with Dissolve(3)
 
     "Your friends try to stand, try to steady themselves, but it all happens so fast. Groaning turns to mumbling, and mumbling finally turns into a painful, eerie silence."
 
     o "Guys...?"
-
-    "Charlie pushes himself up one final time."
-
-    ch "...O-tter...?"
 
     $ time_of_day = "10:45 PM"
 
@@ -3758,7 +4133,7 @@ label betrayal_and_acceptance_endings:
 
         "That's when it hits you."
         "That's when it REALLY hits you."
-        "It comes to you so suddenly that you're forced to clutch your head as a sharp pain surges behind your eyes."
+        "It comes to you so suddenly that you're forced to clutch your head. A sharp pain surges behind your eyes."
         "The day before the party. You remember standing over the cake mix. You remember opening the bottle and feeling the tablets in your hand. You remember the anger you'd felt when they told you they were leaving." 
         "They were going to leave you behind. You couldn't let them leave."
            
@@ -3769,13 +4144,8 @@ label betrayal_and_acceptance_endings:
         jump pre_ending
 
     "You know exactly what's happening. They're dying. Slowly and painfully."
-    "Cat lifts her head up weakly."
 
 label pre_ending:
-
-    c "Please..."
-
-    c "Do something..."
 
     "Your hands are shaking."
     "You could call someone. You could run for the phone. You could get them to a hospital."
@@ -3800,7 +4170,7 @@ label acceptance_ending:
 
     $ time_of_day = "11:30 PM"
 
-    "There isn't time to think; you have to get help. You grab the home phone from the dock with shaking hands and nearly drop it before finally dialling 9-1-1."
+    "There isn't time to think; you have to get help. You grab the home phone from the dock with shaking hands before dialling 9-1-1."
 
     o "...Hello?!"
 
@@ -3823,13 +4193,13 @@ label acceptance_ending:
         menu:
 
             "{i}Inspect photo in pocket{/i}":
-                show group_photo:
+                show group_photo onlayer photolayer:
                     xalign 0.5
                     yalign 0.35
                 with Dissolve(1)
 
                 "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
-                hide group_photo
+                hide group_photo onlayer photolayer
                 with Dissolve(1)
 
                 jump acceptance_ending_closure
@@ -3841,6 +4211,25 @@ label acceptance_ending_closure:
     "For the first time tonight, you don't care about Columbia. You don't care about what happens tomorrow. You just want them to live."
     "This is what's right, isn't it?"
 
+    scene black
+    hide charlie_dead onlayer charlielayer
+    hide cake_knife onlayer alexlayer
+    hide plates_food onlayer alexlayer
+    hide screen time_indicator
+    with Dissolve (3)
+
+    pause 3
+
+    show ending_acceptance
+    with Dissolve(1)
+
+    pause 3
+    scene black
+    with Dissolve(3)
+
+    pause 3
+
+
     return
 
 
@@ -3849,8 +4238,8 @@ label betrayal_ending:
     $ time_of_day = "11:30 PM"
 
     "You grab the home phone from the dock with shaking hands and... you freeze."
-    "Cat keeps looking at you, fear and uncertainty written all over her face. You stare at her."
-    "She looks confused now. Almost... betrayed."
+    "Cat stays looking toward you, fear and uncertainty written all over her face."
+    "She looks... almost... betrayed."
     "Your eyes drift toward the others, motionless, slumped over the table."
     
     if polaroid > 0:
@@ -3858,14 +4247,14 @@ label betrayal_ending:
         menu:
 
             "{i}Inspect photo in pocket{/i}":
-                show group_photo:
+                show group_photo onlayer photolayer:
                     xalign 0.5
                     yalign 0.35
                 with Dissolve(1)
 
                 "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
                 
-                hide group_photo
+                hide group_photo onlayer photolayer
                 with Dissolve(1)
 
                 jump betrayal_ending_closure
@@ -3878,6 +4267,17 @@ label betrayal_ending_closure:
     o "I'm sorry."
 
     o "You did this to yourselves, didn't you?"
+
+    scene black
+    hide charlie_dead onlayer charlielayer
+    hide plates_food onlayer alexlayer
+    hide screen time_indicator
+    with Dissolve(3)
+
+    pause 3
+
+    hide cake_knife onlayer alexlayer
+    with Dissolve(3)
 
     return
 

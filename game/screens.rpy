@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 ## Initialization
 ################################################################################
 
@@ -27,8 +27,6 @@ screen time_indicator():
         padding (10, 10)
         
         text "[time_of_day]" size 35
-
-
 
 # Testing
 
@@ -316,7 +314,7 @@ screen navigation():
         style_prefix "navigation"
 
         xpos gui.navigation_xpos
-        yalign 0.35
+        yalign 0.4
 
         spacing gui.navigation_spacing
 
