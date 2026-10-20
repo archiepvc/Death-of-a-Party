@@ -1,3 +1,7 @@
+label quick_back_click:
+    $ renpy.music.play("sfx/sfx/click.mp3", channel="audio", loop=False)
+    return
+
 init python:
 
     def wait_for_sfx(channel="sound"):
@@ -29,6 +33,8 @@ init python:
             ('? ', '? {w=.25}'),
             ('! ', '! {w=.25}'),
             (', ', ', {w=.15}'),
+            ('; ', '; {w=.15}'),
+            (': ', ': {w=.15}'),
         ]
 
         for item in replacements:
@@ -63,6 +69,9 @@ init python:
 
 init python:
     renpy.music.register_channel("shock", "sfx", False)
+
+init python:
+    renpy.music.register_channel("music2", mixer="music", loop=True)
 
 init python:
     import random, re
@@ -128,7 +137,7 @@ screen act_two_text():
         slow_cps 15
 
 screen act_three_text():
-    text "ACT THREE: THE PARTY GROWS QUIET":
+    text "ACT THREE: THE DEATH OF THE PARTY":
         xalign 0.5
         yalign 0.5
         color "#ffffff"
@@ -541,7 +550,9 @@ transform text_shake:
 # The Game Starts Here
 label start:
 
-    play music "sfx/dream/nightmare.mp3" fadeout 3.0 fadein 2.0 volume 0.2
+    $ save_name = "Act One - Nightmare"
+
+    play music "sfx/potential/nightmare.mp3" fadeout 3.0 fadein 2.0 volume 0.5
 
     show screen noise_overlay
     scene dining_table
@@ -581,7 +592,7 @@ label start:
     hide plates onlayer alexlayer
     with Dissolve(3)
 
-    play music "sfx/act 1/act_one.mp3" volume 0.2 fadein 2.0
+    play music "sfx/act 1/act_one.mp3" volume 0.3 fadein 2.0
 
     pause 1
 
@@ -591,6 +602,8 @@ label start:
     with Dissolve(1)
 
     ## ACT 1 BEGINS HERE !!! ##
+
+    $ save_name = "Act One - Bedroom"
 
     scene bedroom
     show screen noise_overlay
@@ -640,6 +653,8 @@ label leave_room:
 
     pause 1
 
+    $ save_name = "Act One - Stairwell"
+
     show doorway
     with Dissolve(1)
 
@@ -672,14 +687,12 @@ label ending_one:
 
     $ annoying += 1
 
-    play sound "sfx/sfx/knocking.mp3"
-    pause 0.2
+    play sound "sfx/sfx/knocking2.mp3"
     with hpunch
 
     pause 1
 
-    play sound "sfx/sfx/knocking.mp3"
-    pause 0.2
+    play sound "sfx/sfx/knocking2.mp3"
     with hpunch
 
     d "OTTER! OPEN UP!"
@@ -702,14 +715,14 @@ label ending_one_final:
     pause 2
 
     show ending_one
-    show screen ending_text
     with Dissolve(1)
 
     pause 5
 
     scene black
-    hide screen ending_text
     with Dissolve(5)
+
+    stop music fadeout 5
 
     pause 5
 
@@ -725,6 +738,8 @@ label answer_door:
     pause 1
 
     $ time_of_day = "2:45 PM"
+
+    $ save_name = "Act One - Front Porch"
 
     show porch
     with Dissolve(1)
@@ -823,6 +838,8 @@ label scene_lounge:
 
     $ time_of_day = "3:00 PM"
 
+    $ save_name = "Act One - Living Room"
+
     show lounge_test
     with Dissolve(1)
 
@@ -832,7 +849,7 @@ label scene_lounge:
 
 menu:
 
-    "Make yourselves at home":
+    "Make yourselves at home...":
         jump make_yourselves_at_home
 
     "{i}Say nothing{/i}":
@@ -846,7 +863,7 @@ label say_nothing:
 
 label make_yourselves_at_home:
 
-    o "Make yourselves at home, I guess."
+    o "Make yourselves at home, I guess..."
 
     $ violence += 1
     $ betrayal += 1
@@ -1000,7 +1017,7 @@ label take_photo:
     hide charlie_shocked
     show charlie_happy2
 
-    ch "Score! One for the scrapbook."
+    ch "Score! Came prepared for this!"
 
     hide charlie_happy2
     with Dissolve(0.5)
@@ -1125,6 +1142,8 @@ label dannys_mix:
     hide danny_surprise2
     show danny_happy3
 
+    play music "sfx/act 1/danny_mix.mp3" volume 0.7 fadeout 1.0 fadein 1.0
+
     d "Correct answer."
 
     hide danny_happy3
@@ -1172,6 +1191,8 @@ label charlies_mix:
     hide danny_disgust
     show danny_angry2 at left
 
+    play music "sfx/act 1/charlie_mix.mp3" volume 0.7 fadeout 2.0 fadein 2.0
+
     d "Really? Again?"
 
     hide danny_angry2
@@ -1196,6 +1217,8 @@ label cats_mix:
     hide danny_surprise2
     show cat_shocked
     with Dissolve(0.5)
+
+    play music "sfx/act 1/cat_mix.mp3" volume 0.7 fadeout 2.0 fadein 2.0
 
     c "You gotta hand it to him, he's got taste."
 
@@ -1237,6 +1260,8 @@ label something_new:
     hide danny_surprise
     show danny_disgust3
 
+    play music "sfx/act 1/something_new.mp3" volume 0.65 fadeout 2.0 fadein 2.0
+
     d "Hmm... let's try this one."
 
     hide danny_disgust3
@@ -1251,6 +1276,8 @@ label something_new:
     jump turn_the_music_off
 
 label turn_the_music_off:
+
+    stop music fadeout 2.0
 
     hide cat_happy
     hide danny_angry2
@@ -1461,6 +1488,8 @@ label act_two:
 
     play music "sfx/act 2/act_two.mp3" volume 0.5 fadein 2.0
 
+    $ save_name = "Act Two - Presents"
+
     pause 1
 
     show screen act_two_text
@@ -1646,9 +1675,11 @@ label charlie_present:
 
     if presents_opened ==0:
         $ change_bond("Charlie", 2)
-    else:
+    elif presents_opened ==1:
         $ change_bond("Charlie", 1)
-    
+    else:
+        $ change_bond("Charlie", 0)
+
     $ presents_opened += 1
 
     hide charlie_happy3
@@ -1683,6 +1714,10 @@ label charlie_present:
     hide charlie_neutral2
     hide charlie_happy2
     with Dissolve(1)
+
+    play sound "sfx/sfx/paper_tear.mp3"
+
+    pause 1
 
     show charlie_present:
         xalign 0.5
@@ -1738,8 +1773,10 @@ label cat_present:
 
     if presents_opened ==0:
         $ change_bond("Cat", 2)
-    else:
+    elif presents_opened ==1:
         $ change_bond("Cat", 1)
+    else:
+        $ change_bond("Cat", 0)
     
     $ presents_opened += 1
 
@@ -1756,6 +1793,10 @@ label cat_present:
 
     hide cat_happy
     with Dissolve(1)
+
+    play sound "sfx/sfx/paper_tear.mp3"
+
+    pause 1
 
     show cat_present:
         xalign 0.5
@@ -1778,7 +1819,7 @@ label cat_present:
 
 menu:
 
-    "While we're apart?":
+    "Apart?":
         o "While we're apart?"
         $ acceptance += 1
 
@@ -1813,8 +1854,10 @@ label danny_present:
 
     if presents_opened ==0:
         $ change_bond("Danny", 2)
-    else:
+    elif presents_opened ==1:
         $ change_bond("Danny", 1)
+    else:
+        $ change_bond("Danny", 0)
 
     $ presents_opened += 1
 
@@ -1841,6 +1884,10 @@ label danny_present:
     hide charlie_confused2
     hide danny_angry2
     with Dissolve(1)
+
+    play sound "sfx/sfx/paper_tear.mp3"
+
+    pause 1
 
     show danny_present:
         xalign 0.5
@@ -1932,17 +1979,24 @@ label post_presents:
 
 menu:
     "Plans?":
+        hide charlie_confused3
+        show charlie_shocked
+        o "Plans? What are you talking about?!"
         jump post_presents_two
 
     "Leaving?":
+        hide charlie_confused3
+        show charlie_shocked
+        o "Leaving? What are you talking about?!"
+        jump post_presents_two
+
+    "What's going on?!":
+        hide charlie_confused3
+        show charlie_shocked
+        o "What is going on?!"
         jump post_presents_two
 
 label post_presents_two:
-
-    hide charlie_confused3
-    show charlie_shocked
-
-    o "Plans? Leaving? What are you talking about?!"
 
     hide charlie_shocked
     with Dissolve(0.5)
@@ -2219,7 +2273,7 @@ label post_presents_outro_two:
 
     "Cat lingers for a moment before slipping down the hallway out of sight."
 
-    "You remain alone in the living room, surrounded by birthday decorations."
+    "You remain alone in the living room."
 
 label find_somebody_else:
 
@@ -2229,14 +2283,17 @@ menu:
 
     "{i}Follow Charlie{/i}":
         $ time_of_day = "4:30 PM"
+        $ save_name = "Act Two - Charlie"
         jump follow_charlie
 
     "{i}Follow Cat{/i}":
         $ time_of_day = "4:30 PM"
+        $ save_name = "Act Two - Cat"
         jump follow_cat
 
     "{i}Follow Danny{/i}":
         $ time_of_day = "4:30 PM"
+        $ save_name = "Act Two - Danny"
         jump follow_danny
 
     "{i}Take a minute alone{/i}":
@@ -2379,7 +2436,7 @@ menu:
 
     "Promise we'll stay friends?":
         o "Promise me we'll stay friends?"
-        $ acceptance += 2
+        $ acceptance += 4
         jump charlie_path_four
 
     "Now you're leaving me" if charlie_love < 1:
@@ -2407,6 +2464,8 @@ label charlie_path_four:
     hide charlie_sad
     hide charlie_neutral
     show charlie_happy
+
+    $ change_bond("Charlie", 1)
 
     "Charlie smiles, the glint in his eyes promising you that he wouldn't have it any other way."
 
@@ -2500,6 +2559,8 @@ label thanks_otter:
     hide charlie_neutral
     hide charlie_confused
     show charlie_neutral2
+
+    $ change_bond("Charlie", 1)
 
     ch "Thanks, Otter. I knew I could count on you."
     
@@ -2828,13 +2889,15 @@ label leaving_me:
 
 label me_too:
 
-    $ acceptance += 1
+    $ acceptance += 3
 
     o "Me too."
 
     hide cat_sad2
     hide cat_surprised
     show cat_happy2
+
+    $ change_bond("Cat", 2)
 
     "Cat smiles warmly."
 
@@ -3021,7 +3084,7 @@ menu:
     "I don't want you to go":
         jump dont_want_you_to_go
 
-    "Thanks for that":
+    "Thanks for that...":
         jump danny_says_sorry
 
 label dont_want_you_to_go:
@@ -3077,6 +3140,8 @@ label show_i_cared:
     hide danny_concerned_smoking
     show danny_shocked_smoking
 
+    $ acceptance += 1
+
     o "I just didn't know how to show it. I thought it was obvious."
 
     hide danny_shocked_smoking
@@ -3097,6 +3162,8 @@ label show_i_cared:
     hide danny_concerned_smoking
     show danny_happy_smoking
 
+    $ change_bond("Danny", 2)
+
     d "But I know now. Thanks for telling me."
 
     jump danny_path_outro
@@ -3104,6 +3171,7 @@ label show_i_cared:
 label danny_love:
 
     $ danny_love += 1
+    $ danny_bond += 2
     $ liked_notice("Danny")
 
     hide danny_concerned_smoking
@@ -3111,7 +3179,7 @@ label danny_love:
 
     o "You were the only one I ever truly cared about."
 
-    "Your voice cracks. You've never been so raw and vulnerable before. For once, it seems like Danny has truly been caught off guard."
+    "Your voice cracks; you've never felt so vulnerable before. For once, it seems like Danny has truly been caught off guard."
 
     d "..."
 
@@ -3206,7 +3274,9 @@ label stay_where_you_are:
 
     $ time_of_day = "4:30 PM"
 
-    show bathroom
+    $ save_name = "Act Two - Bathroom"
+
+    scene bathroom
     with Dissolve(1)
 
     o "..."
@@ -3237,7 +3307,7 @@ label look_in_mirror:
 
     o "There's nothing wrong with you."
 
-    show bathroom
+    scene bathroom
     with Dissolve(1)
 
 
@@ -3262,7 +3332,9 @@ label go_to_kitchen:
 
     pause 1
 
-    show kitchen:
+    $ save_name = "Act Two - Kitchen"
+
+    scene kitchen:
         xalign 0.5
         yalign 0.35
     with Dissolve(1)
@@ -3271,6 +3343,7 @@ label go_to_kitchen:
 
     "Arriving, you notice the cake, stepping closer when suddenly-"
 
+    play music "sfx/potential/nightmare.mp3" volume 0.5 fadeout 0.2 fadein 0.2
     scene dining_table
     show plates onlayer alexlayer
     show cake_knife onlayer alexlayer
@@ -3285,13 +3358,15 @@ label go_to_kitchen:
 
     o "IT WASN'T MY FAULT!"
 
-    show kitchen:
+    play music "sfx/act 2/act_two.mp3" volume 0.5 fadeout 0.3 fadein 0.3
+
+    scene kitchen:
         xalign 0.5
         yalign 0.35
     hide plates onlayer alexlayer
     hide cake_knife onlayer alexlayer
     hide charlie_dead onlayer charlielayer
-    with Dissolve(1)
+    with Dissolve(0.3)
 
     "You come back to yourself, gripping the counter. Your heart is pounding, and your eyes are blown wide."
 
@@ -3328,6 +3403,8 @@ label act_three:
 
     pause 1
 
+    $ save_name = "Act Three - Cake"
+
     show screen act_three_text
     pause 3.0
     hide screen act_three_text
@@ -3349,7 +3426,7 @@ label act_three:
 
     "The four of you sit around the dining table. You don't really remember getting here. It all happened so fast."
 
-    "The room is dimmer than it was earlier, with birthday decorations still hanging from the walls. The cake sits in the center."
+    "The room is dimmer than it was earlier. The cake sits in the center."
 
     "All three of them are sitting together in front of you, and it's clear that nobody wants to be the first one to talk."
 
@@ -3445,7 +3522,7 @@ label act_three_part_two:
     show cat_dead
     show charlie_dead onlayer charlielayer
     show danny_dead
-    play music "sfx/dream/nightmare.mp3" volume 0.5 fadeout 2.0 fadein 2.0
+    play music "sfx/potential/nightmare.mp3" volume 0.5 fadeout 0.2 fadein 0.2
     with Dissolve(1.5)
 
     "Suddenly, the voices of your friends become distant and muffled as though somewhere far away. The table. Your friends, slumped over it. It's all you can see. The dream feels more real now than ever."
@@ -3453,6 +3530,8 @@ label act_three_part_two:
     "You can't take it anymore."
 
     o "IT WASN'T MY FAULT!!!"
+    
+    play music "sfx/act 3/act_three.mp3" volume 0.5 fadeout 0.3 fadein 0.3
 
     hide charlie_dead onlayer charlielayer
     hide cat_dead
@@ -3460,7 +3539,6 @@ label act_three_part_two:
     show cat_sitting_scared
     show charlie_sitting_worried
     show danny_sitting_scared
-    play music "sfx/act 3/act_three.mp3" volume 0.5 fadeout 0.5 fadein 0.5
     with Dissolve (0.5)
     
     "The others recoil, visibly startled."
@@ -3548,13 +3626,19 @@ label danny_real_ending:
     hide screen time_indicator
     with Dissolve(1)
 
+    stop music fadeout 2.0
+
     pause 1
+
+    $ save_name = "Act Three - Danny"
 
     show black
     $ time_of_day = "7:00 PM"
     show screen time_indicator
     with Dissolve(1)
 
+    play sound "sfx/potential/radio.mp3" volume 0.6
+    play music "sfx/potential/bittersweet_3.mp3" volume 0.6 fadein 1
     "Danny turns the radio up as he drives, drumming his fingers against the steering wheel. The smell of cigarettes clings to the seats."
 
     "It should bother you more than it does, but it smells like Danny."
@@ -3580,6 +3664,8 @@ label danny_real_ending:
 
     pause 5
 
+    play music "sfx/potential/nightmare.mp3" volume 0.8 fadeout 3.0 fadein 3.0
+
     scene black
     with Dissolve(1)
 
@@ -3593,6 +3679,8 @@ label danny_real_ending:
     with Dissolve(1)
 
     pause 1
+
+    stop music fadeout 3.0
 
     scene black
     hide plates onlayer alexlayer
@@ -3672,6 +3760,10 @@ label cat_real_ending:
     hide screen time_indicator
     with Dissolve(3)
 
+    play music "sfx/potential/bittersweet_4.mp3" fadeout 2.0 fadein 2.0
+
+    $ save_name = "Act Three - Cat"
+
     pause 1
 
     show black
@@ -3712,6 +3804,8 @@ label cat_real_ending:
 
     pause 5
 
+    play music "sfx/potential/nightmare.mp3" volume 0.8 fadeout 3.0 fadein 3.0
+
     scene black
     with Dissolve(1)
 
@@ -3725,6 +3819,8 @@ label cat_real_ending:
     with Dissolve(1)
 
     pause 1
+
+    stop music fadeout 3.0
 
     scene black
     hide plates onlayer alexlayer
@@ -3802,6 +3898,10 @@ label charlie_real_ending:
     hide screen time_indicator
     with Dissolve(3)
 
+    play music "sfx/potential/bittersweet.mp3" fadeout 2.0 fadein 2.0
+
+    $ save_name = "Act Three - Charlie"
+
     pause 1
 
     show black
@@ -3836,6 +3936,8 @@ label charlie_real_ending:
 
     pause 5
 
+    play music "sfx/potential/nightmare.mp3" volume 0.8 fadeout 3.0 fadein 3.0
+
     scene black
     with Dissolve(1)
 
@@ -3850,6 +3952,8 @@ label charlie_real_ending:
 
     pause 1
 
+    stop music fadeout 3.0
+
     scene black
     hide plates onlayer alexlayer
     hide cake_knife onlayer alexlayer
@@ -3862,6 +3966,8 @@ label charlie_real_ending:
 label violent_ending:
 
     $ time_of_day = "8:30 PM"
+
+    $ save_name = "Act Three - Violence"
 
     hide cat_sitting_scared
     show cat_sitting_scared2
@@ -3939,6 +4045,10 @@ label violent_ending_closure:
 
     ch "But we'll visit like all the time! You can visit us too!"
 
+    stop music fadeout 10
+
+    play music2 "sfx/potential/nightmare_2.mp3" fadein 10
+
     o "..."
 
     o "It's not the same..."
@@ -3956,6 +4066,7 @@ label violent_ending_closure:
 
     hide cake onlayer alexlayer
     show cake_empty onlayer alexlayer
+    with Dissolve(0.2)
 
     "The anger comes back all at once. You grab the knife beside the cake."
 
@@ -3987,6 +4098,8 @@ label violent_ending_closure:
     with Dissolve(1)
 
     pause 5
+
+    stop music2 fadeout 5.0
 
     scene black
     with Dissolve(1)
@@ -4105,6 +4218,8 @@ label high_bond_reaction:
     hide danny_sitting_worried
     show danny_sitting_scared
 
+    play music "sfx/potential/nightmare.mp3" volume 0.5 fadeout 10 fadein 10
+
     ch "...Does anyone else feel weird?"
 
     hide charlie_sitting_scared2
@@ -4164,6 +4279,8 @@ label high_bond_reaction:
 
     d "What the fuck?"
 
+    window hide
+
     hide danny_sitting_scared2
     hide charlie_sitting_scared
     hide cat_sitting_scared2
@@ -4172,6 +4289,12 @@ label high_bond_reaction:
     show charlie_dead onlayer charlielayer
     with Dissolve(3)
 
+    $ save_name = "Act Three - Nightmare"
+
+    pause 5
+
+    window auto
+
     "Your friends try to stand, try to steady themselves, but it all happens so fast. Groaning turns to mumbling, and mumbling finally turns into a painful, eerie silence."
 
     o "Guys...?"
@@ -4179,7 +4302,8 @@ label high_bond_reaction:
     $ time_of_day = "10:45 PM"
 
     "You don't move. Horrifyingly, the room looks exactly the way it did in your dream."
-    "You realise it was never a dream. It was never an irrational fear. Was it fate? Was it karma? Your brain feels like it could explode from the pressure."
+    "The hands of the clock race faster than you can think, twisting and turning as your sense of time and reality begins to unravel."
+    "Was it fate? Was it karma? Your brain feels like it could explode from the pressure."
     "You reel forward, clutching yourself, as you begin to scream."
 
     o "..." 
@@ -4290,7 +4414,12 @@ label acceptance_ending:
 
 label acceptance_ending_closure:
 
+    play music2 "sfx/sfx/siren.mp3" volume 0.1 fadein 2.0
+
     "Somewhere outside, you hear a siren. You close your eyes."
+
+    stop music2 fadeout 20
+
     "For the first time tonight, you don't care about Columbia. You don't care about what happens tomorrow. You just want them to live."
     "This is what's right, isn't it?"
 
@@ -4302,6 +4431,8 @@ label acceptance_ending_closure:
     with Dissolve (3)
 
     pause 3
+
+    stop music fadeout 10
 
     show ending_acceptance
     with Dissolve(1)
@@ -4351,6 +4482,8 @@ label betrayal_ending_closure:
 
     o "You did this to yourselves, didn't you?"
 
+    stop music fadeout 10
+
     scene black
     hide charlie_dead onlayer charlielayer
     hide plates_food onlayer alexlayer
@@ -4361,6 +4494,8 @@ label betrayal_ending_closure:
 
     hide cake_knife onlayer alexlayer
     with Dissolve(3)
+
+    pause 1
 
     return
 

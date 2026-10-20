@@ -103,8 +103,8 @@ screen choose_present():
 
     text "Which present will you open?":
         xalign 0.5
-        ypos 0.14
-        size 36
+        ypos 0.16
+        size 43
         color "#eee8e1"
 
     $ gift_size = int(min(config.screen_width * 0.20, config.screen_height * 0.36))
@@ -114,6 +114,7 @@ screen choose_present():
     for i, gift index gift[0] in enumerate(remaining_presents):
 
         $ caption, artwork, description, old_slot = gift
+        $ current_size = int(gift_size * 0.9) if caption == "Danny's present" else gift_size
 
         $ slot = 0.5 + (i - (len(remaining_presents) - 1) / 2.0) * 0.27
 
@@ -121,42 +122,35 @@ screen choose_present():
 
             idle Transform(
                 artwork,
-                xysize=(gift_size, gift_size),
+                xysize=(current_size, current_size),
                 fit="contain"
             )
 
             hover Transform(
                 artwork,
-                xysize=(gift_size, gift_size),
+                xysize=(current_size, current_size),
                 fit="contain",
                 matrixcolor=BrightnessMatrix(0.18)
             )
 
             xpos slot
             xanchor 0.5
-            ypos 0.45
+            ypos 0.52
             yanchor 0.5
 
             focus_mask True
 
             tooltip description
-            activate_sound "sfx/sfx/click.mp3"
+            activate_sound "<volume 0.65>sfx/sfx/click.mp3"
             action Return(caption)
 
-        text caption:
+        text caption.replace(" present", "  present"):
             xpos slot
             xanchor 0.5
-            ypos 0.67
-            size 24
+            ypos 0.7
+            xoffset (15 if artwork == "danny_present_wrapped" else 0)
+            size 30
             color "#eee8e1"
 
     $ hovered_description = GetTooltip("choose_present")
 
-    text (hovered_description or "Hover over a present, then click to open it."):
-        xalign 0.5
-        ypos 0.79
-        xsize int(config.screen_width * 0.70)
-        textalign 0.5
-        size 24
-        italic True
-        color "#eee8e1"

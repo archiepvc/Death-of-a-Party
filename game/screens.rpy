@@ -271,14 +271,24 @@ screen quick_menu():
             style_prefix "quick"
             style "quick_menu"
 
-            textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
-            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Q.Save") action QuickSave()
-            textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Prefs") action ShowMenu('preferences')
+            textbutton _("Back"):
+                activate_sound None
+                action Rollback(label="quick_back_click")
+            textbutton _("History") action ShowMenu('history'):
+                activate_sound "sfx/sfx/click.mp3"
+            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True):
+                activate_sound "sfx/sfx/click.mp3"
+            textbutton _("Auto") action Preference("auto-forward", "toggle"):
+                activate_sound "sfx/sfx/click.mp3"
+            textbutton _("Save") action ShowMenu('save'):
+                activate_sound "sfx/sfx/click.mp3"
+            textbutton _("Q.Save") action QuickSave():
+                activate_sound "sfx/sfx/click.mp3"
+            textbutton _("Q.Load") action QuickLoad():
+                activate_sound "sfx/sfx/click.mp3"
+            textbutton _("Prefs") action ShowMenu('preferences'):
+                activate_sound "sfx/sfx/click.mp3"
+
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -1555,7 +1565,9 @@ screen quick_menu():
             style "quick_menu"
             style_prefix "quick"
 
-            textbutton _("Back") action Rollback()
+            textbutton _("Back"):
+                activate_sound None
+                action Rollback(label="quick_back_click")
             textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
             textbutton _("Auto") action Preference("auto-forward", "toggle")
             textbutton _("Menu") action ShowMenu()
