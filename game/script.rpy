@@ -588,7 +588,7 @@ label start:
 
     window hide
 
-    stop music fadeout 2.0
+    stop music fadeout 3.0
     show black
     hide charlie_dead onlayer charlielayer
     hide cake_knife onlayer alexlayer
@@ -879,6 +879,7 @@ label say_nothing:
 label make_yourselves_at_home:
 
     o "Make yourselves at home, I guess..."
+
 
     $ violence += 1
     $ betrayal += 1
@@ -1220,7 +1221,7 @@ label charlies_mix:
 
     "Everyone starts humming along to the comfortable tunes almost immediately."
 
-    "Charlie laughs every time someone gets a line wrong, insisting they should know all this already, and for a little while, it feels impossible to imagine any of you anywhere else."
+    "For a little while, it feels impossible to imagine any of you anywhere else."
         
     jump turn_the_music_off
 
@@ -1244,7 +1245,7 @@ label cats_mix:
     hide cat_shocked
     with Dissolve(0.5)
 
-    "The music that spills into the room is raw and emotional, unlike anything the others would've picked."
+    "The music that spills into the room is raw and emotional, more similar to Danny's music than anything."
 
     "Charlie wrinkles his nose up while Danny quietly nods along to the rhythm."
 
@@ -1360,16 +1361,38 @@ label truth:
     ch "That pause is brutal, dude!"
 
     hide charlie_happy3
-    show danny_surprise3
+    show danny_happy3
     with Dissolve(0.5)
 
     d "Yeah, man. You hate us that much?"
 
-    hide danny_surprise3
-    show danny_surprise2
+    hide danny_happy3
+    show danny_neutral2
 
     o "Uhh..."
-    o "You're cool."
+
+menu:
+
+    "You're cool":
+        hide danny_neutral2
+        show danny_surprise2
+        o "You're cool, I guess."
+        jump truth_outcome
+
+    "You put up with me":
+        hide danny_neutral2
+        show danny_surprise2
+        o "You put up with me. Not many people do."
+        jump truth_outcome
+
+    "Do I have to say it?":
+        hide danny_neutral2
+        show danny_surprise2
+        o "Do I have to say it? I mean, I let you into my house, didn't I?"
+        jump truth_outcome
+
+
+label truth_outcome:
 
     hide danny_surprise2
     show cat_shocked
@@ -1413,10 +1436,22 @@ label dare:
 
     ch "I dare you to let me cut your hair!"
 
-    hide charlie_happy3
-    show charlie_sad
+menu:
 
-    o "Don't even think about it."
+    "In your dreams":
+        hide charlie_happy3
+        show charlie_sad
+        o "No way. In your dreams."
+        jump dare_outcome
+
+    "Don't even think about it":
+        hide charlie_happy3
+        show charlie_sad
+        o "Don't even think about it."
+        jump dare_outcome
+
+
+label dare_outcome:
 
     hide charlie_sad
     show charlie_happy2
@@ -1782,6 +1817,7 @@ menu:
         jump present_menu_intro
 
     "Where the fuck are you going?!":
+        play sound "sfx/sfx/irk.mp3" volume 0.35
         o "Where the fuck are you going?!"
         $ betrayal += 1
         $ violence += 1
@@ -1873,6 +1909,7 @@ menu:
         jump present_menu_intro
 
     "Where are you going?!":
+        play sound "sfx/sfx/irk.mp3" volume 0.35
         o "Where are you going?!"
         $ betrayal += 1
         $ violence += 1
@@ -1996,6 +2033,8 @@ menu:
 
     "What the fuck?!":
 
+        play sound "sfx/sfx/irk.mp3" volume 0.35
+
         hide danny_neutral2
         show danny_disgust
 
@@ -2036,16 +2075,17 @@ menu:
         o "Plans? What are you talking about?!"
         jump post_presents_two
 
-    "Leaving?":
+    "Leaving where?":
         hide charlie_confused3
         show charlie_shocked
-        o "Leaving? What are you talking about?!"
+        o "Leaving? Where are you going?!"
         jump post_presents_two
 
-    "What's going on?!":
+    "What the fuck is going on?!":
         hide charlie_confused3
         show charlie_shocked
-        o "What is going on?!"
+        play sound "sfx/sfx/irk.mp3" volume 0.35
+        o "What the fuck is going on?!"
         jump post_presents_two
 
 label post_presents_two:
@@ -2131,8 +2171,6 @@ label post_presents_two:
 
     o "I... I don't know what to say."
 
-    o "You're all leaving."
-
 menu:
 
     "I'm happy for you" (disabled=violence >= 4) if violence < 4:
@@ -2183,6 +2221,7 @@ label happy_for_you:
 label why_didnt_you_tell_me:
 
     $ betrayal += 2
+    play sound "sfx/sfx/irk.mp3" volume 0.35
 
     o "So... You're all leaving me."
 
@@ -2218,6 +2257,8 @@ label fuck_all_of_you:
 
     $ betrayal += 2
     $ violence += 1
+
+    play sound "sfx/sfx/irk.mp3" volume 0.35
 
     show danny_surprise
     show charlie_shocked at right
@@ -2269,6 +2310,8 @@ label fuck_all_of_you_two:
 
     hide cat_sad2
     show cat_worried
+
+    play sound "sfx/sfx/irk.mp3" volume 0.35
 
     $ violence += 1
 
@@ -2593,6 +2636,7 @@ menu:
         jump thanks_otter
 
     "She doesn't like you":
+        play sound "sfx/sfx/irk.mp3" volume 0.35
         $ betrayal += 1
         $ violence += 1
         hide charlie_confused
@@ -2766,6 +2810,7 @@ menu:
         jump cat_route_three
 
     "That dog was annoying":
+        play sound "sfx/sfx/irk.mp3" volume 0.35
         o "So what? He was annoying."
         jump cat_route_three
 
@@ -2965,6 +3010,7 @@ label dont_feel_things:
 
     hide cat_sad2
     show cat_worried
+    play sound "sfx/sfx/irk.mp3" volume 0.35
 
     $ violence += 6
     $ change_bond("Cat", -999, absolute=True)
@@ -3281,6 +3327,7 @@ label your_fault:
     $ betrayal += 1
     $ violence += 4
     $ change_bond("Danny", -999, absolute=True)
+    play sound "sfx/sfx/irk.mp3" volume 0.35
 
     hide danny_concerned_smoking
     show danny_sad_smoking
@@ -3317,9 +3364,6 @@ label danny_negative_outro:
 
     d "I'm heading back inside. I'll see you soon for cake."
 
-    hide danny_disgust2
-    with Dissolve(0.5)
-
     jump act_three
 
 label danny_path_outro:
@@ -3335,9 +3379,6 @@ label danny_path_outro:
     with Dissolve(0.5)
 
     d "We should probably head back before everyone starts wondering if you finally killed me."
-
-    hide danny_happy2
-    with Dissolve(0.5)
 
     jump act_three
 
@@ -3587,6 +3628,7 @@ menu:
         pass
 
     "{i}For them to die{/i}" if violence > 4:
+        play sound "sfx/sfx/irk.mp3" volume 0.35
         o "{i}I wish that they would just die.{/i}"
         "The thought arrives so suddenly that it catches you off guard. You don't mean it, do you?"
         "At least, you don't think you do."
@@ -3597,8 +3639,6 @@ menu:
         pass
 
 label act_three_part_two:
-
-    $ time_of_day = "6:15 PM"
 
     hide danny_sitting_neutral
     hide cat_sitting_neutral3
@@ -3722,7 +3762,7 @@ label danny_real_ending:
     $ save_name = "Act Three - Danny Ending"
 
     show black
-    $ time_of_day = "7:00 PM"
+    $ time_of_day = "6:00 PM"
     show screen time_indicator
     with Dissolve(1)
 
@@ -3898,11 +3938,11 @@ label cat_real_ending:
     pause 1
 
     show black
-    $ time_of_day = "7:00 PM"
+    $ time_of_day = "6:00 PM"
     show screen time_indicator
     with Dissolve(1)
 
-    "The two of you walk for a while, neither of you really knowing the destination. Eventually, Cat slows down, looking back toward the house in the distance."
+    "The two of you walk for a while, neither of you really knowing where you're going. Eventually, Cat slows down, looking back toward the house in the distance."
 
     c "You know what?"
 
@@ -4066,7 +4106,7 @@ label charlie_real_ending:
     pause 1
 
     show black
-    $ time_of_day = "7:00 PM"
+    $ time_of_day = "6:00 PM"
     show screen time_indicator
     with Dissolve(1)
 
@@ -4184,7 +4224,7 @@ label charlie_real_ending:
 
 label violent_ending:
 
-    $ time_of_day = "8:30 PM"
+    $ time_of_day = "5:15 PM"
 
     $ save_name = "Act Three - Violent Ending"
 
@@ -4204,7 +4244,7 @@ label violent_ending:
     "For a moment, nobody says anything. Your head is pounding so hard that you can barely hear anything else."
 
     if truth == 1:
-        "You know what's in the cake. You know what you did. If you waited long enough they'd all be dead, but you can't stand another fucking word."
+        "You know what's in the cake. You know what you did. All you have to do is wait for them to eat it, but you can't stand another fucking word."
 
     else:
         "They keep talking like this is nothing. Like leaving you behind is nothing."
@@ -4354,7 +4394,7 @@ label violent_ending_closure:
 
 label betrayal_and_acceptance_endings:
 
-    $ time_of_day = "8:30 PM"
+    $ time_of_day = "5:15 PM"
 
     "For a moment, nobody says anything. Your heart is pounding so hard that you can barely hear."
 
@@ -4423,7 +4463,7 @@ label high_bond_reaction:
     hide danny_sitting_neutral
     show danny_sitting_worried
 
-    d "Okay, this is good, and I'm always right."
+    d "Okay, this is good, and I'm always right. Otter outdid himself."
 
     hide charlie_sitting_neutral
     show charlie_sitting_talking2
@@ -4542,12 +4582,15 @@ label high_bond_reaction:
 
     o "Guys...?"
 
-    $ time_of_day = "10:45 PM"
-
     "You don't move. Horrifyingly, the room looks exactly the way it did in your dream."
+
+    $ time_of_day = "6:45 PM"
+
     "The hands of the clock race faster than you can think, twisting and turning as your sense of time and reality begins to unravel."
     "Was it fate? Was it karma? Your brain feels like it could explode from the pressure."
     "You reel forward, clutching yourself, as you begin to scream."
+
+    $ time_of_day = "7:00 PM"
 
     o "..." 
     
@@ -4559,6 +4602,8 @@ label high_bond_reaction:
 
     o "..."
 
+    $ time_of_day = "7:15 PM"
+
     o "Guys?!"
 
     o "Oh god, what have I done?!"
@@ -4568,6 +4613,8 @@ label high_bond_reaction:
     o "..."
 
     o "PLEEEEEEASEEE!!!!!!!!!"
+
+    $ time_of_day = "7:30 PM"
 
     if truth > 0:
 
@@ -4583,7 +4630,9 @@ label high_bond_reaction:
 
         jump pre_ending
 
-    "You know exactly what's happening. They're dying. Slowly and painfully."
+    "You know exactly what's happening. They're dying, slowly and painfully."
+
+    $ time_of_day = "7:45 PM"
 
 label pre_ending:
 
@@ -4591,19 +4640,21 @@ label pre_ending:
     $ can_let_die = violence > 4 or betrayal > 4 or not can_call_help
 
     if declined_escape == "Danny":
-        "All you had to do was say yes to that drive."
+        "All you had to do was say yes to that drive. Maybe things would be different."
 
     elif declined_escape == "Cat":
-        "All you had to do was say yes to that walk."
+        "All you had to do was say yes to that walk. Maybe things would be different."
 
     elif declined_escape == "Charlie":
-        "All you had to do was say yes when Charlie offered to leave."
+        "All you had to do was say yes when Charlie offered to leave. Maybe things would be different."
 
     if declined_escape is not None:
         "But you chose to stay."
 
     else:
         "Your hands are shaking."
+
+    $ time_of_day = "8:00 PM"
 
     "You could call someone. You could run for the phone. You could get them to a hospital."
     "Or... you could stay exactly where you are."
@@ -4621,6 +4672,8 @@ label pre_ending:
 
     "What will you do?"
 
+    $ time_of_day = "8:15 PM"
+
 
     menu:
 
@@ -4631,6 +4684,7 @@ label pre_ending:
             pass
 
         "{i}Let them die{/i}" if can_let_die:
+            play sound "sfx/sfx/irk.mp3" volume 0.35
             jump betrayal_ending
 
         "{color=#956dc9}{i}Let them die{/i}{/color}" (disabled=True) if not can_let_die:
@@ -4661,7 +4715,7 @@ label acceptance_ending:
 
     $ save_name = "Act Three - Acceptance Ending"
 
-    $ time_of_day = "11:30 PM"
+    $ time_of_day = "8:30 PM"
 
     "There isn't time to think; you have to get help. You grab the home phone from the dock with shaking hands before dialling 9-1-1."
 
@@ -4718,14 +4772,19 @@ label acceptance_ending_closure:
 
     play sound "sfx/sfx/siren.mp3" loop volume 0.1 fadein 2.0
 
+    $ time_of_day = "8:45 PM"
+
     "Somewhere outside, you hear a siren. You close your eyes."
 
     stop sound fadeout 20
 
     if chose_acceptance_wish:
-        "You wished for them to be happy, all you really want is for them to just be happy."
+        "You wished for them to be happy. You still do."
 
     "You don't care about Columbia. You don't care about what happens tomorrow. You just want them to live."
+
+    $ time_of_day = "9:00 PM"
+
     "This is what's right, isn't it?"
 
     $ renpy.stop_skipping()
@@ -4761,10 +4820,10 @@ label betrayal_ending:
 
     $ save_name = "Act Three - Betrayal Ending"
 
-    $ time_of_day = "11:30 PM"
+    $ time_of_day = "8:30 PM"
 
     "You grab the home phone from the dock with shaking hands and... you freeze."
-    "Cat stays looking toward you, fear and uncertainty written all over her face."
+    "Cat stays looking toward you, a hint of fear and uncertainty written on her face."
     "She looks... almost... betrayed."
     "Your eyes drift toward the others, motionless, slumped over the table."
     
@@ -4793,6 +4852,8 @@ label betrayal_ending:
 
 label betrayal_ending_closure:
 
+    $ time_of_day = "8:45 PM"
+
     "You know you should help them. You know there is still time. But for once, they're all exactly where you want them to be. Still here, right in front of you. Not going anywhere."
 
     if chose_acceptance_wish:
@@ -4804,6 +4865,8 @@ label betrayal_ending_closure:
     "Maybe this is just what they deserve."
     
     o "I'm sorry."
+
+    $ time_of_day = "9:00 PM"
 
     o "You did this to yourselves, didn't you?"
 
@@ -4827,76 +4890,3 @@ label betrayal_ending_closure:
 
 
 # THAT CONCLUDES DEATH OF A PARTY, FOLKS! #
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
