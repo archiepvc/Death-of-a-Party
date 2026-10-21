@@ -151,6 +151,3 @@ screen choose_present():
             xoffset (15 if artwork == "danny_present_wrapped" else 0)
             size 30
             color "#eee8e1"
-
-    $ hovered_description = GetTooltip("choose_present")
-

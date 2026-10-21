@@ -14,7 +14,12 @@ init offset = -1
 
 # Testing
 
+init 999 python:
+    renpy.add_layer("texture_layer", above="screens")
+
 screen noise_overlay():
+    layer "texture_layer"
+
     add "texture.jpg":
         blend "multiply"
         alpha 0.1
@@ -275,19 +280,19 @@ screen quick_menu():
                 activate_sound None
                 action Rollback(label="quick_back_click")
             textbutton _("History") action ShowMenu('history'):
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
             textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True):
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
             textbutton _("Auto") action Preference("auto-forward", "toggle"):
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
             textbutton _("Save") action ShowMenu('save'):
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
             textbutton _("Q.Save") action QuickSave():
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
             textbutton _("Q.Load") action QuickLoad():
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
             textbutton _("Prefs") action ShowMenu('preferences'):
-                activate_sound "sfx/sfx/click.mp3"
+                activate_sound "<volume 0.65>sfx/sfx/click.mp3"
 
 
 
@@ -802,10 +807,6 @@ screen preferences():
 
                 vbox:
 
-                    label _("Text Speed")
-
-                    bar value Preference("text speed")
-
                     label _("Auto-Forward Time")
 
                     bar value Preference("auto-forward time")
@@ -830,7 +831,7 @@ screen preferences():
 
 
                     if config.has_voice:
-                        label _("Voice Volume")
+                        label _("Dialogue Volume")
 
                         hbox:
                             bar value Preference("voice volume")
@@ -1025,6 +1026,8 @@ screen help():
 
         vbox:
             spacing 23
+
+            text _("Purple choices are unavailable because of your earlier decisions.")
 
             hbox:
 

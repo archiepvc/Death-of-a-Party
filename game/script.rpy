@@ -1,5 +1,5 @@
 label quick_back_click:
-    $ renpy.music.play("sfx/sfx/click.mp3", channel="audio", loop=False)
+    $ renpy.music.play("<volume 0.65>sfx/sfx/click.mp3", channel="audio", loop=False)
     return
 
 init python:
@@ -25,7 +25,7 @@ init python:
 init python:
     import random
 
-    renpy.music.register_channel("typing", mixer="sfx", loop=False)
+    renpy.music.register_channel("typing", mixer="voice", loop=False)
 
     def typography(what):
         replacements = [
@@ -193,6 +193,10 @@ image white = Solid("#ffffff")
 
 default char_menu = set()
 
+default chose_acceptance_wish = False
+
+default declined_escape = None
+
 # Inventory
 default polaroid = 0
 default has_photo = False
@@ -202,7 +206,6 @@ default has_danny_cassette = False
 default music_choice = None
 
 # Testing
-
 default time_of_day = "2:30PM"
 
 # Scaled Background Images
@@ -303,13 +306,11 @@ init:
     image noise_overlay = overlay ("texture.jpg")
 
 # Endings
-
     image ending_one = ("ending_one.png")
     image ending_danny = ("ending_danny.png")
     image ending_charlie = ("ending_charlie.png")
     image ending_cat = ("ending_cat.png")
     image ending_violent = ("ending_violent.png")
-    image ending_betrayal = ("ending_betrayal.png")
     image ending_acceptance = ("ending_acceptance.png")
 
 # Scaled Assets
@@ -502,7 +503,7 @@ transform slightdown:
     yalign 0
 
 transform swipe_left(duration=1.0):
-    linear duration xalign -0.5  # move off-screen left
+    linear duration xalign -0.5
 
 transform jolt:
     linear 0.05 xoffset 15
@@ -552,7 +553,7 @@ label start:
 
     $ save_name = "Act One - Nightmare"
 
-    play music "sfx/potential/nightmare.mp3" fadeout 3.0 fadein 2.0 volume 0.5
+    play music "sfx/potential/nightmare.mp3" fadeout 3.0 fadein 1.0 volume 0.5
 
     show screen noise_overlay
     scene dining_table
@@ -562,6 +563,8 @@ label start:
     show cat_dead
     show danny_dead
     with Fade(3,3,3)
+
+    window auto
 
     o "..." 
     
@@ -609,6 +612,8 @@ label start:
     show screen noise_overlay
     show screen time_indicator
     with Dissolve(5)
+
+    window auto
 
     pause 1
 
@@ -708,21 +713,31 @@ menu:
 
 label ending_one_final:
 
+    $ renpy.stop_skipping()
+    $ _skipping = False
+    $ _dismiss_pause = False
+
     scene black
     hide screen time_indicator
     with Dissolve(3)
 
-    pause 2
+    pause 1.5
+
+    "You failed to answer the door."
+
+    pause 1.5
+
+    window hide
 
     show ending_one
-    with Dissolve(1)
+    with Dissolve(2)
 
     pause 5
 
+    stop music fadeout 10
+
     scene black
     with Dissolve(5)
-
-    stop music fadeout 5
 
     pause 5
 
@@ -849,7 +864,7 @@ label scene_lounge:
 
 menu:
 
-    "Make yourselves at home...":
+    "{i}Make a sarcastic remark{/i}":
         jump make_yourselves_at_home
 
     "{i}Say nothing{/i}":
@@ -1119,15 +1134,19 @@ label listen_music:
 
 menu:
     "Danny's mix":
+        $ music_choice = "Danny"
         jump dannys_mix
 
     "Charlie's mix":
+        $ music_choice = "Charlie"
         jump charlies_mix
 
     "Cat's mix":
+        $ music_choice = "Cat"
         jump cats_mix
 
     "Something new":
+        $ music_choice = "New"
         jump something_new
 
 label dannys_mix:
@@ -1220,7 +1239,7 @@ label cats_mix:
 
     play music "sfx/act 1/cat_mix.mp3" volume 0.7 fadeout 2.0 fadein 2.0
 
-    c "You gotta hand it to him, he's got taste."
+    c "You gotta hand it to him, he knows what's good."
 
     hide cat_shocked
     with Dissolve(0.5)
@@ -1711,6 +1730,7 @@ label charlie_present:
 
         ch "Open it, open it!!!"
 
+    window hide { "screens": Dissolve(1.0) }
     hide charlie_neutral2
     hide charlie_happy2
     with Dissolve(1)
@@ -1719,6 +1739,7 @@ label charlie_present:
 
     pause 1
 
+    window auto { "screens": Dissolve(1.0) }
     show charlie_present:
         xalign 0.5
         yalign 0.4
@@ -1789,15 +1810,23 @@ label cat_present:
     show cat_happy
     with Dissolve(0.5)
 
-    c "Cool, man. I hope you like it."
+    if presents_opened == 1:
 
+        c "Mine first? Cool, man. I hope you like it."
+
+    else:
+
+        c "Cool, man. I hope you like it."
+
+    window hide { "screens": Dissolve(1.0) }
     hide cat_happy
-    with Dissolve(1)
+    with Dissolve(1.0)
 
     play sound "sfx/sfx/paper_tear.mp3"
 
     pause 1
 
+    window auto { "screens": Dissolve(1.0) }
     show cat_present:
         xalign 0.5
         yalign 0.35
@@ -1810,7 +1839,11 @@ label cat_present:
     hide cat_present
     with Dissolve(1)
 
-    c "It's nothing really... just some new music I thought you might like while we're apart."
+    if music_choice == "Cat":
+        c "You liked my mix earlier, right? There's another one in there. Something to listen to while we're apart."
+
+    else:
+        c "It's nothing really... just some new music I thought you might like while we're apart."
 
     hide cat_surprised
     show cat_neutral
@@ -1881,14 +1914,33 @@ label danny_present:
 
     ch "We can see that..."
 
-    hide charlie_confused2
-    hide danny_angry2
-    with Dissolve(1)
+    if presents_opened > 1:
+
+        window hide { "screens": Dissolve(1.0) }
+        hide charlie_confused2
+        hide danny_angry2
+        with Dissolve(1)
+
+    if presents_opened == 1:
+
+        hide danny_angry2
+        show danny_happy at left_to_center
+        with None
+
+        hide charlie_confused2
+        with Dissolve(0.5)
+
+        d "Good first choice, though. Got your priorities straight."
+
+        window hide { "screens": Dissolve(1.0) }
+        hide danny_happy
+        with Dissolve(1)
 
     play sound "sfx/sfx/paper_tear.mp3"
 
     pause 1
 
+    window auto { "screens": Dissolve(1.0) }
     show danny_present:
         xalign 0.5
         yalign 0.4
@@ -2187,7 +2239,7 @@ label fuck_all_of_you:
     hide danny_disgust2
     show danny_surprise
 
-    o "Cut with the shit! You've never told me anything!"
+    o "Cut the shit! You've never told me anything!"
 
     hide danny_surprise
     show cat_sad2
@@ -2283,17 +2335,17 @@ menu:
 
     "{i}Follow Charlie{/i}":
         $ time_of_day = "4:30 PM"
-        $ save_name = "Act Two - Charlie"
+        $ save_name = "Act Two - Charlie Route"
         jump follow_charlie
 
     "{i}Follow Cat{/i}":
         $ time_of_day = "4:30 PM"
-        $ save_name = "Act Two - Cat"
+        $ save_name = "Act Two - Cat Route"
         jump follow_cat
 
     "{i}Follow Danny{/i}":
         $ time_of_day = "4:30 PM"
-        $ save_name = "Act Two - Danny"
+        $ save_name = "Act Two - Danny Route"
         jump follow_danny
 
     "{i}Take a minute alone{/i}":
@@ -2540,7 +2592,7 @@ menu:
         o "Wow... Thanks for confiding in me. I won't tell anyone."
         jump thanks_otter
 
-    "That's not a good idea":
+    "She doesn't like you":
         $ betrayal += 1
         $ violence += 1
         hide charlie_confused
@@ -2550,7 +2602,7 @@ menu:
         jump charlie_heartbreak
 
     "{i}Try to sound happy for him{/i}" if charlie_love == 2:
-        o "Oh... er... good for you, man."
+        o "Oh... err... good for you, man."
         $ betrayal += 1
         jump thanks_otter
 
@@ -2584,9 +2636,14 @@ label charlie_path_outro:
 
     hide charlie_neutral2
     hide charlie_sad
-    show charlie_happy3
 
-    ch "Anyway, let's go back inside, huh? I heard there's some cake just begging to be eaten!"
+    if charlie_bond < 0:
+        show charlie_sad2
+        ch "We should probably... uh... go back inside, then."
+
+    else:
+        show charlie_happy3
+        ch "Anyway, let's go back inside, huh? I heard there's some cake just begging to be eaten!"
 
     jump act_three
 
@@ -2752,7 +2809,7 @@ menu:
     "I didn't know how":
         jump didnt_know_how
 
-    "I don't feel things like you":
+    "Quit whining":
         jump dont_feel_things
 
 label didnt_know_how:
@@ -2814,6 +2871,7 @@ menu:
 label just_friends:
 
     $ cat_love += 1
+    $ cat_bond += 1
     $ liked_notice("Cat")
 
     hide cat_happy
@@ -2906,43 +2964,53 @@ label me_too:
 label dont_feel_things:
 
     hide cat_sad2
-    show cat_shocked
+    show cat_worried
 
-    $ violence += 1
+    $ violence += 6
     $ change_bond("Cat", -999, absolute=True)
 
-    o "Well, maybe I just don't feel things the way you do."
+    o "If I wanted to hear whining, I'd get another fucking dog!"
 
     "Cat goes quiet. She's trying to figure out if you're joking, but your face says otherwise."
 
-    hide cat_shocked
+    hide cat_worried
     show cat_worried2
 
-    c "Do you mean you know what you’re supposed to feel, but you don’t actually feel it?"
+    c "I was just trying to understand. You don't have to talk to me like that."
 
     hide cat_worried2
     show cat_sad3
 
-    c "Does that bother you?"
+    c "Do you even care that you hurt me?"
 
     hide cat_sad3
     show cat_sad2
 
-    o "Should it?"
+    o "Should I?"
 
     hide cat_sad2
     show cat_shocked
 
-    c "Sometimes I forget you're joking."
+    c "You're joking. Right?"
 
     hide cat_shocked
-    show cat_shocked2
+    show cat_worried
 
     o "I'm not."
 
-    hide cat_shocked2
-    show cat_worried
+    hide cat_worried
+    show cat_worried2
     c "I see."
+
+    jump negative_cat_outro
+
+label negative_cat_outro:
+
+    hide cat_worried2
+    show cat_angry
+    c "I'm going downstairs. I'll see you soon for cake."
+
+    jump act_three
 
 label cat_path_outro:
 
@@ -2952,9 +3020,6 @@ label cat_path_outro:
     show cat_surprised
 
     c "Anyway, we should probably head back before everyone starts wondering where we are."
-
-    hide cat_surprised
-    with Dissolve(0.5)
 
     jump act_three
 
@@ -2971,12 +3036,12 @@ label follow_danny:
     with Dissolve(1)
 
     "Danny leans against the wire gate on the balcony, admiring the neighborhood."
-    "You close the front door and he turns to look at you."
+    "You close the door behind you, and he turns around."
 
     show danny_disgust_smoking
     with Dissolve(0.5)
 
-    d "You know, every time I turn around you're just there. Staring."
+    d "You know, you're always just there. Staring."
 
     hide danny_disgust_smoking
     show danny_shocked_smoking2
@@ -3126,7 +3191,7 @@ menu:
     "I didn't know how to show I cared":
         jump show_i_cared
 
-    "It's your fault":
+    "Don't act like you cared":
         jump your_fault
 
     "You were the only one I cared about" if danny_bond >= 5:
@@ -3214,13 +3279,13 @@ label danny_says_sorry:
 label your_fault:
 
     $ betrayal += 1
-    $ violence += 1
+    $ violence += 4
     $ change_bond("Danny", -999, absolute=True)
 
     hide danny_concerned_smoking
     show danny_sad_smoking
 
-    o "You treated me like shit."
+    o "Don't act like you ever gave a shit about me."
 
     o "You made everyone look at me like some kind of freak."
 
@@ -3238,7 +3303,24 @@ label danny_says_sorry_two:
 
     d "..."
 
-    jump danny_path_outro
+    jump danny_negative_outro
+
+label danny_negative_outro:
+
+    hide danny_sad_smoking
+    with Dissolve(0.5)
+
+    "Danny stubs his cigarette out with his shoe."
+
+    show danny_disgust2
+    with Dissolve(0.5)
+
+    d "I'm heading back inside. I'll see you soon for cake."
+
+    hide danny_disgust2
+    with Dissolve(0.5)
+
+    jump act_three
 
 label danny_path_outro:
 
@@ -3281,7 +3363,7 @@ label stay_where_you_are:
 
     o "..."
 
-    "Huh. The bottle isn't in its usual spot. You glance toward the bin beside the sink and spot the empty bottle inside. Didn't you just get a new refill?"
+    "Huh. The bottle isn't in its usual spot. You glance toward the bin beside the sink and spot the empty container inside. Didn't you just get a new refill?"
     
 menu:
 
@@ -3487,7 +3569,7 @@ label act_three:
 menu:
 
     "{i}For them to stay here forever{/i}" if acceptance <= 4 and violence <= 4:
-        o "{i}I wish they would stop talking about leaving. I wish nobody would go anywhere and everything could just stay like this. I don't want to lose anyone.{i}"
+        o "{i}I wish they would stop talking about leaving. I wish nobody would go anywhere and everything could just stay like this. I don't want to lose anyone.{/i}"
 
         jump act_three_part_two
 
@@ -3495,22 +3577,24 @@ menu:
         pass
 
     "{i}For them to be happy{/i}" if acceptance > 4:
-        o "{i}Weirdly enough, I think I just wish... that they were happy.{i}"
+        $ chose_acceptance_wish = True
+
+        o "{i}Weirdly enough, I think I just wish... that they were happy.{/i}"
+
+        jump act_three_part_two
 
     "{color=#956dc9}{i}For them to be happy{/i}{/color}" (disabled=True) if acceptance <= 4:
         pass
 
-        jump act_three_part_two
-
     "{i}For them to die{/i}" if violence > 4:
-        o "{i}I wish that they would just die.{i}"
+        o "{i}I wish that they would just die.{/i}"
         "The thought arrives so suddenly that it catches you off guard. You don't mean it, do you?"
         "At least, you don't think you do."
 
+        jump act_three_part_two
+
     "{color=#956dc9}{i}For them to die{/i}{/color}" (disabled=True) if violence <= 4:
         pass
-
-        jump act_three_part_two
 
 label act_three_part_two:
 
@@ -3552,6 +3636,9 @@ label act_three_part_two:
     elif charlie_bond > 3:
         jump charlie_ending
 
+    elif chose_acceptance_wish:
+        jump betrayal_and_acceptance_endings
+
     elif violence > 4:
         jump violent_ending
 
@@ -3585,6 +3672,8 @@ menu:
         jump danny_fakeout_ending
 
 label danny_fakeout_ending:
+
+    $ declined_escape = "Danny"
 
     o "No, no. I want to stay."
 
@@ -3630,7 +3719,7 @@ label danny_real_ending:
 
     pause 1
 
-    $ save_name = "Act Three - Danny"
+    $ save_name = "Act Three - Danny Ending"
 
     show black
     $ time_of_day = "7:00 PM"
@@ -3643,33 +3732,73 @@ label danny_real_ending:
 
     "It should bother you more than it does, but it smells like Danny."
 
-    d "Hey."
+    if music_choice == "Danny":
+
+        d "You know, picking my mix makes you the only one of us with real taste."
+
+        o "Including you?"
+
+        d "Careful."
+
+        "You turn toward the window, glad things still feel so natural between you."
+
+    if danny_love > 0:
+
+        d "Hey."
+
+        d "You meant what you said earlier?"
+
+        o "Hmm...?"
+
+        d "That I was the only one you 'truly cared about.'"
+
+        o "Oh..."
+
+        "You feel a little embarrassed hearing him say it back."
+
+        o "...Yeah."
+
+        d "Okay. Good."
+
+        o "...Good?"
+
+        d "Don't make me say it twice."
+
+        "You catch a small smile before he tries to hide it."
+
+    else:
+
+            d "Hey."
 
     d "We're gonna be alright, you know. Me and you."
 
-    "He smiles to himself, keeping his eyes on the road."
+    "You look over, but his eyes stay on the road."
 
     d "I can't wait to see everyone at Columbia."
 
     d "Try not to miss me too much, serial killer."
 
+    $ renpy.stop_skipping()
+    $ _skipping = False
+    $ _dismiss_pause = False
+
     scene black
     hide screen time_indicator
     with Dissolve (1)
 
-    pause 3
+    pause 2.5
 
     show ending_danny
-    with Dissolve(1)
+    with Dissolve(3)
 
-    pause 5
+    pause 7
 
-    play music "sfx/potential/nightmare.mp3" volume 0.8 fadeout 3.0 fadein 3.0
+    play music "sfx/potential/nightmare.mp3" fadeout 9 fadein 2
 
     scene black
-    with Dissolve(1)
+    with Dissolve(5)
 
-    pause 3
+    pause 5
 
     scene dining_table
     show plates onlayer alexlayer
@@ -3678,9 +3807,9 @@ label danny_real_ending:
     show cat_dead
     with Dissolve(1)
 
-    pause 1
+    pause 2
 
-    stop music fadeout 3.0
+    stop music fadeout 2.5
 
     scene black
     hide plates onlayer alexlayer
@@ -3688,7 +3817,7 @@ label danny_real_ending:
     hide charlie_dead onlayer charlielayer
     with Dissolve(1)
 
-    pause 1
+    pause 3
 
 
 return
@@ -3719,6 +3848,8 @@ menu:
 
 
 label cat_fakeout_ending:
+
+    $ declined_escape = "Cat"
 
     o "No, no. I want to stay."
 
@@ -3760,9 +3891,9 @@ label cat_real_ending:
     hide screen time_indicator
     with Dissolve(3)
 
-    play music "sfx/potential/bittersweet_4.mp3" fadeout 2.0 fadein 2.0
+    play music "sfx/potential/bittersweet_4.mp3" volume 0.9 fadeout 2.0 fadein 2.0
 
-    $ save_name = "Act Three - Cat"
+    $ save_name = "Act Three - Cat Ending"
 
     pause 1
 
@@ -3771,7 +3902,7 @@ label cat_real_ending:
     show screen time_indicator
     with Dissolve(1)
 
-    "The two of you walk for a while, and neither of you really know where you're going. Eventually, Cat slows down, looking back toward the house in the distance."
+    "The two of you walk for a while, neither of you really knowing the destination. Eventually, Cat slows down, looking back toward the house in the distance."
 
     c "You know what?"
 
@@ -3781,7 +3912,31 @@ label cat_real_ending:
 
     c "Anytime."
 
-    "She laughs, nudging your shoulder with hers. For a second, it almost seems as if she's blushing. If you blinked you'd almost miss it."
+    "She laughs, nudging your shoulder with hers."
+
+    if cat_love > 0:
+
+        c "So... still figuring it out?"
+
+        o "What?"
+
+        c "Whether we're just friends."
+
+        "She holds her hand out."
+
+        menu:
+
+            "{i}Take her hand{/i}":
+                "You take her hand. She gives yours a small squeeze."
+
+                c "Thought so."
+
+            "{i}Keep your hands in your pockets{/i}":
+                o "I'm still figuring it out."
+
+                c "Okay. No rush."
+
+                "She lowers her hand and keeps walking beside you."
 
     c "You know, I'm actually excited."
 
@@ -3793,23 +3948,27 @@ label cat_real_ending:
 
     c "I can't wait to be with those guys over there."
 
+    $ renpy.stop_skipping()
+    $ _skipping = False
+    $ _dismiss_pause = False
+
     scene black
     hide screen time_indicator
     with Dissolve (1)
 
-    pause 3
+    pause 2.5
 
     show ending_cat
-    with Dissolve(1)
+    with Dissolve(3)
 
-    pause 5
+    pause 7
 
-    play music "sfx/potential/nightmare.mp3" volume 0.8 fadeout 3.0 fadein 3.0
+    play music "sfx/potential/nightmare.mp3" fadeout 9 fadein 2
 
     scene black
-    with Dissolve(1)
+    with Dissolve(5)
 
-    pause 3
+    pause 5
 
     scene dining_table
     show plates onlayer alexlayer
@@ -3818,9 +3977,9 @@ label cat_real_ending:
     show danny_dead
     with Dissolve(1)
 
-    pause 1
+    pause 2
 
-    stop music fadeout 3.0
+    stop music fadeout 2.5
 
     scene black
     hide plates onlayer alexlayer
@@ -3828,7 +3987,7 @@ label cat_real_ending:
     hide charlie_dead onlayer charlielayer
     with Dissolve(1)
 
-    pause 1
+    pause 3
 
     return
 
@@ -3860,6 +4019,8 @@ menu:
         jump charlie_fakeout_ending
 
 label charlie_fakeout_ending:
+
+    $ declined_escape = "Charlie"
 
     o "No, no. I want to stay."
 
@@ -3900,7 +4061,7 @@ label charlie_real_ending:
 
     play music "sfx/potential/bittersweet.mp3" fadeout 2.0 fadein 2.0
 
-    $ save_name = "Act Three - Charlie"
+    $ save_name = "Act Three - Charlie Ending"
 
     pause 1
 
@@ -3919,29 +4080,87 @@ label charlie_real_ending:
 
     "He looks out over the field, the empty rows of seats stretching out beneath you."
 
-    ch "You know, I'm gonna miss you, little man. You're always gonna be my best pal."
+    if polaroid > 0:
 
-    ch "But, I'm looking forward to seeing what's next."
+        ch "Still got that picture we all took together?"
+
+        "You press a hand against your pocket."
+
+        o "Yeah."
+
+        ch "Put it in the album when you get home."
+
+        ch "...And leave a page for the next one, too."
+
+        "He smiles, looking down at his shoes absentmindedly."
+
+    if charlie_love > 1 and polaroid == 0:
+
+        ch "Hey... About what you said earlier."
+
+        o "It's fine."
+
+        ch "I don't want things to become... weird... or anything. You're important to me."
+
+        o "I know. You like Cat."
+
+        ch "Yeah. But you're still my best friend."
+
+        "You nod, keeping your eyes on the field."
+
+    elif charlie_love > 1 and polaroid > 0:
+
+        ch "And uh..."
+
+        ch "About what you said earlier..."
+
+        o "It's fine."
+
+        ch "I don't want things to become... weird... or anything. You're important to me."
+
+        o "I know. You like Cat."
+
+        ch "Yeah. But you're still my best friend."
+
+        "You nod, keeping your eyes on the field."
+
+    elif charlie_love > 0:
+
+        ch "I'm gonna miss you, you know."
+
+        o "Yeah. Me too."
+
+        "There's more you could say. You let it go."
+
+    else:
+
+        ch "You know, I'm gonna miss you, little man. You're always gonna be my best pal."
+
+    ch "But I'm looking forward to seeing what's next."
 
     ch "I really can't wait for college with those guys..."
+
+    $ renpy.stop_skipping()
+    $ _skipping = False
+    $ _dismiss_pause = False
 
     scene black
     hide screen time_indicator
     with Dissolve (1)
 
-    pause 3
+    pause 2.5
 
     show ending_charlie
-    with Dissolve(1)
+    with Dissolve(3)
 
-    pause 5
+    pause 7
 
-    play music "sfx/potential/nightmare.mp3" volume 0.8 fadeout 3.0 fadein 3.0
+    play music "sfx/potential/nightmare.mp3" fadeout 9 fadein 2
 
     scene black
-    with Dissolve(1)
+    with Dissolve(5)
 
-    pause 3
+    pause 5
 
     scene dining_table
     show plates onlayer alexlayer
@@ -3950,16 +4169,16 @@ label charlie_real_ending:
     show danny_dead
     with Dissolve(1)
 
-    pause 1
+    pause 2
 
-    stop music fadeout 3.0
+    stop music fadeout 2.5
 
     scene black
     hide plates onlayer alexlayer
     hide cake_knife onlayer alexlayer
     with Dissolve(1)
 
-    pause 1
+    pause 3
 
     return
 
@@ -3967,7 +4186,7 @@ label violent_ending:
 
     $ time_of_day = "8:30 PM"
 
-    $ save_name = "Act Three - Violence"
+    $ save_name = "Act Three - Violent Ending"
 
     hide cat_sitting_scared
     show cat_sitting_scared2
@@ -3984,7 +4203,15 @@ label violent_ending:
 
     "For a moment, nobody says anything. Your head is pounding so hard that you can barely hear anything else."
 
+    if truth == 1:
+        "You know what's in the cake. You know what you did. If you waited long enough they'd all be dead, but you can't stand another fucking word."
+
+    else:
+        "They keep talking like this is nothing. Like leaving you behind is nothing."
+
     o "You think I don't fucking know?"
+
+    o "You're all just waiting to get out of here."
 
     hide charlie_sitting_worried
     show charlie_sitting_scared2
@@ -4011,6 +4238,12 @@ label violent_ending:
                 "Who would've thought that the day would end like this? You all looked so happy just hours earlier."
                 hide group_photo onlayer photolayer
                 with Dissolve(1)
+
+                jump violent_ending_closure
+
+            "{i}Leave photo in pocket{/i}":
+                
+                "You leave the photo in your pocket. Seeing how happy you all looked won't change anything now."
 
                 jump violent_ending_closure
 
@@ -4094,10 +4327,20 @@ label violent_ending_closure:
 
     pause 3
 
+    "They didn't make it very far."
+
+    $ renpy.stop_skipping()
+    $ _skipping = False
+    $ _dismiss_pause = False
+
+    pause 3
+
+    window hide
+
     show ending_violent
     with Dissolve(1)
 
-    pause 5
+    pause 7
 
     stop music2 fadeout 5.0
 
@@ -4254,7 +4497,7 @@ label high_bond_reaction:
     hide danny_sitting_speaking
     show danny_sitting_scared
 
-    "He tries for a joke but nobody laughs, not even himself. Charlie grips the edge of the his seat."
+    "He tries for a joke but nobody laughs, not even himself. Charlie grips the edge of his seat."
 
     hide charlie_sitting_scared
     show charlie_sitting_scared2
@@ -4344,26 +4587,79 @@ label high_bond_reaction:
 
 label pre_ending:
 
-    "Your hands are shaking."
+    $ can_call_help = chose_acceptance_wish or acceptance > 4
+    $ can_let_die = violence > 4 or betrayal > 4 or not can_call_help
+
+    if declined_escape == "Danny":
+        "All you had to do was say yes to that drive."
+
+    elif declined_escape == "Cat":
+        "All you had to do was say yes to that walk."
+
+    elif declined_escape == "Charlie":
+        "All you had to do was say yes when Charlie offered to leave."
+
+    if declined_escape is not None:
+        "But you chose to stay."
+
+    else:
+        "Your hands are shaking."
+
     "You could call someone. You could run for the phone. You could get them to a hospital."
     "Or... you could stay exactly where you are."
+
+    if can_call_help and can_let_die:
+        "You want them to live. Despite everything, you still care."
+        "But part of you wants to do nothing."
+
+    elif can_call_help:
+        "You don't want them to leave, but you want them to live."
+        "Whatever happens after tonight, you can't just stand here and let them die."
+
+    else:
+        "Even now, all you can think about is how they were going to leave you."
+
     "What will you do?"
 
-menu:
 
-    "{i}Call for help{/i}" if acceptance > 4:
-        jump acceptance_ending
+    menu:
 
-    "{color=#956dc9}{i}Call for help{/i}{/color}" (disabled=True) if acceptance <= 4:
-        pass
+        "{i}Call for help{/i}" if can_call_help:
+            jump acceptance_ending
 
-    "{color=#956dc9}{i}Let them die{/i}{/color}" (disabled=True) if acceptance > 4:
-        pass
+        "{color=#956dc9}{i}Call for help{/i}{/color}" (disabled=True) if not can_call_help:
+            pass
 
-    "{i}Let them die{/i}" if acceptance <= 4:
-        jump betrayal_ending
+        "{i}Let them die{/i}" if can_let_die:
+            jump betrayal_ending
+
+        "{color=#956dc9}{i}Let them die{/i}{/color}" (disabled=True) if not can_let_die:
+            pass
+
+#label pre_ending:
+
+    #"Your hands are shaking."
+    #"You could call someone. You could run for the phone. You could get them to a hospital."
+    #"Or... you could stay exactly where you are."
+    #"What will you do?"
+
+#menu:
+
+    #"{i}Call for help{/i}" if acceptance > 4:
+        #jump acceptance_ending
+
+    #"{color=#956dc9}{i}Call for help{/i}{/color}" (disabled=True) if acceptance <= 4:
+        #pass
+
+    #"{color=#956dc9}{i}Let them die{/i}{/color}" (disabled=True) if acceptance > 4:
+        #pass
+
+    #"{i}Let them die{/i}" if acceptance <= 4:
+        #jump betrayal_ending
 
 label acceptance_ending:
+
+    $ save_name = "Act Three - Acceptance Ending"
 
     $ time_of_day = "11:30 PM"
 
@@ -4411,17 +4707,30 @@ label acceptance_ending:
 
                 jump acceptance_ending_closure
 
+            "{i}Leave photo in pocket{/i}":
+                
+                "You leave the photo in your pocket. You need to keep looking at them. You need to make sure they're still breathing."
+
+                jump acceptance_ending_closure
+
 
 label acceptance_ending_closure:
 
-    play music2 "sfx/sfx/siren.mp3" volume 0.1 fadein 2.0
+    play sound "sfx/sfx/siren.mp3" loop volume 0.1 fadein 2.0
 
     "Somewhere outside, you hear a siren. You close your eyes."
 
-    stop music2 fadeout 20
+    stop sound fadeout 20
 
-    "For the first time tonight, you don't care about Columbia. You don't care about what happens tomorrow. You just want them to live."
+    if chose_acceptance_wish:
+        "You wished for them to be happy, all you really want is for them to just be happy."
+
+    "You don't care about Columbia. You don't care about what happens tomorrow. You just want them to live."
     "This is what's right, isn't it?"
+
+    $ renpy.stop_skipping()
+    $ _skipping = False
+    $ _dismiss_pause = False
 
     scene black
     hide charlie_dead onlayer charlielayer
@@ -4432,12 +4741,13 @@ label acceptance_ending_closure:
 
     pause 3
 
-    stop music fadeout 10
+    stop music fadeout 14
 
     show ending_acceptance
     with Dissolve(1)
 
-    pause 3
+    pause 7
+
     scene black
     with Dissolve(3)
 
@@ -4448,6 +4758,8 @@ label acceptance_ending_closure:
 
 
 label betrayal_ending:
+
+    $ save_name = "Act Three - Betrayal Ending"
 
     $ time_of_day = "11:30 PM"
 
@@ -4473,9 +4785,22 @@ label betrayal_ending:
 
                 jump betrayal_ending_closure
 
+            "{i}Leave photo in pocket{/i}":
+                
+                "You leave the photo in your pocket. You don't want another reason to change your mind."
+
+                jump betrayal_ending_closure
+
 label betrayal_ending_closure:
 
     "You know you should help them. You know there is still time. But for once, they're all exactly where you want them to be. Still here, right in front of you. Not going anywhere."
+
+    if chose_acceptance_wish:
+       "You wanted them to be happy, you wished for it. But not somewhere else. Not with other people. Not without you."
+
+    else:
+        "Strange how your wish came true."
+
     "Maybe this is just what they deserve."
     
     o "I'm sorry."

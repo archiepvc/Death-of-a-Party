@@ -12,6 +12,8 @@
 ##
 ## The _() surrounding the string marks it as eligible for translation.
 
+define config.main_menu_stop_channels += ["music2", "typing"]
+
 define config.name = _("Death of a Party")
 
 define build.itch_project = "archiepvc/death-of-a-party"
