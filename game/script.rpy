@@ -206,7 +206,7 @@ default has_danny_cassette = False
 default music_choice = None
 
 # Testing
-default time_of_day = "2:30PM"
+default time_of_day = "2:30 PM"
 
 # Scaled Background Images
 init python:
@@ -436,7 +436,7 @@ init:
     image danny_sad_smoking2 = scaledsprite("danny_sad_smoking2.png")
     image danny_happy_smoking = scaledsprite("danny_happy_smoking.png")
     image danny_happy_smoking2 = scaledsprite("danny_happy_smoking2.png")
-    image danny_neutral_smoking2 = scaledsprite("danny_neutral_smoking.png")
+    image danny_neutral_smoking2 = scaledsprite("danny_neutral_smoking2.png")
     image danny_shocked_smoking = scaledsprite("danny_shocked_smoking.png")
     image danny_shocked_smoking2 = scaledsprite("danny_shocked_smoking2.png")
     image danny_concerned_smoking = scaledsprite("danny_concerned_smoking.png")
@@ -1756,7 +1756,7 @@ label charlie_present:
         hide charlie_confused
         show charlie_happy2
 
-        ch "Ah, besides the point. Open it, open it!!!"
+        ch "Ah, beside the point. Open it, open it!!!"
 
     if presents_opened > 1:
         
@@ -1984,7 +1984,7 @@ label danny_present:
         zoom 0.8
     with Dissolve(2)
 
-    "Inside sits a vintage polaroid camera. A 600 series from what looks like the early 1980s. It's in excellent condition."
+    "Inside sits a vintage Polaroid camera. A 600 series from what looks like the early 1980s. It's in excellent condition."
 
     hide danny_present
     with Dissolve(1)
